@@ -56,7 +56,7 @@ public class TripDO {
     public void setTo(StationDO to) {
         this.to = to;
     }
-
+    //TODO
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,7 +68,7 @@ public class TripDO {
 
         return true;
     }
-
+    //TODO
     @Override
     public int hashCode() {
         return id;

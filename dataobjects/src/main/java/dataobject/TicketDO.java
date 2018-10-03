@@ -34,7 +34,7 @@ public class TicketDO {
     public void setId(int id) {
         this.id = id;
     }
-
+    //TODO
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,7 +46,7 @@ public class TicketDO {
 
         return true;
     }
-
+    //TODO
     @Override
     public int hashCode() {
         return id;

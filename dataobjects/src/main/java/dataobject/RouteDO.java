@@ -80,7 +80,7 @@ public class RouteDO {
     public void setDeparture(Timestamp departure) {
         this.departure = departure;
     }
-
+    //TODO
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,7 +95,7 @@ public class RouteDO {
 
         return true;
     }
-
+    //TODO
     @Override
     public int hashCode() {
         int result = id;

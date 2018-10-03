@@ -43,7 +43,7 @@ public class TrainDO {
     public void setTrip(TripDO trip) {
         this.trip = trip;
     }
-
+    //TODO
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,7 +57,7 @@ public class TrainDO {
 
         return true;
     }
-
+    //TODO
     @Override
     public int hashCode() {
         int result = id;

@@ -44,7 +44,7 @@ public class StationDO {
     public void setToTrips(Collection<TripDO> toTrips) {
         this.toTrips = toTrips;
     }
-
+    //TODO
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,7 +57,7 @@ public class StationDO {
 
         return true;
     }
-
+    //TODO
     @Override
     public int hashCode() {
         int result = id;

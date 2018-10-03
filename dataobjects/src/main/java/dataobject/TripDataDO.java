@@ -22,8 +22,13 @@ public class TripDataDO {
     private byte isLate;
     @Column(name = "date", nullable = false)
     private Date date;
-    @OneToMany(mappedBy = "tripData"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    private Collection<TicketDO> tickets;
+
+    @OneToMany(mappedBy = "from"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
+    private Collection<TicketDO> ticketsFrom;
+
+
+    @OneToMany(mappedBy = "to"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
+    private Collection<TicketDO> ticketsTo;
 
 
     public int getId() {
@@ -68,12 +73,20 @@ public class TripDataDO {
         this.date = date;
     }
 
-    public Collection<TicketDO> getTickets() {
-        return tickets;
+    public Collection<TicketDO> getTicketsFrom() {
+        return ticketsFrom;
     }
-    public void setTickets(Collection<TicketDO> tickets) {
-        this.tickets = tickets;
+    public void setTicketsFrom(Collection<TicketDO> tickets) {
+        this.ticketsFrom = tickets;
     }
+
+    public Collection<TicketDO> getTicketsTo() {
+        return ticketsTo;
+    }
+    public void setTicketsTo(Collection<TicketDO> ticketsTo) {
+        this.ticketsTo = ticketsTo;
+    }
+
     //TODO
     @Override
     public boolean equals(Object o) {

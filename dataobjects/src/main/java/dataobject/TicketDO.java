@@ -13,19 +13,22 @@ public class TicketDO {
     @JoinColumn(name = "passenger", nullable = false)
     private PassengerDO passenger;
     @ManyToOne
-    @JoinColumn(name = "trip_data", nullable = false)
-    private TripDataDO tripData;
+    @JoinColumn(name = "from", nullable = false)
+    private TripDataDO from;
+    @ManyToOne
+    @JoinColumn(name = "to", nullable = false)
+    private TripDataDO to;
 
     public PassengerDO getPassenger() {return passenger;    }
     public void setPassenger(PassengerDO passenger) {
         this.passenger = passenger;
     }
 
-    public TripDataDO getTripData() {
-        return tripData;
+    public TripDataDO getFrom() {
+        return from;
     }
-    public void setTripData(TripDataDO tripData) {
-        this.tripData = tripData;
+    public void setFrom(TripDataDO from) {
+        this.from = from;
     }
 
     public int getId() {

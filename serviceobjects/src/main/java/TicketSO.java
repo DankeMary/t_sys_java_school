@@ -1,18 +1,26 @@
 public class TicketSO {
     private int id;
     private PassengerSO passenger;
-    private TripDataSO tripData;
+    private TripDataSO from;
+    private TripDataSO to;
 
     public PassengerSO getPassenger() {return passenger;    }
     public void setPassenger(PassengerSO passenger) {
         this.passenger = passenger;
     }
 
-    public TripDataSO getTripData() {
-        return tripData;
+    public TripDataSO getFrom() {
+        return from;
     }
-    public void setTripData(TripDataSO tripData) {
-        this.tripData = tripData;
+    public void setFrom(TripDataSO from) {
+        this.from = from;
+    }
+
+    public TripDataSO getTo() {
+        return to;
+    }
+    public void setTo(TripDataSO to) {
+        this.to = to;
     }
 
     public int getId() {

@@ -8,7 +8,8 @@ public class TripDataSO {
     private byte isCancelled;
     private byte isLate;
     private Date date;
-    private Collection<TicketSO> tickets;
+    private Collection<TicketSO> ticketsFrom;
+    private Collection<TicketSO> ticketsTo;
 
 
     public int getId() {
@@ -53,12 +54,20 @@ public class TripDataSO {
         this.date = date;
     }
 
-    public Collection<TicketSO> getTickets() {
-        return tickets;
+    public Collection<TicketSO> getTicketsFrom() {
+        return ticketsFrom;
     }
-    public void setTickets(Collection<TicketSO> tickets) {
-        this.tickets = tickets;
+    public void setTicketsFrom(Collection<TicketSO> ticketsFrom) {
+        this.ticketsFrom = ticketsFrom;
     }
+
+    public Collection<TicketSO> getTicketsTo() {
+        return ticketsTo;
+    }
+    public void setTicketsTo(Collection<TicketSO> ticketsTo) {
+        this.ticketsTo = ticketsTo;
+    }
+
     //TODO
     @Override
     public boolean equals(Object o) {

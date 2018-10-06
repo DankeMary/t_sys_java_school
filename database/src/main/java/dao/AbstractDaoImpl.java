@@ -32,12 +32,12 @@ public class AbstractDaoImpl <T, ID extends Serializable> implements AbstractDao
     public T find(ID id) {
         return getEntityManager().find(clazz, id);
     }
-
+    //@Transactional
     public void update(T t) {
-        getEntityManager().getTransaction().begin();
+        //getEntityManager().getTransaction().begin();
         getEntityManager().merge(t);
-        getEntityManager().getTransaction().commit();
-        getEntityManager().close();
+        //getEntityManager().getTransaction().commit();
+        //getEntityManager().close();
     }
 
     public EntityManager getEntityManager() {

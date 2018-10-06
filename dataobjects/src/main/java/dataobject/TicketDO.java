@@ -31,6 +31,13 @@ public class TicketDO {
         this.from = from;
     }
 
+    public TripDataDO getTo() {
+        return to;
+    }
+    public void setTo(TripDataDO to) {
+        this.to = to;
+    }
+
     public int getId() {
         return id;
     }

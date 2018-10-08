@@ -1,7 +1,7 @@
 package dataobject;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "trip")
@@ -20,7 +20,7 @@ public class TripDO {
     @JoinColumn(name = "to", nullable = false)
     private StationDO to;
     @OneToMany(mappedBy = "trip" /*class field name*//*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    private Collection<RouteDO> route;
+    private Set<RouteDO> route;
 
     public int getId() {
         return id;
@@ -29,10 +29,10 @@ public class TripDO {
         this.id = id;
     }
 
-    public Collection<RouteDO> getRoute() {
+    public Set<RouteDO> getRoute() {
         return route;
     }
-    public void setRoute(Collection<RouteDO> route) {
+    public void setRoute(Set<RouteDO> route) {
         this.route = route;
     }
 
@@ -56,7 +56,7 @@ public class TripDO {
     public void setTo(StationDO to) {
         this.to = to;
     }
-    //TODO
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,12 +65,19 @@ public class TripDO {
         TripDO tripDO = (TripDO) o;
 
         if (id != tripDO.id) return false;
-
-        return true;
+        if (!train.equals(tripDO.train)) return false;
+        if (!from.equals(tripDO.from)) return false;
+        if (!to.equals(tripDO.to)) return false;
+        return route != null ? route.equals(tripDO.route) : tripDO.route == null;
     }
-    //TODO
+
     @Override
     public int hashCode() {
-        return id;
+        int result = id;
+        result = 31 * result + train.hashCode();
+        result = 31 * result + from.hashCode();
+        result = 31 * result + to.hashCode();
+        result = 31 * result + (route != null ? route.hashCode() : 0);
+        return result;
     }
 }

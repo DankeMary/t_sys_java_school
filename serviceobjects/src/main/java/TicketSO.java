@@ -30,7 +30,6 @@ public class TicketSO {
         this.id = id;
     }
 
-    //TODO
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -39,13 +38,17 @@ public class TicketSO {
         TicketSO ticketSO = (TicketSO) o;
 
         if (id != ticketSO.id) return false;
-
-        return true;
+        if (!passenger.equals(ticketSO.passenger)) return false;
+        if (!from.equals(ticketSO.from)) return false;
+        return to.equals(ticketSO.to);
     }
 
-    //TODO
     @Override
     public int hashCode() {
-        return id;
+        int result = id;
+        result = 31 * result + passenger.hashCode();
+        result = 31 * result + from.hashCode();
+        result = 31 * result + to.hashCode();
+        return result;
     }
 }

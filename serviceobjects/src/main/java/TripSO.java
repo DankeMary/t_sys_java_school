@@ -1,11 +1,11 @@
-import java.util.Collection;
+import java.util.Set;
 
 public class TripSO {
     private int id;
     private TrainSO train;
     private StationSO from;
     private StationSO to;
-    private Collection<RouteSO> route;
+    private Set<RouteSO> route;
 
     public int getId() {
         return id;
@@ -14,10 +14,10 @@ public class TripSO {
         this.id = id;
     }
 
-    public Collection<RouteSO> getRoute() {
+    public Set<RouteSO> getRoute() {
         return route;
     }
-    public void setRoute(Collection<RouteSO> route) {
+    public void setRoute(Set<RouteSO> route) {
         this.route = route;
     }
 
@@ -41,7 +41,7 @@ public class TripSO {
     public void setTo(StationSO to) {
         this.to = to;
     }
-    //TODO
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -50,12 +50,19 @@ public class TripSO {
         TripSO tripSO = (TripSO) o;
 
         if (id != tripSO.id) return false;
-
-        return true;
+        if (!train.equals(tripSO.train)) return false;
+        if (!from.equals(tripSO.from)) return false;
+        if (!to.equals(tripSO.to)) return false;
+        return route != null ? route.equals(tripSO.route) : tripSO.route == null;
     }
-    //TODO
+
     @Override
     public int hashCode() {
-        return id;
+        int result = id;
+        result = 31 * result + train.hashCode();
+        result = 31 * result + from.hashCode();
+        result = 31 * result + to.hashCode();
+        result = 31 * result + (route != null ? route.hashCode() : 0);
+        return result;
     }
 }

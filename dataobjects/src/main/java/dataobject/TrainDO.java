@@ -43,7 +43,7 @@ public class TrainDO {
     public void setTrip(TripDO trip) {
         this.trip = trip;
     }
-    //TODO
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,15 +54,15 @@ public class TrainDO {
         if (id != trainDO.id) return false;
         if (number != trainDO.number) return false;
         if (capacity != trainDO.capacity) return false;
-
-        return true;
+        return trip != null ? trip.equals(trainDO.trip) : trainDO.trip == null;
     }
-    //TODO
+
     @Override
     public int hashCode() {
         int result = id;
         result = 31 * result + number;
         result = 31 * result + capacity;
+        result = 31 * result + (trip != null ? trip.hashCode() : 0);
         return result;
     }
 }

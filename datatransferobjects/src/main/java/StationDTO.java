@@ -1,12 +1,12 @@
-import java.util.Collection;
+import java.util.Set;
 
 public class StationDTO {
     private int id;
     private String name;
-    private Collection<TripDTO> fromTrips;
-    private Collection<TripDTO> toTrips;
+    private Set<TripDTO> fromTrips;
+    private Set<TripDTO> toTrips;
 
-    public StationDTO(int id, String name, Collection<TripDTO> fromTrips, Collection<TripDTO> toTrips) {
+    public StationDTO(int id, String name, Set<TripDTO> fromTrips, Set<TripDTO> toTrips) {
         this.id = id;
         this.name = name;
         this.fromTrips = fromTrips;
@@ -21,11 +21,11 @@ public class StationDTO {
         return name;
     }
 
-    public Collection<TripDTO> getFromTrips() {
+    public Set<TripDTO> getFromTrips() {
         return fromTrips;
     }
 
-    public Collection<TripDTO> getToTrips() {
+    public Set<TripDTO> getToTrips() {
         return toTrips;
     }
 }

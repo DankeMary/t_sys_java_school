@@ -1,10 +1,10 @@
-import java.util.Collection;
+import java.util.Set;
 
 public class StationSO {
     private int id;
     private String name;
-    private Collection<TripSO> fromTrips;
-    private Collection<TripSO> toTrips;
+    private Set<TripSO> fromTrips;
+    private Set<TripSO> toTrips;
 
     public int getId() {
         return id;
@@ -20,17 +20,17 @@ public class StationSO {
         this.name = name;
     }
 
-    public Collection<TripSO> getFromTrips() {
+    public Set<TripSO> getFromTrips() {
         return fromTrips;
     }
-    public void setFromTrips(Collection<TripSO> fromTrips) {
+    public void setFromTrips(Set<TripSO> fromTrips) {
         this.fromTrips = fromTrips;
     }
 
-    public Collection<TripSO> getToTrips() {
+    public Set<TripSO> getToTrips() {
         return toTrips;
     }
-    public void setToTrips(Collection<TripSO> toTrips) {
+    public void setToTrips(Set<TripSO> toTrips) {
         this.toTrips = toTrips;
     }
 
@@ -43,15 +43,17 @@ public class StationSO {
         StationSO stationSO = (StationSO) o;
 
         if (id != stationSO.id) return false;
-        if (name != null ? !name.equals(stationSO.name) : stationSO.name != null) return false;
-
-        return true;
+        if (!name.equals(stationSO.name)) return false;
+        if (fromTrips != null ? !fromTrips.equals(stationSO.fromTrips) : stationSO.fromTrips != null) return false;
+        return toTrips != null ? toTrips.equals(stationSO.toTrips) : stationSO.toTrips == null;
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (fromTrips != null ? fromTrips.hashCode() : 0);
+        result = 31 * result + (toTrips != null ? toTrips.hashCode() : 0);
         return result;
     }
 }

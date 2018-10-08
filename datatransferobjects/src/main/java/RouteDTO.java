@@ -1,5 +1,5 @@
 import java.sql.Timestamp;
-import java.util.Collection;
+import java.util.Set;
 
 public class RouteDTO {
     private int id;
@@ -8,9 +8,9 @@ public class RouteDTO {
     private StationDTO nextStation;
     private Timestamp arrival;
     private Timestamp departure;
-    private Collection<TripDataDTO> tripData;
+    private Set<TripDataDTO> tripData;
 
-    public RouteDTO(int id, TripDTO trip, StationDTO station, StationDTO nextStation, Timestamp arrival, Timestamp departure, Collection<TripDataDTO> tripData) {
+    public RouteDTO(int id, TripDTO trip, StationDTO station, StationDTO nextStation, Timestamp arrival, Timestamp departure, Set<TripDataDTO> tripData) {
         this.id = id;
         this.trip = trip;
         this.station = station;
@@ -44,7 +44,7 @@ public class RouteDTO {
         return departure;
     }
 
-    public Collection<TripDataDTO> getTripData() {
+    public Set<TripDataDTO> getTripData() {
         return tripData;
     }
 }

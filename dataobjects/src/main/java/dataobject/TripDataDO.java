@@ -2,7 +2,7 @@ package dataobject;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "trip_data")
@@ -24,11 +24,11 @@ public class TripDataDO {
     private Date date;
 
     @OneToMany(mappedBy = "from"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    private Collection<TicketDO> ticketsFrom;
+    private Set<TicketDO> ticketsFrom;
 
 
     @OneToMany(mappedBy = "to"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    private Collection<TicketDO> ticketsTo;
+    private Set<TicketDO> ticketsTo;
 
 
     public int getId() {
@@ -73,21 +73,20 @@ public class TripDataDO {
         this.date = date;
     }
 
-    public Collection<TicketDO> getTicketsFrom() {
+    public Set<TicketDO> getTicketsFrom() {
         return ticketsFrom;
     }
-    public void setTicketsFrom(Collection<TicketDO> tickets) {
+    public void setTicketsFrom(Set<TicketDO> tickets) {
         this.ticketsFrom = tickets;
     }
 
-    public Collection<TicketDO> getTicketsTo() {
+    public Set<TicketDO> getTicketsTo() {
         return ticketsTo;
     }
-    public void setTicketsTo(Collection<TicketDO> ticketsTo) {
+    public void setTicketsTo(Set<TicketDO> ticketsTo) {
         this.ticketsTo = ticketsTo;
     }
 
-    //TODO
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -98,21 +97,23 @@ public class TripDataDO {
         if (id != that.id) return false;
         if (seatsLeft != that.seatsLeft) return false;
         if (isCancelled != that.isCancelled) return false;
-        if (route != that.route) return false;
         if (isLate != that.isLate) return false;
+        if (!route.equals(that.route)) return false;
         if (date != null ? !date.equals(that.date) : that.date != null) return false;
-
-        return true;
+        if (ticketsFrom != null ? !ticketsFrom.equals(that.ticketsFrom) : that.ticketsFrom != null) return false;
+        return ticketsTo != null ? ticketsTo.equals(that.ticketsTo) : that.ticketsTo == null;
     }
-    //TODO
+
     @Override
     public int hashCode() {
         int result = id;
+        result = 31 * result + route.hashCode();
         result = 31 * result + seatsLeft;
         result = 31 * result + (int) isCancelled;
-        //result = 31 * result + route;
         result = 31 * result + (int) isLate;
         result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (ticketsFrom != null ? ticketsFrom.hashCode() : 0);
+        result = 31 * result + (ticketsTo != null ? ticketsTo.hashCode() : 0);
         return result;
     }
 }

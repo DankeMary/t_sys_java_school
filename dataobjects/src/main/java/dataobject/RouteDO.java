@@ -2,7 +2,7 @@ package dataobject;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "route")
@@ -23,7 +23,7 @@ public class RouteDO {
     @Column(name = "departure", nullable = false)
     private Timestamp departure;
     @OneToMany(mappedBy = "route" /*class field name*//*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    private Collection<TripDataDO> tripData;
+    private Set<TripDataDO> tripData;
 
 
     public int getId() {
@@ -54,10 +54,10 @@ public class RouteDO {
         this.nextStation = nextStation;
     }
 
-    public Collection<TripDataDO> getTripData() {
+    public Set<TripDataDO> getTripData() {
         return tripData;
     }
-    public void setTripData(Collection<TripDataDO> tripData) {
+    public void setTripData(Set<TripDataDO> tripData) {
         this.tripData = tripData;
     }
 
@@ -80,7 +80,7 @@ public class RouteDO {
     public void setDeparture(Timestamp departure) {
         this.departure = departure;
     }
-    //TODO
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,19 +89,23 @@ public class RouteDO {
         RouteDO routeDO = (RouteDO) o;
 
         if (id != routeDO.id) return false;
+        if (!trip.equals(routeDO.trip)) return false;
+        if (!station.equals(routeDO.station)) return false;
         if (nextStation != null ? !nextStation.equals(routeDO.nextStation) : routeDO.nextStation != null) return false;
-        if (arrival != null ? !arrival.equals(routeDO.arrival) : routeDO.arrival != null) return false;
-        if (departure != null ? !departure.equals(routeDO.departure) : routeDO.departure != null) return false;
-
-        return true;
+        if (!arrival.equals(routeDO.arrival)) return false;
+        if (!departure.equals(routeDO.departure)) return false;
+        return tripData.equals(routeDO.tripData);
     }
-    //TODO
+
     @Override
     public int hashCode() {
         int result = id;
+        result = 31 * result + trip.hashCode();
+        result = 31 * result + station.hashCode();
         result = 31 * result + (nextStation != null ? nextStation.hashCode() : 0);
-        result = 31 * result + (arrival != null ? arrival.hashCode() : 0);
-        result = 31 * result + (departure != null ? departure.hashCode() : 0);
+        result = 31 * result + arrival.hashCode();
+        result = 31 * result + departure.hashCode();
+        result = 31 * result + tripData.hashCode();
         return result;
     }
 }

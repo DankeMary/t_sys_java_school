@@ -1,5 +1,5 @@
 import java.sql.Date;
-import java.util.Collection;
+import java.util.Set;
 
 public class PassengerDTO {
 
@@ -7,9 +7,9 @@ public class PassengerDTO {
     private String firstName;
     private String lastName;
     private Date birthday;
-    private Collection<TicketDTO> tickets;
+    private Set<TicketDTO> tickets;
 
-    public PassengerDTO(int id, String firstName, String lastName, Date birthday, Collection<TicketDTO> tickets) {
+    public PassengerDTO(int id, String firstName, String lastName, Date birthday, Set<TicketDTO> tickets) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -33,7 +33,7 @@ public class PassengerDTO {
         return birthday;
     }
 
-    public Collection<TicketDTO> getTickets() {
+    public Set<TicketDTO> getTickets() {
         return tickets;
     }
 }

@@ -1,5 +1,5 @@
 import java.sql.Date;
-import java.util.Collection;
+import java.util.Set;
 
 public class TripDataDTO {
     private int id;
@@ -8,10 +8,10 @@ public class TripDataDTO {
     private byte isCancelled;
     private byte isLate;
     private Date date;
-    private Collection<TicketDTO> ticketsFrom;
-    private Collection<TicketDTO> ticketsTo;
+    private Set<TicketDTO> ticketsFrom;
+    private Set<TicketDTO> ticketsTo;
 
-    public TripDataDTO(int id, RouteDTO route, int seatsLeft, byte isCancelled, byte isLate, Date date, Collection<TicketDTO> ticketsFrom, Collection<TicketDTO> ticketsTo) {
+    public TripDataDTO(int id, RouteDTO route, int seatsLeft, byte isCancelled, byte isLate, Date date, Set<TicketDTO> ticketsFrom, Set<TicketDTO> ticketsTo) {
         this.id = id;
         this.route = route;
         this.seatsLeft = seatsLeft;
@@ -46,11 +46,11 @@ public class TripDataDTO {
         return date;
     }
 
-    public Collection<TicketDTO> getTicketsFrom() {
+    public Set<TicketDTO> getTicketsFrom() {
         return ticketsFrom;
     }
 
-    public Collection<TicketDTO> getTicketsTo() {
+    public Set<TicketDTO> getTicketsTo() {
         return ticketsTo;
     }
 }

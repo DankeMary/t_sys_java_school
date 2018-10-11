@@ -1,4 +1,4 @@
-package dataobject;
+package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -13,7 +13,7 @@ public class PassengerDO {
     private int id;
     @Column(name = "first_name", length = 45)
     private String firstName;
-    @Column(name = "first_name", nullable = false, length = 45)
+    @Column(name = "last_name", nullable = false, length = 45)
     private String lastName;
     @Column(name = "birthday")
     private Date birthday;
@@ -27,7 +27,6 @@ public class PassengerDO {
     public void setId(int id) {
         this.id = id;
     }
-
 
     public String getFirstName() {
         return firstName;

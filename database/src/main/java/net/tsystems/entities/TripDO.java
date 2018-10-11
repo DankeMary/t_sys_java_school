@@ -1,4 +1,4 @@
-package dataobject;
+package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,7 +10,7 @@ public class TripDO {
     @Id
     @Column(name = "id", nullable = false)
     private int id;
-    @Column(name = "id", nullable = false)
+
     @OneToOne(/*cascade = CascadeType.ALL,*/ mappedBy = "trip")
     private TrainDO train;
     @ManyToOne

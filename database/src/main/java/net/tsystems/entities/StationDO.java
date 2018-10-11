@@ -1,4 +1,4 @@
-package dataobject;
+package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -16,6 +16,30 @@ public class StationDO {
     private Set<TripDO> fromTrips;
     @OneToMany(mappedBy = "to"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
     private Set<TripDO> toTrips;
+
+    public Set<RouteDO> getRouteCurrs() {
+        return routeCurrs;
+    }
+
+    public void setRouteCurrs(Set<RouteDO> routeCurrs) {
+        this.routeCurrs = routeCurrs;
+    }
+
+    public Set<RouteDO> getRouteNext() {
+        return routeNext;
+    }
+
+    public void setRouteNext(Set<RouteDO> routeNext) {
+        this.routeNext = routeNext;
+    }
+
+    @OneToMany(mappedBy = "station")
+    private Set<RouteDO> routeCurrs;
+
+    @OneToMany(mappedBy = "nextStation")
+    private Set<RouteDO> routeNext;
+
+
 
     public int getId() {
         return id;

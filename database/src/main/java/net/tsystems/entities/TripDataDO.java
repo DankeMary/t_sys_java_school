@@ -1,4 +1,4 @@
-package dataobject;
+package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.sql.Date;

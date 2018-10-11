@@ -1,4 +1,4 @@
-package dataobject;
+package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -14,9 +14,14 @@ public class RouteDO {
     @ManyToOne
     @JoinColumn(name = "trip" /*db column name*/, nullable = false)
     private TripDO trip;
-    @Column(name = "station", nullable = false)
+    //@Column(name = "station", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "station")
     private StationDO station;
-    @Column(name = "next_station")
+
+    //@Column(name = "next_station")
+    @ManyToOne
+    @JoinColumn(name = "next_station")
     private StationDO nextStation;
     @Column(name = "arrival", nullable = false)
     private Timestamp arrival;

@@ -1,4 +1,4 @@
-package net.tsystems.springframe.configuration;
+package net.tsystems.configuration;
 
 import javax.sql.DataSource;
 
@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-/**
- * @author storgovt
- */
+
 @Configuration
 public class DBConnectionConfiguration {
 

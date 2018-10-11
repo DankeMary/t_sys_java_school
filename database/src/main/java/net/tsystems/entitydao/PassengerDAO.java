@@ -1,6 +1,6 @@
-package dao.entitydao;
+package net.tsystems.entitydao;
 
-import dataobject.PassengerDO;
+import net.tsystems.entities.PassengerDO;
 
 import java.util.List;
 

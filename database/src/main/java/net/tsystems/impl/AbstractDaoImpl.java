@@ -1,4 +1,9 @@
-package dao;
+package net.tsystems.impl;
+
+import net.tsystems.AbstractDao;
+import net.tsystems.EMFactory;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -8,6 +13,9 @@ public class AbstractDaoImpl <T, ID extends Serializable> implements AbstractDao
     @PersistenceContext
     private EntityManager em = null;
 
+    //@Autowired
+    private SessionFactory sessionFactory;
+
     private final Class<T> clazz;
 
     public AbstractDaoImpl(Class<T> clazz) {
@@ -16,17 +24,11 @@ public class AbstractDaoImpl <T, ID extends Serializable> implements AbstractDao
     }
 
     public void create(T t) {
-        getEntityManager().getTransaction().begin();
         getEntityManager().persist(t);
-        getEntityManager().getTransaction().commit();
-        getEntityManager().close();
     }
 
     public void delete(T t) {
-        getEntityManager().getTransaction().begin();
         getEntityManager().remove(t);
-        getEntityManager().getTransaction().commit();
-        getEntityManager().close();
     }
 
     public T find(ID id) {
@@ -34,10 +36,7 @@ public class AbstractDaoImpl <T, ID extends Serializable> implements AbstractDao
     }
     //@Transactional
     public void update(T t) {
-        //getEntityManager().getTransaction().begin();
         getEntityManager().merge(t);
-        //getEntityManager().getTransaction().commit();
-        //getEntityManager().close();
     }
 
     public EntityManager getEntityManager() {
@@ -46,8 +45,11 @@ public class AbstractDaoImpl <T, ID extends Serializable> implements AbstractDao
         return em;
     }
 
-    public EntityManager setEntityManager() {
-        //????
-        return null;
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
+    }
+
+    public Session getSession() {
+        return sessionFactory.getCurrentSession();
     }
 }

@@ -1,8 +1,8 @@
-package dao;
+package net.tsystems;
 
 import javax.persistence.EntityManager;
 
 public interface Dao {
     EntityManager getEntityManager();
-    EntityManager setEntityManager();
+    void setEntityManager(EntityManager em);
 }

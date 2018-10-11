@@ -1,4 +1,4 @@
-package dao;
+package net.tsystems;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;

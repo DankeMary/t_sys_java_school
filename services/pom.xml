@@ -8,10 +8,30 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <version>1.0</version>
 
-    <artifactId>mappers</artifactId>
+    <artifactId>services</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>3.1.2.RELEASE</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>net.tsystems</groupId>
+            <artifactId>database</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -20,16 +40,15 @@
 
         <dependency>
             <groupId>net.tsystems</groupId>
-            <artifactId>dataobjects</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>serviceobjects</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>net.tsystems</groupId>
-            <artifactId>serviceobjects</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>database</artifactId>
+            <version>1.0</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -52,4 +71,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

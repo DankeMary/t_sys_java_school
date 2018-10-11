@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.tsystems</groupId>
-    <artifactId>SBB</artifactId>
+    <artifactId>sbb</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
@@ -14,15 +14,18 @@
         <spring.version>5.1.0.RELEASE</spring.version>
         <buildNumber>1</buildNumber>
         <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
+        <webflow-version>2.5.1.RELEASE</webflow-version>
+        <mojarra-version>2.0.0-b04</mojarra-version>
+        <project-version>1.0-SNAPSHOT</project-version>
     </properties>
 
     <modules>
         <module>database</module>
-        <module>dataobjects</module>
         <module>serviceobjects</module>
-        <module>springframe-war</module>
+        <module>sbb-war</module>
         <module>datatransferobjects</module>
-        <module>mappers</module>
+        <module>services</module>
+        <module>sbb</module>
     </modules>
 
 

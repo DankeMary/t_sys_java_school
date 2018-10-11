@@ -9,21 +9,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-
+    <version>1.0</version>
     <artifactId>database</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
+            <artifactId>hibernate-core</artifactId>
             <version>5.3.6.Final</version>
         </dependency>
-
-        <dependency>
-            <groupId>net.tsystems</groupId>
-            <artifactId>dataobjects</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
-
 </project>

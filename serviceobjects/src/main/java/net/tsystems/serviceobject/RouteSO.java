@@ -1,3 +1,5 @@
+package net.tsystems.serviceobject;
+
 import java.sql.Timestamp;
 import java.util.Set;
 

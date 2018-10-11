@@ -1,3 +1,5 @@
+package net.tsystems.serviceobject;
+
 public class TicketSO {
     private int id;
     private PassengerSO passenger;

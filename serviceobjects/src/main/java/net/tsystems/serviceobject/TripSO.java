@@ -1,3 +1,5 @@
+package net.tsystems.serviceobject;
+
 import java.util.Set;
 
 public class TripSO {

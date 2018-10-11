@@ -1,3 +1,5 @@
+package net.tsystems.serviceobject;
+
 public class TrainSO {
     private int id;
     private int number;

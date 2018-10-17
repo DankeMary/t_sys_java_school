@@ -1,23 +1,23 @@
 package net.tsystems.service;
 
 
-import net.tsystems.impl.PassengerDAOImpl;
-import net.tsystems.mappers.PassengerEntityMapper;
-import net.tsystems.mappers.PassengerEntityMapperImpl;
+import net.tsystems.entitydao.PassengerDAO;
+import net.tsystems.entitymapper.PassengerEntityMapper;
+import net.tsystems.entitymapper.PassengerEntityMapperImpl;
 import net.tsystems.serviceobject.PassengerSO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.util.List;
 
 @Service("passengerService")
 @Transactional
 public class PassengerService {
+    @Autowired
+    private PassengerDAO psngrDao;
 
-    //@Autowired
-    private PassengerDAOImpl psngrDao = new PassengerDAOImpl();
-    //@Autowired
     private PassengerEntityMapper mapper = new PassengerEntityMapperImpl();
 
     public List<PassengerSO> getAll() {
@@ -27,4 +27,9 @@ public class PassengerService {
     public PassengerSO getPassenger(int id){
         return mapper.passengerToSO(psngrDao.find(id));
     }
+
+   /* public void setPsngrDao(PassengerDAO psngrDao) {
+        this.psngrDao = psngrDao;
+    }*/
 }
+

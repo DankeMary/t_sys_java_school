@@ -19,7 +19,6 @@ public class PassengerSO {
         this.id = id;
     }
 
-
     public String getFirstName() {
         return firstName;
     }

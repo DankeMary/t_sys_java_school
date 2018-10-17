@@ -20,12 +20,6 @@
             <version>3.1.2.RELEASE</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>net.tsystems</groupId>
-            <artifactId>database</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>-->
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
@@ -49,6 +43,30 @@
             <artifactId>database</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!-- logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${jcl.slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- END logging -->
     </dependencies>
 
     <build>

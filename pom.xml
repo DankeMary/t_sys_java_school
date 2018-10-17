@@ -17,6 +17,8 @@
         <webflow-version>2.5.1.RELEASE</webflow-version>
         <mojarra-version>2.0.0-b04</mojarra-version>
         <project-version>1.0-SNAPSHOT</project-version>
+        <jcl.slf4j.version>1.7.25</jcl.slf4j.version>
+        <logback.version>1.2.3</logback.version>
     </properties>
 
     <modules>
@@ -25,7 +27,7 @@
         <module>sbb-war</module>
         <module>datatransferobjects</module>
         <module>services</module>
-        <module>sbb</module>
+        <module>mappers</module>
     </modules>
 
 

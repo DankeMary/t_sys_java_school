@@ -1,55 +1,58 @@
 package net.tsystems.impl;
 
 import net.tsystems.AbstractDao;
-import net.tsystems.EMFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
-public class AbstractDaoImpl <T, ID extends Serializable> implements AbstractDao<T, ID> {
-    @PersistenceContext
-    private EntityManager em = null;
 
-    //@Autowired
+public abstract class AbstractDaoImpl <T, ID extends Serializable> implements AbstractDao<T, ID> {
+    @Autowired
     private SessionFactory sessionFactory;
-
     private final Class<T> clazz;
 
-    public AbstractDaoImpl(Class<T> clazz) {
-        this.clazz = clazz;
-        getEntityManager();
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+    @SuppressWarnings("unchecked")
+    public AbstractDaoImpl() {
+       clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    public Session getSession()
+    {
+        return sessionFactory.getCurrentSession();
     }
 
     public void create(T t) {
-        getEntityManager().persist(t);
+        getSession().persist(t);
     }
 
     public void delete(T t) {
-        getEntityManager().remove(t);
+        getSession().remove(t);
     }
 
     public T find(ID id) {
-        return getEntityManager().find(clazz, id);
+        return getSession().find(clazz, id);
     }
-    //@Transactional
+
+    public List<T> findAll(){
+        return (List<T>)getSession().createQuery( "from " + clazz.getName() ).list();
+    }
+
     public void update(T t) {
-        getEntityManager().merge(t);
+        getSession().merge(t);
     }
 
-    public EntityManager getEntityManager() {
-        if (em == null)
-            em = EMFactory.getEntityManagerFactory().createEntityManager();
-        return em;
+    public Session getEntityManager() {
+        return getSession();
     }
 
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
-    }
-
-    public Session getSession() {
-        return sessionFactory.getCurrentSession();
+    public void setEntityManager(Session em) {
+        //currentSession = em;
     }
 }

@@ -1,8 +1,9 @@
 package net.tsystems;
 
-import javax.persistence.EntityManager;
+import org.hibernate.Session;
+
 
 public interface Dao {
-    EntityManager getEntityManager();
-    void setEntityManager(EntityManager em);
+    Session getEntityManager();
+    void setEntityManager(Session em);
 }

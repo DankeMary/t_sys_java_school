@@ -1,0 +1,60 @@
+body {
+    background-color: pink;
+}
+.header {
+    margin: 0 auto;
+    max-width: 960px;
+    min-width: 600px;
+}
+.header h1 {
+    font-size: 50px;
+    font-weight: normal;
+    line-height: 50px;
+    margin: 0;
+    padding: 25px 0;
+    text-align: center;
+}
+.header h1 a {
+    color: #99FF99;
+    text-decoration: none;
+}
+.header h1 a span {
+    color: #CCFFCC;
+    font-size: 26px;
+    margin: 0 auto;
+    text-transform: uppercase;
+}
+/* Menu */
+.header .navigation {
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    text-align: center;
+}
+.header .navigation li {
+    display: inline-block;
+    line-height: 30px;
+    font-size: 18px;
+    padding: 0 46px;
+    text-transform: uppercase;
+}
+
+.header .navigation li a:link {
+    display: block;
+    color: #6699CC;
+    text-decoration: none;
+}
+.header .navigation li a:visited {
+    color: #CCFFCC;
+}
+.header .navigation li a:hover {
+    color: #99FF00;
+    text-decoration: underline;
+}
+.header .navigation li a:active {
+    color: #ffff00;
+}
+.header .navigation li.current {
+    color: #CCFFCC;
+    border-bottom: 2px solid #CCFFCC;
+}

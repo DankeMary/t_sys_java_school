@@ -1,6 +1,7 @@
 package net.tsystems.serviceobject;
 
-import java.sql.Date;
+
+import java.util.Date;
 import java.util.Set;
 
 public class PassengerSO {

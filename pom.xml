@@ -23,11 +23,10 @@
 
     <modules>
         <module>database</module>
-        <module>serviceobjects</module>
         <module>sbb-war</module>
         <module>datatransferobjects</module>
         <module>services</module>
-        <module>mappers</module>
+        <module>dataobjects</module>
     </modules>
 
 

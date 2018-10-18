@@ -26,15 +26,15 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>net.tsystems</groupId>
-            <artifactId>serviceobjects</artifactId>
+            <artifactId>dataobjects</artifactId>
             <version>1.0</version>
         </dependency>
 
@@ -70,7 +70,7 @@
     </dependencies>
 
     <build>
-        <plugins>
+        <!--<plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -87,7 +87,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-        </plugins>
+        </plugins>-->
     </build>
 
 </project>

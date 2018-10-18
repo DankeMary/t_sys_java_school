@@ -67,15 +67,21 @@
 
 
         <!-- local modules-->
-        <dependency>
+        <!--<dependency>
             <groupId>net.tsystems</groupId>
             <artifactId>database</artifactId>
+            <version>1.0</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>net.tsystems</groupId>
+            <artifactId>services</artifactId>
             <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>net.tsystems</groupId>
-            <artifactId>services</artifactId>
+            <artifactId>dataobjects</artifactId>
             <version>1.0</version>
         </dependency>
         <!-- END local modules-->

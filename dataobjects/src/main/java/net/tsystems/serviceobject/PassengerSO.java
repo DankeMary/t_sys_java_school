@@ -2,6 +2,7 @@ package net.tsystems.serviceobject;
 
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 public class PassengerSO {
@@ -10,7 +11,7 @@ public class PassengerSO {
     private String firstName;
     private String lastName;
     private Date birthday;
-    private Set<TicketSO> tickets;
+    private Set<TicketSO> tickets = new HashSet<TicketSO>();
 
 
     public int getId() {

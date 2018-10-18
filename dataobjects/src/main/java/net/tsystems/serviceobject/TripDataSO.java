@@ -1,6 +1,7 @@
 package net.tsystems.serviceobject;
 
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 public class TripDataSO {
@@ -10,8 +11,8 @@ public class TripDataSO {
     private byte isCancelled;
     private byte isLate;
     private Date date;
-    private Set<TicketSO> ticketsFrom;
-    private Set<TicketSO> ticketsTo;
+    private Set<TicketSO> ticketsFrom = new HashSet<TicketSO>();
+    private Set<TicketSO> ticketsTo = new HashSet<TicketSO>();
 
 
     public int getId() {

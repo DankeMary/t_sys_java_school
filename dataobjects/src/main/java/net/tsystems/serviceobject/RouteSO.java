@@ -1,6 +1,7 @@
 package net.tsystems.serviceobject;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 public class RouteSO {
@@ -10,7 +11,7 @@ public class RouteSO {
     private StationSO nextStation;
     private Timestamp arrival;
     private Timestamp departure;
-    private Set<TripDataSO> tripData;
+    private Set<TripDataSO> tripData = new HashSet<TripDataSO>();
 
 
     public int getId() {

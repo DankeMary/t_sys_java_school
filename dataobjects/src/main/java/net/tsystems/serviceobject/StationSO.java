@@ -1,12 +1,13 @@
 package net.tsystems.serviceobject;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class StationSO {
     private int id;
     private String name;
-    private Set<TripSO> fromTrips;
-    private Set<TripSO> toTrips;
+    private Set<TripSO> fromTrips = new HashSet<TripSO>();
+    private Set<TripSO> toTrips = new HashSet<TripSO>();
 
     public int getId() {
         return id;

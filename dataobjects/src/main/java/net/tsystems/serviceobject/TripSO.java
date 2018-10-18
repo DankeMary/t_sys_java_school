@@ -1,5 +1,6 @@
 package net.tsystems.serviceobject;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class TripSO {
@@ -7,7 +8,7 @@ public class TripSO {
     private TrainSO train;
     private StationSO from;
     private StationSO to;
-    private Set<RouteSO> route;
+    private Set<RouteSO> route = new HashSet<RouteSO>();
 
     public int getId() {
         return id;

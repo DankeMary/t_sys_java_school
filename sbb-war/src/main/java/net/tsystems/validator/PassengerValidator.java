@@ -1,6 +1,6 @@
 package net.tsystems.validator;
 
-import net.tsystems.serviceobject.PassengerSO;
+import net.tsystems.bean.PassengerBean;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -12,11 +12,11 @@ import java.util.Date;
 @Component
 public class PassengerValidator implements Validator {
     public boolean supports(Class<?> aClass) {
-        return PassengerSO.class.equals(aClass);
+        return PassengerBean.class.equals(aClass);
     }
 
     public void validate(Object o, Errors errors) {
-        PassengerSO passenger = (PassengerSO) o;
+        PassengerBean passenger = (PassengerBean) o;
 
 
         if (passenger.getFirstName().length() > 45) {
@@ -34,11 +34,10 @@ public class PassengerValidator implements Validator {
             errors.rejectValue("birthday", "NotEmpty", "Birthday cannot be empty");
         else {
             Calendar cal = Calendar.getInstance();
-            Date today = cal.getTime();
             cal.add(Calendar.YEAR, -18); // to get previous year add -1
-            Date nextYear = cal.getTime();
+            Date yearForMature = cal.getTime();
 
-            if (passenger.getBirthday().after(new Date()) || passenger.getBirthday().after(nextYear))
+            if (passenger.getBirthday().after(new Date()) || passenger.getBirthday().after(yearForMature))
                 errors.rejectValue("birthday", "Immature", "You have to be older than 18");
         }
     }

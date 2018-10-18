@@ -55,7 +55,7 @@ public class PassengersController {
                                BindingResult result, Model model,
                                final RedirectAttributes redirectAttributes) {
 
-        validator.validate(mapper.passengerToSO(passenger), result);
+        validator.validate(passenger, result);
         if (result.hasErrors()) {
             return "passengerForm";
         } else {
@@ -77,7 +77,7 @@ public class PassengersController {
                                    BindingResult result, Model model,
                                    final RedirectAttributes redirectAttributes) {
 
-        validator.validate(mapper.passengerToSO(passenger), result);
+        validator.validate(passenger, result);
         if (result.hasErrors()) {
             return "editPassenger";
         } else {

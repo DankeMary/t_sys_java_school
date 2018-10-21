@@ -87,8 +87,8 @@ public class PassengersController {
     }
 
     @RequestMapping(value = "/passengers/{id}/delete", method = RequestMethod.POST)
-    public String deleteUser(@PathVariable("id") int id,
-                             final RedirectAttributes redirectAttributes) {
+    public String deletePassenger(@PathVariable("id") int id,
+                                  final RedirectAttributes redirectAttributes) {
         passengerService.delete(id);
         return "redirect:/passengers";
 

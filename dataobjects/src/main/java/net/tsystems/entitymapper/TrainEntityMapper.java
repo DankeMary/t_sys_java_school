@@ -5,8 +5,12 @@ import net.tsystems.serviceobject.TrainSO;
 
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface TrainEntityMapper {
-    TrainSO TrainToSO(TrainDO tDO);
-    TrainDO TrainToDO(TrainSO tSO);
+    TrainSO trainToSO(TrainDO tDO);
+    TrainDO trainToDO(TrainSO tSO);
+    List<TrainSO> trainListToSOList(List<TrainDO> tListDO);
+    List<TrainDO> trainListToDOList(List<TrainSO> tListSO);
 }

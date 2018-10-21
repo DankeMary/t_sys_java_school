@@ -26,7 +26,7 @@ public class StationsController {
     private StationBeanMapper mapper = new StationBeanMapperImpl();
 
     @Autowired
-    public void setPassengerService(StationService stationService) {
+    public void setStationService(StationService stationService) {
         this.stationService = stationService;
     }
 
@@ -62,18 +62,18 @@ public class StationsController {
     }
 
     @RequestMapping(value = "/stations/{id}/update", method = RequestMethod.GET)
-    public String showUpdatePassengerForm(@PathVariable("id") int id, Model model) {
+    public String showUpdateStationForm(@PathVariable("id") int id, Model model) {
         StationBean station = mapper.stationToBean(stationService.getStationById(id));
         model.addAttribute("stationForm", station);
         return "editStation";
     }
 
     @RequestMapping(value = "/stations/{id}", method = RequestMethod.POST)
-    public String updatePassenger(@PathVariable("id") int id,
-                                  @ModelAttribute("stationForm") @Validated StationBean station,
-                                  BindingResult result, Model model,
-                                  final RedirectAttributes redirectAttributes) {
-        if (stationService.getStationByName(station.getName()) != null)
+    public String updateStation(@PathVariable("id") int id,
+                                @ModelAttribute("stationForm") @Validated StationBean station,
+                                BindingResult result, Model model,
+                                final RedirectAttributes redirectAttributes) {
+        if (!stationService.isUniqueByName(station.getId(), station.getName()))
             result.rejectValue("name", "NonUnique", "Station with such name already exists");
         else
             validator.validate(station, result);
@@ -87,8 +87,8 @@ public class StationsController {
     }
 
     @RequestMapping(value = "/stations/{id}/delete", method = RequestMethod.POST)
-    public String deleteUser(@PathVariable("id") int id,
-                             final RedirectAttributes redirectAttributes) {
+    public String deleteStation(@PathVariable("id") int id,
+                                final RedirectAttributes redirectAttributes) {
         stationService.delete(id);
         return "redirect:/stations";
 

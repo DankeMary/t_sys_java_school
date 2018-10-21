@@ -10,8 +10,8 @@ import java.util.Set;
 public class StationBean implements Serializable {
     private int id;
     private String name;
-    private Set<TripSO> fromTrips;
-    private Set<TripSO> toTrips;
+    //TODO private Set<TripBean> fromTrips;
+    //TODO private Set<TripBean> toTrips;
 
     public int getId() {
         return id;
@@ -27,17 +27,17 @@ public class StationBean implements Serializable {
         this.name = name;
     }
 
-    public Set<TripSO> getFromTrips() {
+    /*public Set<TripBean> getFromTrips() {
         return fromTrips;
     }
-    public void setFromTrips(Set<TripSO> fromTrips) {
+    public void setFromTrips(Set<TripBean> fromTrips) {
         this.fromTrips = fromTrips;
     }
 
-    public Set<TripSO> getToTrips() {
+    public Set<TripBean> getToTrips() {
         return toTrips;
     }
-    public void setToTrips(Set<TripSO> toTrips) {
+    public void setToTrips(Set<TripBean> toTrips) {
         this.toTrips = toTrips;
-    }
+    }*/
 }

@@ -15,10 +15,12 @@ public class StationValidator implements Validator {
     public void validate(Object o, Errors errors) {
         StationBean station = (StationBean) o;
 
-        if (station.getName().length() > 65) {
-            errors.rejectValue("name", "Size.stationForm.name", "Max length - 65");
-        }
         if (station.getName().trim().equals(""))
             ValidationUtils.rejectIfEmpty(errors, "name", "NotEmpty", "Station name required");
+        else if (station.getName().length() > 65) {
+            errors.rejectValue("name", "Size.stationForm.name", "Max length - 65");
+        } else if (!station.getName().matches("^[a-zA-Z][a-zA-Z \\-0-9]+$")) {
+            errors.rejectValue("name", "Format.stationForm.name", "Station name has to have at least one letter and can have only letters, spaces and hyphens");
+        }
     }
 }

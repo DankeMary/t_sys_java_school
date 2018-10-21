@@ -28,12 +28,15 @@ public class StationService {
     }
 
     public List<StationSO> getAll() {
-        return mapper.passengerListToSOList(stationDao.findAll());
+        return mapper.stationListToSOList(stationDao.findAll());
     }
     public StationSO getStationById(int id){
         return mapper.stationToSO(stationDao.find(id));
     }
     public StationSO getStationByName(String name){
         return mapper.stationToSO(stationDao.findByName(name));
+    }
+    public boolean isUniqueByName(int id, String name) {
+        return stationDao.isUniqueByName(id, name);
     }
 }

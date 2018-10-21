@@ -14,4 +14,12 @@ public class StationDAOImpl extends AbstractDaoImpl<StationDO, Integer> implemen
                                     .list();
         return list.size() == 0 ? null : list.get(0);
     }
+
+    @Override
+    public boolean isUniqueByName(int id, String name) {
+        List<StationDO> list = (List<StationDO>)getSession()
+                .createQuery("from StationDO where name='" + name + "' and id<>" + id)
+                .list();
+        return list.size() == 0;
+    }
 }

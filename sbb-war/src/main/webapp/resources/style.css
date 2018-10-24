@@ -1,60 +1,45 @@
 body {
-    background-color: pink;
+
 }
-.header {
-    margin: 0 auto;
-    max-width: 960px;
-    min-width: 600px;
-}
-.header h1 {
-    font-size: 50px;
-    font-weight: normal;
-    line-height: 50px;
-    margin: 0;
-    padding: 25px 0;
-    text-align: center;
-}
-.header h1 a {
-    color: #99FF99;
-    text-decoration: none;
-}
-.header h1 a span {
-    color: #CCFFCC;
-    font-size: 26px;
-    margin: 0 auto;
-    text-transform: uppercase;
-}
-/* Menu */
-.header .navigation {
-    list-style: none;
-    margin: 0;
-    padding: 6px;
-    text-align: center;
-}
-.header .navigation li {
-    display: inline-block;
-    line-height: 30px;
-    font-size: 18px;
-    padding: 0 46px;
-    text-transform: uppercase;
+.container, .col-8 {
+    padding: 15px;
 }
 
-.header .navigation li a:link {
+table {
+    text-align: center;
+}
+tbody {
+    display:block;
+    height:64vh;
+    overflow:auto;
+}
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+    word-wrap:break-word;
+}
+
+.formFragment {
     display: block;
-    color: #6699CC;
-    text-decoration: none;
+    margin:10px;
 }
-.header .navigation li a:visited {
-    color: #CCFFCC;
+
+.formFragment label {
+    display: inline-block;
+    width: 80px;
+    text-align: right;
 }
-.header .navigation li a:hover {
-    color: #99FF00;
-    text-decoration: underline;
+.submit-btn {
+    margin:auto;
+    display: inherit;
 }
-.header .navigation li a:active {
-    color: #ffff00;
-}
-.header .navigation li.current {
-    color: #CCFFCC;
-    border-bottom: 2px solid #CCFFCC;
-}
+/*
+thead {
+    width: calc( 100% - 1em )
+}*/
+
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden; font-size:22px}
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: bold; color: #3399FF; }

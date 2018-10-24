@@ -2,7 +2,6 @@ package net.tsystems.service;
 
 
 import net.tsystems.entitydao.PassengerDAO;
-
 import net.tsystems.entitymapper.PassengerEntityMapper;
 import net.tsystems.entitymapper.PassengerEntityMapperImpl;
 import net.tsystems.serviceobject.PassengerSO;
@@ -28,11 +27,9 @@ public class PassengerService {
     public void delete(int id){
         psngrDao.delete(psngrDao.find(id));
     }
-
     public List<PassengerSO> getAll() {
         return mapper.passengerListToSOList(psngrDao.findAll());
     }
-
     public PassengerSO getPassenger(int id){
         return mapper.passengerToSO(psngrDao.find(id));
     }

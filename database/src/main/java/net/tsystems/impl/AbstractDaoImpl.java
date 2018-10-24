@@ -23,36 +23,27 @@ public abstract class AbstractDaoImpl <T, ID extends Serializable> implements Ab
        clazz = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    public Session getSession()
-    {
-        return sessionFactory.getCurrentSession();
-    }
-
     public void create(T t) {
-        getSession().persist(t);
+        getEntityManager().persist(t);
     }
 
     public void delete(T t) {
-        getSession().remove(t);
+        getEntityManager().remove(t);
     }
 
     public T find(ID id) {
-        return getSession().find(clazz, id);
+        return getEntityManager().find(clazz, id);
     }
 
     public List<T> findAll(){
-        return (List<T>)getSession().createQuery( "from " + clazz.getName() ).list();
+        return (List<T>)getEntityManager().createQuery( "from " + clazz.getName() ).list();
     }
 
     public void update(T t) {
-        getSession().merge(t);
+        getEntityManager().merge(t);
     }
 
     public Session getEntityManager() {
-        return getSession();
-    }
-
-    public void setEntityManager(Session em) {
-        //currentSession = em;
+        return sessionFactory.getCurrentSession();
     }
 }

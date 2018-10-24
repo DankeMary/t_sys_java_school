@@ -9,15 +9,14 @@ import java.util.List;
 @Repository
 public class StationDAOImpl extends AbstractDaoImpl<StationDO, Integer> implements StationDAO {
     public StationDO findByName(String name) {
-        List<StationDO> list = (List<StationDO>)getSession()
+        List<StationDO> list = (List<StationDO>)getEntityManager()
                                     .createQuery("from StationDO where name='" + name + "'")
                                     .list();
         return list.size() == 0 ? null : list.get(0);
     }
 
-    @Override
     public boolean isUniqueByName(int id, String name) {
-        List<StationDO> list = (List<StationDO>)getSession()
+        List<StationDO> list = (List<StationDO>)getEntityManager()
                 .createQuery("from StationDO where name='" + name + "' and id<>" + id)
                 .list();
         return list.size() == 0;

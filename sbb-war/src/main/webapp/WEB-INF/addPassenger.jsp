@@ -2,9 +2,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<html>
 <head>
-    <title>Edit Passenger</title>
+    <title>Add New Passenger</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" type="text/css" href="/resources/style.css">
     <!-- Bootstrap CSS -->
@@ -19,9 +18,9 @@
         <div class="col-8" style="border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
-                <h3>Edit The Passenger Details</h3>
+                <h3>Enter The Passenger Details</h3>
                 <form:form method="POST"
-                           action="/passengers/${passengerForm.id}"
+                           action="/passengers"
                            modelAttribute="passengerForm">
                     <div class="formFragment">
                         <form:label path="firstName">First Name</form:label>

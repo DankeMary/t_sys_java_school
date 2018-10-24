@@ -17,8 +17,6 @@ public class PassengerValidator implements Validator {
 
     public void validate(Object o, Errors errors) {
         PassengerBean passenger = (PassengerBean) o;
-
-
         if (passenger.getFirstName().length() > 45) {
             errors.rejectValue("firstName", "Size.passengerForm.firstName", "Max length - 45");
         }
@@ -33,8 +31,9 @@ public class PassengerValidator implements Validator {
         if (passenger.getBirthday() == null)
             errors.rejectValue("birthday", "NotEmpty", "Birthday cannot be empty");
         else {
+            //Just an example of age validation
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.YEAR, -18); // to get previous year add -1
+            cal.add(Calendar.YEAR, -18);
             Date yearForMature = cal.getTime();
 
             if (passenger.getBirthday().after(new Date()) || passenger.getBirthday().after(yearForMature))

@@ -65,14 +65,18 @@
             <version>1.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.9.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.7</version>
+        </dependency>
 
         <!-- local modules-->
-        <!--<dependency>
-            <groupId>net.tsystems</groupId>
-            <artifactId>database</artifactId>
-            <version>1.0</version>
-        </dependency>-->
-
         <dependency>
             <groupId>net.tsystems</groupId>
             <artifactId>services</artifactId>

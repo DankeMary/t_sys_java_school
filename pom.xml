@@ -28,6 +28,4 @@
         <module>services</module>
         <module>dataobjects</module>
     </modules>
-
-
 </project>

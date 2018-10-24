@@ -19,6 +19,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+/**
+GET /stations
+GET /stations/add
+POST /stations
+GET /stations/{id}/update
+POST /stations/{id}  (update)
+POST /stations/{id}/delete
+*/
 @Controller
 public class StationsController {
     private StationService stationService;
@@ -46,8 +54,8 @@ public class StationsController {
 
     @RequestMapping(value = "/stations", method = RequestMethod.POST)
     public String addStation(@ModelAttribute("stationForm") @Validated StationBean station,
-                               BindingResult result, Model model,
-                               final RedirectAttributes redirectAttributes) {
+                             BindingResult result, Model model,
+                             final RedirectAttributes redirectAttributes) {
 
         if (stationService.getStationByName(station.getName()) != null)
             result.rejectValue("name", "NonUnique", "Station with such name already exists");
@@ -81,16 +89,14 @@ public class StationsController {
             return "editStation";
         } else {
             stationService.update(mapper.stationToSO(station));
-            //return "redirect:/stations/{id}";
             return "redirect:/stations";
         }
     }
 
-    @RequestMapping(value = "/stations/{id}/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/stations/{id}/delete")//, method = RequestMethod.POST)
     public String deleteStation(@PathVariable("id") int id,
                                 final RedirectAttributes redirectAttributes) {
         stationService.delete(id);
         return "redirect:/stations";
-
     }
 }

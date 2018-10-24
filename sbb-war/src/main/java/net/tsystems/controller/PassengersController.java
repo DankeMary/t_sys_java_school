@@ -18,6 +18,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+/**
+GET  /passengers
+GET  /passengers/add
+GET  /passengers/{id}
+POST /passengers
+GET  /passengers/{id}/update
+POST /passengers/{id}  (update)
+POST /passengers/{id}/delete
+*/
 @Controller
 public class PassengersController {
     private PassengerService passengerService;
@@ -40,7 +49,7 @@ public class PassengersController {
     public String showAddPassengerForm(Model model) {
         PassengerBean passenger = new PassengerBean();
         model.addAttribute("passengerForm", passenger);
-        return "passengerForm";
+        return "addPassenger";
     }
 
     @RequestMapping(value = "/passengers/{id}", method = RequestMethod.GET)
@@ -57,7 +66,7 @@ public class PassengersController {
 
         validator.validate(passenger, result);
         if (result.hasErrors()) {
-            return "passengerForm";
+            return "addPassenger";
         } else {
             passengerService.create(mapper.passengerToSO(passenger));
             return "redirect:/passengers";
@@ -82,11 +91,11 @@ public class PassengersController {
             return "editPassenger";
         } else {
             passengerService.update(mapper.passengerToSO(passenger));
-            return "redirect:/passengers/{id}";
+            return "redirect:/passengers";
         }
     }
 
-    @RequestMapping(value = "/passengers/{id}/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/passengers/{id}/delete")
     public String deletePassenger(@PathVariable("id") int id,
                                   final RedirectAttributes redirectAttributes) {
         passengerService.delete(id);

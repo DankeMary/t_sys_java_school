@@ -1,13 +1,8 @@
 package net.tsystems.serviceobject;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class StationSO {
     private int id;
     private String name;
-    private Set<TripSO> fromTrips = new HashSet<TripSO>();
-    private Set<TripSO> toTrips = new HashSet<TripSO>();
 
     public int getId() {
         return id;
@@ -23,21 +18,6 @@ public class StationSO {
         this.name = name;
     }
 
-    public Set<TripSO> getFromTrips() {
-        return fromTrips;
-    }
-    public void setFromTrips(Set<TripSO> fromTrips) {
-        this.fromTrips = fromTrips;
-    }
-
-    public Set<TripSO> getToTrips() {
-        return toTrips;
-    }
-    public void setToTrips(Set<TripSO> toTrips) {
-        this.toTrips = toTrips;
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,16 +27,15 @@ public class StationSO {
 
         if (id != stationSO.id) return false;
         if (!name.equals(stationSO.name)) return false;
-        if (fromTrips != null ? !fromTrips.equals(stationSO.fromTrips) : stationSO.fromTrips != null) return false;
-        return toTrips != null ? toTrips.equals(stationSO.toTrips) : stationSO.toTrips == null;
+        return name.equals(stationSO.name);
     }
 
     @Override
     public int hashCode() {
         int result = id;
         result = 31 * result + name.hashCode();
-        result = 31 * result + (fromTrips != null ? fromTrips.hashCode() : 0);
-        result = 31 * result + (toTrips != null ? toTrips.hashCode() : 0);
+        result = 31 * result;
+        result = 31 * result;
         return result;
     }
 }

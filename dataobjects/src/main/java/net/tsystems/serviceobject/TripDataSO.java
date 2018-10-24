@@ -1,8 +1,6 @@
 package net.tsystems.serviceobject;
 
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 public class TripDataSO {
     private int id;
@@ -11,9 +9,6 @@ public class TripDataSO {
     private byte isCancelled;
     private byte isLate;
     private Date date;
-    private Set<TicketSO> ticketsFrom = new HashSet<TicketSO>();
-    private Set<TicketSO> ticketsTo = new HashSet<TicketSO>();
-
 
     public int getId() {
         return id;
@@ -57,20 +52,6 @@ public class TripDataSO {
         this.date = date;
     }
 
-    public Set<TicketSO> getTicketsFrom() {
-        return ticketsFrom;
-    }
-    public void setTicketsFrom(Set<TicketSO> ticketsFrom) {
-        this.ticketsFrom = ticketsFrom;
-    }
-
-    public Set<TicketSO> getTicketsTo() {
-        return ticketsTo;
-    }
-    public void setTicketsTo(Set<TicketSO> ticketsTo) {
-        this.ticketsTo = ticketsTo;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,9 +64,7 @@ public class TripDataSO {
         if (isCancelled != that.isCancelled) return false;
         if (isLate != that.isLate) return false;
         if (!route.equals(that.route)) return false;
-        if (date != null ? !date.equals(that.date) : that.date != null) return false;
-        if (ticketsFrom != null ? !ticketsFrom.equals(that.ticketsFrom) : that.ticketsFrom != null) return false;
-        return ticketsTo != null ? ticketsTo.equals(that.ticketsTo) : that.ticketsTo == null;
+        return date.equals(that.date);
     }
 
     @Override
@@ -96,8 +75,8 @@ public class TripDataSO {
         result = 31 * result + (int) isCancelled;
         result = 31 * result + (int) isLate;
         result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (ticketsFrom != null ? ticketsFrom.hashCode() : 0);
-        result = 31 * result + (ticketsTo != null ? ticketsTo.hashCode() : 0);
+        result = 31 * result;
+        result = 31 * result;
         return result;
     }
 }

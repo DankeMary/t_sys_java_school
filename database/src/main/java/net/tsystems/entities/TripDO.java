@@ -1,7 +1,6 @@
 package net.tsystems.entities;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "trip")
@@ -10,30 +9,21 @@ public class TripDO {
     @Id
     @Column(name = "id", nullable = false)
     private int id;
-
-    @OneToOne(/*cascade = CascadeType.ALL,*/ mappedBy = "trip")
+    @OneToOne
+    @JoinColumn(name = "train")
     private TrainDO train;
     @ManyToOne
-    @JoinColumn(name = "from", nullable = false)
+    @JoinColumn(name = "station_from", nullable = false)
     private StationDO from;
     @ManyToOne
-    @JoinColumn(name = "to", nullable = false)
+    @JoinColumn(name = "station_to", nullable = false)
     private StationDO to;
-    @OneToMany(mappedBy = "trip" /*class field name*//*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    private Set<RouteDO> route;
 
     public int getId() {
         return id;
     }
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Set<RouteDO> getRoute() {
-        return route;
-    }
-    public void setRoute(Set<RouteDO> route) {
-        this.route = route;
     }
 
     public TrainDO getTrain() {
@@ -67,17 +57,16 @@ public class TripDO {
         if (id != tripDO.id) return false;
         if (!train.equals(tripDO.train)) return false;
         if (!from.equals(tripDO.from)) return false;
-        if (!to.equals(tripDO.to)) return false;
-        return route != null ? route.equals(tripDO.route) : tripDO.route == null;
+        return (to.equals(tripDO.to));
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + train.hashCode();
-        result = 31 * result + from.hashCode();
-        result = 31 * result + to.hashCode();
-        result = 31 * result + (route != null ? route.hashCode() : 0);
+        result = 31 * result;
+        result = 31 * result;
+        result = 31 * result;
+        result = 31 * result;
         return result;
     }
 }

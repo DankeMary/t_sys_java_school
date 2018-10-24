@@ -2,7 +2,7 @@ package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.Objects;
 
 @Entity
 @Table(name = "route")
@@ -12,14 +12,11 @@ public class RouteDO {
     @Column(name = "id", nullable = false)
     private int id;
     @ManyToOne
-    @JoinColumn(name = "trip" /*db column name*/, nullable = false)
+    @JoinColumn(name = "trip", nullable = false)
     private TripDO trip;
-    //@Column(name = "station", nullable = false)
     @ManyToOne
     @JoinColumn(name = "station")
     private StationDO station;
-
-    //@Column(name = "next_station")
     @ManyToOne
     @JoinColumn(name = "next_station")
     private StationDO nextStation;
@@ -27,9 +24,6 @@ public class RouteDO {
     private Timestamp arrival;
     @Column(name = "departure", nullable = false)
     private Timestamp departure;
-    @OneToMany(mappedBy = "route" /*class field name*//*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    private Set<TripDataDO> tripData;
-
 
     public int getId() {
         return id;
@@ -59,13 +53,6 @@ public class RouteDO {
         this.nextStation = nextStation;
     }
 
-    public Set<TripDataDO> getTripData() {
-        return tripData;
-    }
-    public void setTripData(Set<TripDataDO> tripData) {
-        this.tripData = tripData;
-    }
-
     @Basic
     @Column(name = "arrival", nullable = false)
     public Timestamp getArrival() {
@@ -90,27 +77,17 @@ public class RouteDO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         RouteDO routeDO = (RouteDO) o;
-
-        if (id != routeDO.id) return false;
-        if (!trip.equals(routeDO.trip)) return false;
-        if (!station.equals(routeDO.station)) return false;
-        if (nextStation != null ? !nextStation.equals(routeDO.nextStation) : routeDO.nextStation != null) return false;
-        if (!arrival.equals(routeDO.arrival)) return false;
-        if (!departure.equals(routeDO.departure)) return false;
-        return tripData.equals(routeDO.tripData);
+        return id == routeDO.id &&
+                Objects.equals(trip, routeDO.trip) &&
+                Objects.equals(station, routeDO.station) &&
+                Objects.equals(nextStation, routeDO.nextStation) &&
+                Objects.equals(arrival, routeDO.arrival) &&
+                Objects.equals(departure, routeDO.departure);
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + trip.hashCode();
-        result = 31 * result + station.hashCode();
-        result = 31 * result + (nextStation != null ? nextStation.hashCode() : 0);
-        result = 31 * result + arrival.hashCode();
-        result = 31 * result + departure.hashCode();
-        result = 31 * result + tripData.hashCode();
-        return result;
+        return Objects.hash(id, trip, station, nextStation, arrival, departure);
     }
 }

@@ -13,10 +13,10 @@ public class TicketDO {
     @JoinColumn(name = "passenger", nullable = false)
     private PassengerDO passenger;
     @ManyToOne
-    @JoinColumn(name = "from", nullable = false)
+    @JoinColumn(name = "dep_station", nullable = false)
     private TripDataDO from;
     @ManyToOne
-    @JoinColumn(name = "to", nullable = false)
+    @JoinColumn(name = "arr_station", nullable = false)
     private TripDataDO to;
 
     public PassengerDO getPassenger() {return passenger;    }

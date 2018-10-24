@@ -1,6 +1,9 @@
 package net.tsystems.entities;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "train")
@@ -12,9 +15,6 @@ public class TrainDO {
     private int number;
     @Column(name = "capacity", nullable = false)
     private int capacity;
-    @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "train")
-    private TripDO trip;
 
     public int getId() {
         return id;
@@ -37,13 +37,6 @@ public class TrainDO {
         this.capacity = capacity;
     }
 
-    public TripDO getTrip() {
-        return trip;
-    }
-    public void setTrip(TripDO trip) {
-        this.trip = trip;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,8 +46,7 @@ public class TrainDO {
 
         if (id != trainDO.id) return false;
         if (number != trainDO.number) return false;
-        if (capacity != trainDO.capacity) return false;
-        return trip != null ? trip.equals(trainDO.trip) : trainDO.trip == null;
+        return (capacity != trainDO.capacity);
     }
 
     @Override
@@ -62,7 +54,7 @@ public class TrainDO {
         int result = id;
         result = 31 * result + number;
         result = 31 * result + capacity;
-        result = 31 * result + (trip != null ? trip.hashCode() : 0);
+        result = 31 * result;
         return result;
     }
 }

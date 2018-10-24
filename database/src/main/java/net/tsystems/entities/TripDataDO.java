@@ -2,7 +2,6 @@ package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Set;
 
 @Entity
 @Table(name = "trip_data")
@@ -20,16 +19,8 @@ public class TripDataDO {
     private byte isCancelled;
     @Column(name = "is_late", nullable = false)
     private byte isLate;
-    @Column(name = "date", nullable = false)
+    @Column(name = "departureDay", nullable = false)
     private Date date;
-
-    @OneToMany(mappedBy = "from"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    private Set<TicketDO> ticketsFrom;
-
-
-    @OneToMany(mappedBy = "to"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    private Set<TicketDO> ticketsTo;
-
 
     public int getId() {
         return id;
@@ -73,20 +64,6 @@ public class TripDataDO {
         this.date = date;
     }
 
-    public Set<TicketDO> getTicketsFrom() {
-        return ticketsFrom;
-    }
-    public void setTicketsFrom(Set<TicketDO> tickets) {
-        this.ticketsFrom = tickets;
-    }
-
-    public Set<TicketDO> getTicketsTo() {
-        return ticketsTo;
-    }
-    public void setTicketsTo(Set<TicketDO> ticketsTo) {
-        this.ticketsTo = ticketsTo;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -99,9 +76,7 @@ public class TripDataDO {
         if (isCancelled != that.isCancelled) return false;
         if (isLate != that.isLate) return false;
         if (!route.equals(that.route)) return false;
-        if (date != null ? !date.equals(that.date) : that.date != null) return false;
-        if (ticketsFrom != null ? !ticketsFrom.equals(that.ticketsFrom) : that.ticketsFrom != null) return false;
-        return ticketsTo != null ? ticketsTo.equals(that.ticketsTo) : that.ticketsTo == null;
+        return (date != null ? !date.equals(that.date) : that.date != null);
     }
 
     @Override
@@ -112,8 +87,8 @@ public class TripDataDO {
         result = 31 * result + (int) isCancelled;
         result = 31 * result + (int) isLate;
         result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (ticketsFrom != null ? ticketsFrom.hashCode() : 0);
-        result = 31 * result + (ticketsTo != null ? ticketsTo.hashCode() : 0);
+        result = 31 * result;
+        result = 31 * result;
         return result;
     }
 }

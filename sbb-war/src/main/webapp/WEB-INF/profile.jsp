@@ -15,43 +15,29 @@
     <div class="row">
         <div class="col">
         </div>
-        <div class="col-8" style="border: 3px outset steelblue">
+        <div class="col-8" style="border: 3px outset steelblue; min-height: 200px">
             <jsp:include page="menu.jsp"/>
-            <div class="col-12" style="border: 3px outset steelblue; overflow:auto">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Birthday</th>
-                    </tr>
-                    </thead>
-                    <tr>
-                        <td>${passenger.firstName}</td>
-                        <td>${passenger.lastName}</td>
-                        <td>${passenger.birthday}</td>
-                    </tr>
-                </table>
-                <form:form name="delete" method="post" modelAttribute="passenger"
-                           onsubmit="return confirmDelete(this, '${pageContext.request.contextPath}/passengers/${passenger.id}/delete')">
-
-                    <input type="submit" value="DELETE"/>
-                </form:form>
-                <script>
-                    function confirmDelete(delForm, delUrl) {
-                        if (confirm("Are you sure ?")) {
-                            delForm.action = delUrl;
-                            return true;
-                        }
-                        return false;
-                    }
-                </script>
+            <div class="col-12" style="overflow:auto;">
+                <c:choose>
+                    <c:when test="${empty passenger}">
+                        <h5>No user found</h5>
+                    </c:when>
+                    <c:otherwise>
+                        <h5>User Profile</h5>
+                        <p><b>First Name :</b> ${passenger.firstName}</p>
+                        <p><b>Last Name :</b> ${passenger.lastName}</p>
+                        <p><b>Birthday :</b> ${passenger.birthday}</p>
+                        <a href="/passengers/${passenger.id}/delete"
+                           onclick="return confirmDelete(this, '${pageContext.request.contextPath}/passengers/${passenger.id}/delete')">Delete</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <div class="col">
         </div>
     </div>
 </div>
+<script src="<c:url value="/resources/utils.js" />"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>

@@ -19,13 +19,18 @@ public class PassengerValidator implements Validator {
         PassengerBean passenger = (PassengerBean) o;
         if (passenger.getFirstName().length() > 45) {
             errors.rejectValue("firstName", "Size.passengerForm.firstName", "Max length - 45");
+        } else if (!passenger.getFirstName().trim().equals("") && !passenger.getFirstName().matches("^[a-zA-Z \\-]+$")) {
+            errors.rejectValue("firstName", "Format.passengerForm.firstName", "Only latin letters, spaces and hyphens are allowed");
         }
+
+
         if (passenger.getLastName().trim().equals(""))
             ValidationUtils.rejectIfEmpty(errors, "lastName", "NotEmpty", "Last name required");
-        else
-            if (passenger.getLastName().length() < 3 ||  passenger.getLastName().length() > 45) {
-                errors.rejectValue("lastName", "Size.passengerForm.lastName", "Min length - 3, Max length - 45");
-            }
+        else if (passenger.getLastName().length() < 3 || passenger.getLastName().length() > 45) {
+            errors.rejectValue("lastName", "Size.passengerForm.lastName", "Min length - 3, Max length - 45");
+        } else if (!passenger.getLastName().matches("^[a-zA-Z \\-]+$")) {
+            errors.rejectValue("lastName", "Format.passengerForm.lastName", "Only latin letters, spaces and hyphens are allowed");
+        }
 
 
         if (passenger.getBirthday() == null)

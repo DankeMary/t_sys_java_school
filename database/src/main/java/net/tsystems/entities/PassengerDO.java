@@ -1,9 +1,6 @@
 package net.tsystems.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
@@ -12,6 +9,7 @@ import java.util.Objects;
 @SuppressWarnings("JpaAttributeTypeInspection")
 public class PassengerDO {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
     @Column(name = "first_name", length = 45)

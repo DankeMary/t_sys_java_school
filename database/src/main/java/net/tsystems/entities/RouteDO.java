@@ -9,6 +9,7 @@ import java.util.Objects;
 @SuppressWarnings("JpaAttributeTypeInspection")
 public class RouteDO {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
     @ManyToOne

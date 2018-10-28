@@ -1,9 +1,6 @@
 package net.tsystems.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -11,6 +8,7 @@ import java.util.Objects;
 @SuppressWarnings("JpaAttributeTypeInspection")
 public class StationDO {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
     @Column(name = "name", nullable = false, length = 65)

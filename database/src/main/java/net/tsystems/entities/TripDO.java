@@ -7,6 +7,7 @@ import javax.persistence.*;
 @SuppressWarnings("JpaAttributeTypeInspection")
 public class TripDO {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
     @OneToOne

@@ -8,6 +8,7 @@ import java.sql.Date;
 @SuppressWarnings("JpaAttributeTypeInspection")
 public class TripDataDO {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
     @ManyToOne

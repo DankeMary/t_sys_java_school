@@ -7,6 +7,7 @@ import javax.persistence.*;
 @SuppressWarnings("JpaAttributeTypeInspection")
 public class TicketDO {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
     @ManyToOne

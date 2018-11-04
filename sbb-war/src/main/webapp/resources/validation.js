@@ -1,7 +1,6 @@
 const JAVA_INTEGER_MAX = 2147483647;
 
-function validateTrain(addForm, addUrl)
-{
+function validateTrain(addForm, addUrl) {
     let trainNumber = document.getElementById("train-number");
     let trainCapcity = document.getElementById("train-capacity");
     let valid = true;
@@ -11,12 +10,11 @@ function validateTrain(addForm, addUrl)
 
     let numbers = /^[0-9]+$/;
 
-    if(trainNumber.value.length<=0 )
-    {
+    if (trainNumber.value.length <= 0) {
         document.getElementById("js-number-error").innerHTML = "Train number is mandatory";
         valid = false;
     }
-    else if (!trainNumber.value.match(numbers)){
+    else if (!trainNumber.value.match(numbers)) {
         document.getElementById("js-number-error").innerHTML = "Only digits are allowed";
         valid = false;
     }
@@ -25,12 +23,11 @@ function validateTrain(addForm, addUrl)
         valid = false;
     }
 
-    if(trainCapcity.value.length<=0 )
-    {
+    if (trainCapcity.value.length <= 0) {
         document.getElementById("js-capacity-error").innerHTML = "Train capacity is mandatory";
         valid = false;
     }
-    else if (!trainCapcity.value.match(numbers)){
+    else if (!trainCapcity.value.match(numbers)) {
         document.getElementById("js-capacity-error").innerHTML = "Only digits are allowed";
         valid = false;
     }

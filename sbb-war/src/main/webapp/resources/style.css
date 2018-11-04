@@ -1,6 +1,3 @@
-body {
-
-}
 .container, .col-8 {
     padding: 15px;
 }
@@ -8,21 +5,23 @@ body {
 table {
     text-align: center;
 }
+
 tbody {
-    display:block;
-    height:64vh;
-    overflow:auto;
+    display: block;
+    height: 64vh;
+    overflow: auto;
 }
+
 thead, tbody tr {
-    display:table;
-    width:100%;
-    table-layout:fixed;
-    word-wrap:break-word;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    word-wrap: break-word;
 }
 
 .formFragment {
     display: block;
-    margin:10px;
+    margin: 10px;
 }
 
 .formFragment label {
@@ -30,16 +29,35 @@ thead, tbody tr {
     width: 80px;
     text-align: right;
 }
+
 .submit-btn {
-    margin:auto;
+    margin: auto;
     display: inherit;
 }
+
 /*
 thead {
     width: calc( 100% - 1em )
 }*/
 
-.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
-.autocomplete-suggestion { padding: 5px 5px; white-space: nowrap; overflow: hidden; font-size:22px}
-.autocomplete-selected { background: #F0F0F0; }
-.autocomplete-suggestions strong { font-weight: bold; color: #3399FF; }
+.autocomplete-suggestions {
+    border: 1px solid #999;
+    background: #FFF;
+    overflow: auto;
+}
+
+.autocomplete-suggestion {
+    padding: 5px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 22px
+}
+
+.autocomplete-selected {
+    background: #F0F0F0;
+}
+
+.autocomplete-suggestions strong {
+    font-weight: bold;
+    color: #3399FF;
+}

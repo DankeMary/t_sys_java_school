@@ -46,13 +46,13 @@ public class StationService {
     }
 
     //Mappers
-    private StationBean stationDOToBean (StationDO station) {
+    public StationBean stationDOToBean (StationDO station) {
         return beanMapper.stationToBean(entityMapper.stationToSO(station));
     }
-    private StationDO stationBeanToDO (StationBean station) {
+    public StationDO stationBeanToDO (StationBean station) {
         return entityMapper.stationToDO(beanMapper.stationToSO(station));
     }
-    private List<StationBean> stationDOListToBeanList (List<StationDO> stations) {
+    public List<StationBean> stationDOListToBeanList (List<StationDO> stations) {
         return beanMapper.stationListToBeanList(entityMapper.stationListToSOList(stations));
     }
     @Autowired

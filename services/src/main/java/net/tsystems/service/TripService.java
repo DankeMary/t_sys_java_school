@@ -1,6 +1,9 @@
 package net.tsystems.service;
 
-import net.tsystems.CycleAvoidingMappingContext;
+import net.tsystems.bean.TripBean;
+import net.tsystems.beanmapper.TripBeanMapper;
+import net.tsystems.beanmapper.TripBeanMapperImpl;
+import net.tsystems.entities.TripDO;
 import net.tsystems.entitydao.TripDAO;
 import net.tsystems.entitymapper.TripEntityMapper;
 import net.tsystems.entitymapper.TripEntityMapperImpl;
@@ -16,24 +19,38 @@ import java.util.List;
 public class TripService {
     @Autowired
     private TripDAO tripDao;
-    private TripEntityMapper mapper = new TripEntityMapperImpl();
+    private TripEntityMapper entityMapper = new TripEntityMapperImpl();
+    private TripBeanMapper beanMapper = new TripBeanMapperImpl();
 
-    public void create(TripSO trip){
-        tripDao.create(mapper.tripToDO(trip));
+    public void create(TripBean trip){
+        tripDao.create(tripBeanToDO(trip));
     }
-    public Integer createReturnId(TripSO trip){
-        return tripDao.createReturnId(mapper.tripToDO(trip));
+    public Integer createReturnId(TripBean trip){
+        return tripDao.createReturnId(tripBeanToDO(trip));
     }
-    public void update(TripSO trip){
-        tripDao.update(mapper.tripToDO(trip));
+    public void update(TripBean trip){
+        tripDao.update(tripBeanToDO(trip));
     }
     public void delete(int id){
         tripDao.delete(tripDao.find(id));
     }
-    public List<TripSO> getAll() {
-        return mapper.tripListToSOList(tripDao.findAll());
+    public List<TripBean> getAll() {
+        return tripDOListToBeanList(tripDao.findAll());
     }
-    public TripSO getTripById(int id){
-        return mapper.tripToSO(tripDao.find(id));
+    public TripBean getTripById(int id){
+        return tripDOToBean(tripDao.find(id));
+    }
+    public TripBean getTripByTrainId(int id) {
+        return tripDOToBean(tripDao.getByTrainId(id));
+    }
+
+    public TripBean tripDOToBean (TripDO trip) {
+        return beanMapper.tripToBean(entityMapper.tripToSO(trip));
+    }
+    public TripDO tripBeanToDO(TripBean trip) {
+        return entityMapper.tripToDO(beanMapper.tripToSO(trip));
+    }
+    public List<TripBean> tripDOListToBeanList (List<TripDO> trips) {
+        return beanMapper.tripListToBeanList(entityMapper.tripListToSOList(trips));
     }
 }

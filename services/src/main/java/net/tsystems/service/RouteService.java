@@ -2,6 +2,7 @@ package net.tsystems.service;
 
 import net.tsystems.bean.*;
 import net.tsystems.beanmapper.*;
+import net.tsystems.entities.RouteDO;
 import net.tsystems.entities.TrainDO;
 import net.tsystems.entitydao.RouteDAO;
 import net.tsystems.entitydao.StationDAO;
@@ -30,6 +31,8 @@ public class RouteService {
     private TripEntityMapper tripEntityMapper = new TripEntityMapperImpl();
     private TripBeanMapper tripBeanMapper = new TripBeanMapperImpl();
     @Autowired
+    private TripService tripService;
+    @Autowired
     private RouteDAO routeDao;
     private RouteEntityMapper routeEntityMapper = new RouteEntityMapperImpl();
     private RouteBeanMapper routeBeanMapper = new RouteBeanMapperImpl();
@@ -37,6 +40,8 @@ public class RouteService {
     private StationDAO stationDao;
     private StationEntityMapper stationEntityMapper = new StationEntityMapperImpl();
     private StationBeanMapper stationBeanMapper = new StationBeanMapperImpl();
+    @Autowired
+    private StationService stationService;
 
     public void create(RouteSO psngr) {
         routeDao.create(routeEntityMapper.routeToDO(psngr));
@@ -57,37 +62,38 @@ public class RouteService {
     public RouteSO getRoute(int id) {
         return routeEntityMapper.routeToSO(routeDao.find(id));
     }
+    public List<RouteBean> getRoutesByTrainId(int trainId) { return routeDOListToBeanList(routeDao.getRoutesByTrainId(trainId)); }
 
-    public void createTrainRoutes(Integer trainNumber, Map<Integer, StationDataBean> stationsData) {
+    public void createTrainRoutes(TrainBean train, Map<Integer, StationBeanExpanded> stationsData) {
         TripBean trip = new TripBean();
-        trip.setTrain(makeTrainBean(trainDao.findByNumber(trainNumber)));
-        trip.setFrom(stationBeanMapper.stationToBean(stationEntityMapper.stationToSO(stationDao.findByName(stationsData.get(1).getStationName()))));
-        trip.setTo(stationBeanMapper.stationToBean(stationEntityMapper.stationToSO(stationDao.findByName(stationsData.get(stationsData.size()).getStationName()))));
-        Integer savedTripId = tripDao.createReturnId(tripEntityMapper.tripToDO(tripBeanMapper.tripToSO(trip)));
+        trip.setTrain(train);
+        trip.setFrom(stationService.getStationByName(stationsData.get(1).getStation().getName()));
+        trip.setTo(stationService.getStationByName(stationsData.get(stationsData.size()).getStation().getName()));
+        Integer savedTripId = tripService.createReturnId(trip);
 
-        TripBean savedTrip = tripBeanMapper.tripToBean(tripEntityMapper.tripToSO(tripDao.find(savedTripId)));
+        TripBean savedTrip = tripService.getTripById(savedTripId);
         StationBean nextStation = null;
         for (int i = stationsData.size(); i > 0; i--) {
             RouteBean route = new RouteBean();
-            StationDataBean curr = stationsData.get(i);
-            StationBean currStation = stationBeanMapper.stationToBean(stationEntityMapper.stationToSO(stationDao.findByName(stationsData.get(i).getStationName())));
+            StationBeanExpanded currRoutePoint = stationsData.get(i);
+            StationBean currStation = stationService.getStationByName(currRoutePoint.getStation().getName());
             route.setStation(currStation);
             route.setNextStation(nextStation);
-            route.setArrival(curr.getArrTime());
-            route.setDeparture(curr.getDepTime());
+            route.setArrival(currRoutePoint.getArrTime());
+            route.setDeparture(currRoutePoint.getDepTime());
             route.setTrip(savedTrip);
-            routeDao.create(routeEntityMapper.routeToDO(routeBeanMapper.routeToSO(route)));
+            routeDao.create(routeBeanToDO(route));
             nextStation = currStation;
         }
     }
 
-    public TrainPathBean getTrainPathByTrainId(int trainId) {
-        TrainBean train = makeTrainBean(trainDao.find(trainId));
-        List<RouteBean> trainRoutes = routeBeanMapper.routeListToBeanList(routeEntityMapper.routeListToSOList(routeDao.getRoutesByTrainId(trainId)));
+    public List<RouteBean> getTrainPathByTrainId(int trainId) {
+        List<RouteBean> trainRoutes = getRoutesByTrainId(trainId);
 
-        //Create a dictionary where key is next station's id
         Map<Integer, RouteBean> stationsData = new HashMap<Integer, RouteBean>();
         RouteBean lastRoute = null;
+        //TODO: DAO get lastRoute (==null) & getPath(!=null) ?
+        //Key - next station's ID
         for (RouteBean rb : trainRoutes) {
             if (rb.getNextStation() == null)
                 lastRoute = rb;
@@ -95,7 +101,7 @@ public class RouteService {
                 stationsData.put(rb.getNextStation().getId(), rb);
         }
 
-        //Order path parts
+        //Make the ordered path
         int nextStationId = lastRoute.getStation().getId();
         RouteBean currRoute;
         List<RouteBean> orderedTrainRoutes = new LinkedList<RouteBean>();
@@ -107,29 +113,23 @@ public class RouteService {
             nextStationId = currRoute.getStation().getId();
         }
 
-        //Create an ordered list of station-timing objects
-        List<StationDataBean> stationsTimingData = new LinkedList<StationDataBean>();
-        for (RouteBean rb : orderedTrainRoutes){
-            StationDataBean stationData = new StationDataBean();
-            stationData.setRouteId(rb.getId());
-            stationData.setStationName(rb.getStation().getName());
-            stationData.setArrTime(rb.getArrival());
-            stationData.setDepTime(rb.getDeparture());
-            stationsTimingData.add(stationData);
-        }
-
-        TrainPathBean trainPath = new TrainPathBean();
-        trainPath.setTrainNumber(train.getNumber().intValue());
-        trainPath.setStationsData(stationsTimingData);
-
-        return trainPath;
+        return orderedTrainRoutes;
     }
 
-    private TrainBean makeTrainBean(TrainDO trainDO) {
+    //Mappers
+    private TrainBean trainDOToBean(TrainDO trainDO) {
         return trainBeanMapper.trainToBean(trainEntityMapper.trainToSO(trainDO));
     }
 
-    private TrainDO makeTrainDO(TrainBean trainBean) {
+    private TrainDO trainBeanToDO(TrainBean trainBean) {
         return trainEntityMapper.trainToDO(trainBeanMapper.trainToSO(trainBean));
+    }
+
+    public RouteDO routeBeanToDO (RouteBean route) {
+        return routeEntityMapper.routeToDO(routeBeanMapper.routeToSO(route));
+    }
+
+    public List<RouteBean> routeDOListToBeanList (List<RouteDO> routes) {
+        return routeBeanMapper.routeListToBeanList(routeEntityMapper.routeListToSOList(routes));
     }
 }

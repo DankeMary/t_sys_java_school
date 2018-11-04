@@ -20,7 +20,7 @@ public class StationValidator implements Validator {
         else if (station.getName().length() > 65) {
             errors.rejectValue("name", "Size.stationForm.name", "Max length - 65");
         } else if (!station.getName().matches("^[a-zA-Z][a-zA-Z \\-0-9]+$")) {
-            errors.rejectValue("name", "Format.stationForm.name", "Station name has to have at least one letter and can have only letters, spaces and hyphens");
+            errors.rejectValue("name", "Format.stationForm.name", "Station name has to have at least one letter and can have only latin letters, digits, spaces and hyphens");
         }
     }
 }

@@ -10,8 +10,8 @@ import java.util.List;
 
 @Mapper
 public interface TripEntityMapper {
-    TripSO tripToSO(TripDO tripDO, @Context CycleAvoidingMappingContext context);
-    TripDO tripToDO(TripSO tripSO, @Context CycleAvoidingMappingContext context);
-    List<TripSO> tripListToSOList(List<TripDO> tripListDO, @Context CycleAvoidingMappingContext context);
-    List<TripDO> tripListToDOList(List<TripSO> tripListSO, @Context CycleAvoidingMappingContext context);
+    TripSO tripToSO(TripDO tripDO);
+    TripDO tripToDO(TripSO tripSO);
+    List<TripSO> tripListToSOList(List<TripDO> tripListDO);
+    List<TripDO> tripListToDOList(List<TripSO> tripListSO);
 }

@@ -5,9 +5,10 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 
 
-public class StationDataBean {
+public class StationBeanExpanded {
     private int routeId;
-    private String stationName;
+    //private String stationName;
+    private StationBean station;
     private Timestamp arrTime;
     private Timestamp depTime;
 
@@ -19,12 +20,12 @@ public class StationDataBean {
         this.routeId = routeId;
     }
 
-    public String getStationName() {
-        return stationName;
+    public StationBean getStation() {
+        return station;
     }
 
-    public void setStationName(String stationName) {
-        this.stationName = stationName;
+    public void setStation(StationBean station) {
+        this.station = station;
     }
 
     public Timestamp getArrTime() {

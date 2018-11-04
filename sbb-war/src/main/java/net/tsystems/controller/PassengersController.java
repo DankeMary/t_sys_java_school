@@ -31,7 +31,6 @@ POST /passengers/{id}/delete
 public class PassengersController {
     private PassengerService passengerService;
     private PassengerValidator validator = new PassengerValidator();
-    private PassengerBeanMapper mapper = new PassengerBeanMapperImpl();
 
     @Autowired
     public void setPassengerService(PassengerService passengerService) {
@@ -40,7 +39,7 @@ public class PassengersController {
 
     @RequestMapping(value = "/passengers", method = RequestMethod.GET)
     public String passengers(Model model) {
-        List<PassengerBean> psngrs = mapper.passengerListToBeanList(passengerService.getAll());
+        List<PassengerBean> psngrs = passengerService.getAll();
         model.addAttribute("passengers", psngrs);
         return "passengers";
     }
@@ -54,7 +53,7 @@ public class PassengersController {
 
     @RequestMapping(value = "/passengers/{id}", method = RequestMethod.GET)
     public String showUser(@PathVariable("id") int id, Model model) {
-        PassengerBean passenger = mapper.passengerToBean(passengerService.getPassenger(id));
+        PassengerBean passenger = passengerService.getPassenger(id);
         model.addAttribute("passenger", passenger);
         return "profile";
     }
@@ -68,14 +67,14 @@ public class PassengersController {
         if (result.hasErrors()) {
             return "addPassenger";
         } else {
-            passengerService.create(mapper.passengerToSO(passenger));
+            passengerService.create(passenger);
             return "redirect:/passengers";
         }
     }
 
     @RequestMapping(value = "/passengers/{id}/update", method = RequestMethod.GET)
     public String showUpdatePassengerForm(@PathVariable("id") int id, Model model) {
-        PassengerBean passenger = mapper.passengerToBean(passengerService.getPassenger(id));
+        PassengerBean passenger = passengerService.getPassenger(id);
         model.addAttribute("passengerForm", passenger);
         return "editPassenger";
     }
@@ -90,7 +89,7 @@ public class PassengersController {
         if (result.hasErrors()) {
             return "editPassenger";
         } else {
-            passengerService.update(mapper.passengerToSO(passenger));
+            passengerService.update(passenger);
             return "redirect:/passengers";
         }
     }
@@ -100,6 +99,5 @@ public class PassengersController {
                                   final RedirectAttributes redirectAttributes) {
         passengerService.delete(id);
         return "redirect:/passengers";
-
     }
 }

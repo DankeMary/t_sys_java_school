@@ -31,7 +31,6 @@ POST /stations/{id}/delete
 public class StationsController {
     private StationService stationService;
     private StationValidator validator = new StationValidator();
-    private StationBeanMapper mapper = new StationBeanMapperImpl();
 
     @Autowired
     public void setStationService(StationService stationService) {
@@ -40,7 +39,7 @@ public class StationsController {
 
     @RequestMapping(value = "/stations", method = RequestMethod.GET)
     public String stations(Model model) {
-        List<StationBean> stations = mapper.stationListToBeanList(stationService.getAll());
+        List<StationBean> stations = stationService.getAll();
         model.addAttribute("stations", stations);
         return "stations";
     }
@@ -64,14 +63,14 @@ public class StationsController {
         if (result.hasErrors()) {
             return "addStation";
         } else {
-            stationService.create(mapper.stationToSO(station));
+            stationService.create(station);
             return "redirect:/stations";
         }
     }
 
     @RequestMapping(value = "/stations/{id}/update", method = RequestMethod.GET)
     public String showUpdateStationForm(@PathVariable("id") int id, Model model) {
-        StationBean station = mapper.stationToBean(stationService.getStationById(id));
+        StationBean station = stationService.getStationById(id);
         model.addAttribute("stationForm", station);
         return "editStation";
     }
@@ -88,12 +87,12 @@ public class StationsController {
         if (result.hasErrors()) {
             return "editStation";
         } else {
-            stationService.update(mapper.stationToSO(station));
+            stationService.update(station);
             return "redirect:/stations";
         }
     }
 
-    @RequestMapping(value = "/stations/{id}/delete")//, method = RequestMethod.POST)
+    @RequestMapping(value = "/stations/{id}/delete")
     public String deleteStation(@PathVariable("id") int id,
                                 final RedirectAttributes redirectAttributes) {
         stationService.delete(id);

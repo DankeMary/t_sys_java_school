@@ -1,10 +1,8 @@
 package net.tsystems.controller;
 
-import net.tsystems.bean.StationBean;
-import net.tsystems.bean.TrainBean;
-import net.tsystems.bean.TripBean;
-import net.tsystems.bean.TripBeanObjectless;
+import net.tsystems.bean.*;
 import net.tsystems.beanmapper.*;
+import net.tsystems.service.JourneyService;
 import net.tsystems.service.StationService;
 import net.tsystems.service.TrainService;
 import net.tsystems.service.TripService;
@@ -33,12 +31,11 @@ public class TripController {
     private TrainService trainService;
     private TripService tripService;
     private StationService stationService;
+    private JourneyService journeyService;
 
     //TODO private TripValidator validator = new TripValidator();
 
-    private TrainBeanMapper trainMapper = new TrainBeanMapperImpl();
     private TripBeanMapper tripMapper = new TripBeanMapperImpl();
-    private StationBeanMapper stationMapper = new StationBeanMapperImpl();
 
     private List<StationBean> stations;
     private List<TrainBean> trains;
@@ -58,6 +55,11 @@ public class TripController {
         this.stationService = stationService;
     }
 
+    @Autowired
+    public void setJourneyService(JourneyService journeyService) {
+        this.journeyService = journeyService;
+    }
+
     @RequestMapping(value = "/trips", method = RequestMethod.GET)
     public String trips(Model model) {
         List<TripBean> trips = tripMapper.tripListToBeanList(tripService.getAll());
@@ -69,9 +71,9 @@ public class TripController {
     public String showAddTripForm(Model model) {
         TripBeanObjectless trip = new TripBeanObjectless();
         if (stations == null)
-            stations = stationMapper.stationListToBeanList(stationService.getAll());
+            stations = stationService.getAll();
         if (trains == null)
-            trains = trainMapper.trainListToBeanList(trainService.getAll());
+            trains = trainService.getAll();
 
         model.addAttribute("tripForm", trip);
         return "addTrip";
@@ -87,9 +89,9 @@ public class TripController {
             return "addTrip";
         } else {
             TripBean tripBean = new TripBean();
-            tripBean.setTrain(trainMapper.trainToBean(trainService.getTrainByNumber(trip.getTrain())));
-            tripBean.setFrom(stationMapper.stationToBean(stationService.getStationByName(trip.getFrom())));
-            tripBean.setTo(stationMapper.stationToBean(stationService.getStationByName(trip.getTo())));
+            tripBean.setTrain(trainService.getTrainByNumber(trip.getTrain()));
+            tripBean.setFrom(stationService.getStationByName(trip.getFrom()));
+            tripBean.setTo(stationService.getStationByName(trip.getTo()));
             tripService.create(tripMapper.tripToSO(tripBean));
             return "redirect:/trips";
         }
@@ -118,12 +120,40 @@ public class TripController {
         return "redirect:/trips";
     }
 
+
+    @RequestMapping(value = "/trips/{id}/newJourney", method = RequestMethod.GET)
+    public String newJourney(@PathVariable("id") int id, Model model) {
+
+        model.addAttribute("journey", new JourneyBean());
+        model.addAttribute("tripId", id);
+        return "newJourney";
+    }
+
+    @RequestMapping(value = "/trips/{id}", method = RequestMethod.POST)
+    public String addNewJourney(@PathVariable("id") int id,
+                               @ModelAttribute("journey") @Validated JourneyBean journey,
+                               BindingResult result, Model model,
+                               final RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "newJourney";
+        } else {
+            journey.setTripId(id);
+            journeyService.createAll(journey);
+            //journeyService.createNew
+            //routeService.createTrainRoutes(data.getTrainNumber(), stationsData);
+            //return "redirect:/passengers";
+            return "";
+        }
+    }
+
+
+
     //Ajax related
     @RequestMapping(value = "/getStations", method = RequestMethod.GET)
     public @ResponseBody
     List<StationBean> getStations(@RequestParam String stationName) {
         if (stations == null)
-            stations = stationMapper.stationListToBeanList(stationService.getAll());
+            stations = stationService.getAll();
         return simulateSearchResult(stationName);
     }
 
@@ -142,7 +172,7 @@ public class TripController {
     public @ResponseBody
     List<TrainBean> getTrains(@RequestParam int trainNumber) {
         if (trains == null)
-            trains = trainMapper.trainListToBeanList(trainService.getAll());
+            trains = trainService.getAll();
         return simulateSearchResult(trainNumber);
     }
 

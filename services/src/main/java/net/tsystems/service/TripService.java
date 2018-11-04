@@ -19,22 +19,21 @@ public class TripService {
     private TripEntityMapper mapper = new TripEntityMapperImpl();
 
     public void create(TripSO trip){
-        tripDao.create(mapper.tripToDO(trip, new CycleAvoidingMappingContext() ));
+        tripDao.create(mapper.tripToDO(trip));
     }
     public Integer createReturnId(TripSO trip){
-        return tripDao.createReturnId(mapper.tripToDO(trip, new CycleAvoidingMappingContext() ));
+        return tripDao.createReturnId(mapper.tripToDO(trip));
     }
     public void update(TripSO trip){
-        tripDao.update(mapper.tripToDO(trip, new CycleAvoidingMappingContext() ));
+        tripDao.update(mapper.tripToDO(trip));
     }
     public void delete(int id){
         tripDao.delete(tripDao.find(id));
     }
-
     public List<TripSO> getAll() {
-        return mapper.tripListToSOList(tripDao.findAll(), new CycleAvoidingMappingContext() );
+        return mapper.tripListToSOList(tripDao.findAll());
     }
     public TripSO getTripById(int id){
-        return mapper.tripToSO(tripDao.find(id), new CycleAvoidingMappingContext() );
+        return mapper.tripToSO(tripDao.find(id));
     }
 }

@@ -2,10 +2,7 @@ package net.tsystems.controller;
 
 import net.tsystems.bean.*;
 import net.tsystems.beanmapper.*;
-import net.tsystems.service.RouteService;
-import net.tsystems.service.StationService;
-import net.tsystems.service.TrainService;
-import net.tsystems.service.TripService;
+import net.tsystems.service.*;
 import net.tsystems.validator.TrainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,44 +34,16 @@ public class TrainController {
     private TripService tripService;
     private TrainService trainService;
     private StationService stationService;
+    private TrainPathService trainPathService;
 
     private TrainValidator validator;
-
-    private TrainBeanMapper mapper = new TrainBeanMapperImpl();
-    private StationBeanMapper stationMapper = new StationBeanMapperImpl();
-    private TripBeanMapper tripMapper = new TripBeanMapperImpl();
-    private RouteBeanMapper routeMapper = new RouteBeanMapperImpl();
 
     private List<String> stations = new ArrayList<String>();
     private Map<Integer, StationDataBean> stationsData = new HashMap<Integer, StationDataBean>();
 
-    @Autowired
-    public void setTrainService(TrainService trainService) {
-        this.trainService = trainService;
-    }
-
-    @Autowired
-    public void setStationService(StationService stationService) {
-        this.stationService = stationService;
-    }
-
-    @Autowired
-    public void setRouteService(RouteService routeService) {
-        this.routeService = routeService;
-    }
-    @Autowired
-    public void setTripService(TripService tripService) {
-        this.tripService = tripService;
-    }
-
-    @Autowired
-    public void setValidator(TrainValidator validator) {
-        this.validator = validator;
-    }
-
     @RequestMapping(value = "/trains", method = RequestMethod.GET)
     public String trains(Model model) {
-        List<TrainBean> trains = mapper.trainListToBeanList(trainService.getAll());
+        List<TrainBean> trains = trainService.getAll();
         model.addAttribute("trains", trains);
         return "trains";
     }
@@ -98,14 +67,14 @@ public class TrainController {
         if (result.hasErrors()) {
             return "addTrain";
         } else {
-            trainService.create(mapper.trainToSO(train));
+            trainService.create(train);
             return "redirect:/trains";
         }
     }
 
     @RequestMapping(value = "/trains/{id}/update", method = RequestMethod.GET)
     public String showUpdateTrainForm(@PathVariable("id") int id, Model model) {
-        TrainBean train = mapper.trainToBean(trainService.getTrainById(id));
+        TrainBean train = trainService.getTrainById(id);
         model.addAttribute("trainForm", train);
         return "editTrain";
     }
@@ -123,7 +92,7 @@ public class TrainController {
         if (result.hasErrors()) {
             return "editTrain";
         } else {
-            trainService.update(mapper.trainToSO(train));
+            trainService.update(train);
             return "redirect:/trains";
         }
     }
@@ -140,6 +109,7 @@ public class TrainController {
     @RequestMapping(value = "/newTrain", method = RequestMethod.GET)
     public String newTrain(Model model) {
 
+        TrainPathBean tpb = routeService.getTrainPathByTrainId(11);
         model.addAttribute("dataCont", new TestTrainBean());
         return "newTrainPath";
     }
@@ -151,39 +121,18 @@ public class TrainController {
         if (result.hasErrors()) {
             return "newTrainPath";
         } else {
-            //1. new Trip
-            //2. new Route
-            TripBean trip = new TripBean();
-            trip.setTrain(mapper.trainToBean(trainService.getTrainByNumber(data.getTrainNumber())));
-            trip.setFrom(stationMapper.stationToBean(stationService.getStationByName(stationsData.get(1).getStationName())));
-            trip.setTo(stationMapper.stationToBean(stationService.getStationByName(stationsData.get(stationsData.size()).getStationName())));
-            Integer savedTripId = tripService.createReturnId(tripMapper.tripToSO(trip));
-
-            TripBean savedTrip = tripMapper.tripToBean(tripService.getTripById(savedTripId));
-            StationBean nextStation = null;
-            for(int i = stationsData.size(); i > 0; i--){
-                RouteBean route = new RouteBean();
-                StationDataBean curr = stationsData.get(i);
-                StationBean currStation = stationMapper.stationToBean(stationService.getStationByName(stationsData.get(i).getStationName()));
-                route.setStation(currStation);
-                route.setNextStation(nextStation);
-                route.setArrival(curr.getArrTime());
-                route.setDeparture(curr.getDepTime());
-                route.setTrip(savedTrip);
-                routeService.create(routeMapper.routeToSO(route));
-                nextStation = currStation;
-            }
-
-            //passengerService.create(mapper.passengerToSO(passenger));
+            routeService.createTrainRoutes(data.getTrainNumber(), stationsData);
             return "redirect:/passengers";
         }
     }
+
+
 
     //Ajax related
     @RequestMapping(value = "/getStationsForTrain", method = RequestMethod.GET)
     public @ResponseBody
     List<StationBean> getStations(@RequestParam String stationName) {
-        List<StationBean> stationBeans = stationMapper.stationListToBeanList(stationService.getAll());
+        List<StationBean> stationBeans = stationService.getAll();
         List<StationBean> result = new ArrayList<StationBean>();
 
         for (StationBean station : stationBeans) {
@@ -215,5 +164,31 @@ public class TrainController {
         } catch (ParseException e) {
         }
         return new ResponseEntity<Object>(HttpStatus.CREATED);
+    }
+
+    @Autowired
+    public void setTrainService(TrainService trainService) {
+        this.trainService = trainService;
+    }
+    @Autowired
+    public void setStationService(StationService stationService) {
+        this.stationService = stationService;
+    }
+    @Autowired
+    public void setRouteService(RouteService routeService) {
+        this.routeService = routeService;
+    }
+    @Autowired
+    public void setTripService(TripService tripService) {
+        this.tripService = tripService;
+    }
+    @Autowired
+    public void setTrainPathService(TrainPathService trainPathService) {
+        this.trainPathService = trainPathService;
+    }
+
+    @Autowired
+    public void setValidator(TrainValidator validator) {
+        this.validator = validator;
     }
 }

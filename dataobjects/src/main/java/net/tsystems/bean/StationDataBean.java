@@ -4,11 +4,20 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 
-@Component("stationDataBean")
+
 public class StationDataBean {
+    private int routeId;
     private String stationName;
     private Timestamp arrTime;
     private Timestamp depTime;
+
+    public int getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(int routeId) {
+        this.routeId = routeId;
+    }
 
     public String getStationName() {
         return stationName;

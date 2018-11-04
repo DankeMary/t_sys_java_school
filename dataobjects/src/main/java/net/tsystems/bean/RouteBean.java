@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 
-@Component("routeBean")
+
 public class RouteBean {
     private int id;
     private TripBean trip;

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
-@Component("stationBean")
+
 public class StationBean implements Serializable {
     private int id;
     private String name;

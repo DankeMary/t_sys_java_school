@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-@Component("passengerBean")
 public class PassengerBean implements Serializable{
     private int id;
     private String firstName;

@@ -1,7 +1,6 @@
 package net.tsystems.controller;
 
 import net.tsystems.bean.*;
-import net.tsystems.beanmapper.*;
 import net.tsystems.service.*;
 import net.tsystems.validator.TrainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ POST /trains/{id}/delete
 public class TrainController {
     private RouteService routeService;
     private TripService tripService;
+    private TripDataService tripDataService;
     private TrainService trainService;
     private StationService stationService;
     private TrainPathService trainPathService;
@@ -39,7 +39,7 @@ public class TrainController {
     private TrainValidator validator;
 
     private List<String> stations = new ArrayList<String>();
-    private Map<Integer, StationDataBean> stationsData = new HashMap<Integer, StationDataBean>();
+    private Map<Integer, StationBeanExpanded> stationsData = new HashMap<Integer, StationBeanExpanded>();
 
     @RequestMapping(value = "/trains", method = RequestMethod.GET)
     public String trains(Model model) {
@@ -60,14 +60,13 @@ public class TrainController {
                            BindingResult result, Model model,
                            final RedirectAttributes redirectAttributes) {
 
-        if (train.getNumber() != null && trainService.getTrainByNumber(train.getNumber().intValue()) != null)
-            result.rejectValue("number", "NonUnique", "Train with such number already exists");
-        else
+        if (trainService.isValid(train, result))
             validator.validate(train, result);
+        //validate stations
         if (result.hasErrors()) {
             return "addTrain";
         } else {
-            trainService.create(train);
+            trainService.create(train, stationsData);
             return "redirect:/trains";
         }
     }
@@ -84,9 +83,7 @@ public class TrainController {
                               @ModelAttribute("trainForm") @Validated TrainBean train,
                               BindingResult result, Model model,
                               final RedirectAttributes redirectAttributes) {
-        if (train.getNumber() != null && !trainService.isUniqueByNumber(train.getId(), train.getNumber().intValue()))
-            result.rejectValue("number", "NonUnique", "Train with such number already exists");
-        else
+        if (trainService.isValid(train, result))
             //TODO: check if you can update capacity (no trips after right now planned)
             validator.validate(train, result);
         if (result.hasErrors()) {
@@ -102,30 +99,49 @@ public class TrainController {
                               final RedirectAttributes redirectAttributes) {
         trainService.delete(id);
         return "redirect:/trains";
-
     }
 
-    //TRAIN PATH RELATED
-    @RequestMapping(value = "/newTrain", method = RequestMethod.GET)
-    public String newTrain(Model model) {
 
-        TrainPathBean tpb = routeService.getTrainPathByTrainId(11);
-        model.addAttribute("dataCont", new TestTrainBean());
-        return "newTrainPath";
+
+    @RequestMapping(value = "/trains/{id}/path", method = RequestMethod.GET)
+    public String showTrainPath(@PathVariable("id") int id, Model model) {
+        TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
+        model.addAttribute("trainData", trainBean);
+        return "trainPath";
     }
 
-    @RequestMapping(value = "/newTrain", method = RequestMethod.POST)
-    public String addTrainPath(@ModelAttribute("dataCont") @Validated TestTrainBean data,
-                               BindingResult result, Model model,
-                               final RedirectAttributes redirectAttributes) {
+    @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.GET)
+    public String journeys(@PathVariable("id") int id, Model model) {
+        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrain(id);
+        model.addAttribute("journeys", new JourneyBean());
+        model.addAttribute("trainId", id);
+        return "newJourney";
+    }
+
+    @RequestMapping(value = "/trains/{id}/journeys/newJourney", method = RequestMethod.GET)
+    public String newJourney(@PathVariable("id") int id, Model model) {
+
+        model.addAttribute("journey", new JourneyBean());
+        model.addAttribute("trainId", id);
+        return "newJourney";
+    }
+
+    @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.POST)
+    public String addNewJourney(@PathVariable("id") int id,
+                                @ModelAttribute("journey") @Validated JourneyBean journey,
+                                BindingResult result, Model model,
+                                final RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "newTrainPath";
+            return "newJourney";
         } else {
-            routeService.createTrainRoutes(data.getTrainNumber(), stationsData);
-            return "redirect:/passengers";
+            journey.setTrip(tripService.getTripByTrainId(id));
+            tripDataService.createAll(journey);
+            //tripDataService.createNew
+            //routeService.createTrainRoutes(data.getTrainNumber(), stationsData);
+            //return "redirect:/passengers";
+            return "trains";
         }
     }
-
 
 
     //Ajax related
@@ -135,6 +151,7 @@ public class TrainController {
         List<StationBean> stationBeans = stationService.getAll();
         List<StationBean> result = new ArrayList<StationBean>();
 
+        //TODO Java 8 Streams?
         for (StationBean station : stationBeans) {
             if (station.getName().toLowerCase().contains(stationName.toLowerCase())) {
                 result.add(station);
@@ -148,15 +165,17 @@ public class TrainController {
     public ResponseEntity<?> addStationToList(String stationName, String timeArr, String timeDep) {
         stations.add(stationName);
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             Date parsedDate = dateFormat.parse(timeArr);
             Timestamp timestampArr = new java.sql.Timestamp(parsedDate.getTime());
 
             parsedDate = dateFormat.parse(timeDep);
             Timestamp timestampDep = new java.sql.Timestamp(parsedDate.getTime());
 
-            StationDataBean b = new StationDataBean();
-            b.setStationName(stationName);
+            StationBeanExpanded b = new StationBeanExpanded();
+            //TODO!!!!
+            b.setStation(new StationBean());
+            b.getStation().setName(stationName);
             b.setArrTime(timestampArr);
             b.setDepTime(timestampDep);
 
@@ -183,10 +202,13 @@ public class TrainController {
         this.tripService = tripService;
     }
     @Autowired
+    public void setTripDataService(TripDataService tripDataService) {
+        this.tripDataService = tripDataService;
+    }
+    @Autowired
     public void setTrainPathService(TrainPathService trainPathService) {
         this.trainPathService = trainPathService;
     }
-
     @Autowired
     public void setValidator(TrainValidator validator) {
         this.validator = validator;

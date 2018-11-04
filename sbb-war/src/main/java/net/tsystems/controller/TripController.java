@@ -2,11 +2,10 @@ package net.tsystems.controller;
 
 import net.tsystems.bean.*;
 import net.tsystems.beanmapper.*;
-import net.tsystems.service.JourneyService;
+import net.tsystems.service.TripDataService;
 import net.tsystems.service.StationService;
 import net.tsystems.service.TrainService;
 import net.tsystems.service.TripService;
-import net.tsystems.validator.TripValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +30,7 @@ public class TripController {
     private TrainService trainService;
     private TripService tripService;
     private StationService stationService;
-    private JourneyService journeyService;
+    private TripDataService tripDataService;
 
     //TODO private TripValidator validator = new TripValidator();
 
@@ -56,13 +55,13 @@ public class TripController {
     }
 
     @Autowired
-    public void setJourneyService(JourneyService journeyService) {
-        this.journeyService = journeyService;
+    public void setTripDataService(TripDataService tripDataService) {
+        this.tripDataService = tripDataService;
     }
 
     @RequestMapping(value = "/trips", method = RequestMethod.GET)
     public String trips(Model model) {
-        List<TripBean> trips = tripMapper.tripListToBeanList(tripService.getAll());
+        List<TripBean> trips = tripService.getAll();
         model.addAttribute("trips", trips);
         return "trips";
     }
@@ -92,7 +91,7 @@ public class TripController {
             tripBean.setTrain(trainService.getTrainByNumber(trip.getTrain()));
             tripBean.setFrom(stationService.getStationByName(trip.getFrom()));
             tripBean.setTo(stationService.getStationByName(trip.getTo()));
-            tripService.create(tripMapper.tripToSO(tripBean));
+            tripService.create(tripBean);
             return "redirect:/trips";
         }
     }
@@ -121,7 +120,7 @@ public class TripController {
     }
 
 
-    @RequestMapping(value = "/trips/{id}/newJourney", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/trips/{id}/newJourney", method = RequestMethod.GET)
     public String newJourney(@PathVariable("id") int id, Model model) {
 
         model.addAttribute("journey", new JourneyBean());
@@ -138,13 +137,13 @@ public class TripController {
             return "newJourney";
         } else {
             journey.setTripId(id);
-            journeyService.createAll(journey);
-            //journeyService.createNew
+            tripDataService.createAll(journey);
+            //tripDataService.createNew
             //routeService.createTrainRoutes(data.getTrainNumber(), stationsData);
             //return "redirect:/passengers";
             return "";
         }
-    }
+    }*/
 
 
 

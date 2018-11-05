@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TripDataDAO extends AbstractDao<TripDataDO, Integer> {
     List<TripDataDO> findFirstByTrain(int id);
+    List<TripDataDO> findFirstAfterNowByTrain(int id);
 }

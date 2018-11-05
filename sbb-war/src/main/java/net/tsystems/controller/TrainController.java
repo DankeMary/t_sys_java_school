@@ -20,13 +20,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
-GET /trains
-GET /trains/add
-POST /trains
-GET /trains/{id}/update
-POST /trains/{id}  (update)
-POST /trains/{id}/delete
-*/
+ * GET /trains
+ * GET /trains/add
+ * POST /trains
+ * GET /trains/{id}/update
+ * POST /trains/{id}  (update)
+ * POST /trains/{id}/delete
+ */
 @Controller
 public class TrainController {
     private RouteService routeService;
@@ -52,7 +52,7 @@ public class TrainController {
     public String showAddTrainForm(Model model) {
         TrainBean train = new TrainBean();
         model.addAttribute("trainForm", train);
-        model.addAttribute("pathErrorMessage", new String());
+        model.addAttribute("pathErrorMessage", "");
         return "addTrain";
     }
 
@@ -62,7 +62,7 @@ public class TrainController {
                            final RedirectAttributes redirectAttributes) {
         String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
         validator.validate(train, result);
-        trainService.isValid(train, false, result);
+        trainService.validate(train, true, result);
 
         if (result.hasErrors() || !pathError.isEmpty()) {
             model.addAttribute("pathErrorMessage", pathError);
@@ -87,9 +87,8 @@ public class TrainController {
                               BindingResult result, Model model,
                               final RedirectAttributes redirectAttributes) {
         String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
-        trainService.isValid(train, false, result);
-        //TODO: check if you can update capacity (no trips after right now planned)
         validator.validate(train, result);
+        trainService.validate(train, false, result);
         if (result.hasErrors() || !pathError.isEmpty()) {
             model.addAttribute("pathErrorMessage", pathError);
             stationsData = new HashMap<>();
@@ -108,9 +107,8 @@ public class TrainController {
     }
 
 
-
     @RequestMapping(value = "/trains/{id}", method = RequestMethod.GET)
-    public String showTrainPath(@PathVariable("id") int id, Model model) {
+    public String showTrainDetails(@PathVariable("id") int id, Model model) {
         TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
         model.addAttribute("trainData", trainBean);
         return "trainDetails";
@@ -143,9 +141,6 @@ public class TrainController {
         } else {
             journey.setTrip(tripService.getTripByTrainId(id));
             tripDataService.createAll(journey);
-            //tripDataService.createNew
-            //routeService.createTrainRoutes(data.getTrainNumber(), stationsData);
-            //return "redirect:/passengers";
             return "redirect:/journeys";
         }
     }
@@ -158,6 +153,7 @@ public class TrainController {
                            @RequestParam(required = false, defaultValue = "") String fromStation,
                            @RequestParam(required = false, defaultValue = "") String toStation,
                            Model model) {
+        //TODO !!!!
         model.addAttribute("fromDay", fromDay); //tripData
         model.addAttribute("fromTime", fromTime); //route
         model.addAttribute("toDay", toDay);  //tripData
@@ -219,26 +215,32 @@ public class TrainController {
     public void setTrainService(TrainService trainService) {
         this.trainService = trainService;
     }
+
     @Autowired
     public void setStationService(StationService stationService) {
         this.stationService = stationService;
     }
+
     @Autowired
     public void setRouteService(RouteService routeService) {
         this.routeService = routeService;
     }
+
     @Autowired
     public void setTripService(TripService tripService) {
         this.tripService = tripService;
     }
+
     @Autowired
     public void setTripDataService(TripDataService tripDataService) {
         this.tripDataService = tripDataService;
     }
+
     @Autowired
     public void setTrainPathService(TrainPathService trainPathService) {
         this.trainPathService = trainPathService;
     }
+
     @Autowired
     public void setValidator(TrainValidator validator) {
         this.validator = validator;

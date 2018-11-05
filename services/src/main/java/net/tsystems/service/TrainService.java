@@ -81,7 +81,7 @@ public class TrainService {
         return train;
     }
 
-    public boolean isValid(TrainBean train, boolean isNew, Errors errors) {
+    public void validate(TrainBean train, boolean isNew, Errors errors) {
         if (train.getNumber() != null &&
                 train.getNumber() < Integer.MAX_VALUE &&
                 train.getNumber() > 0) {
@@ -91,8 +91,6 @@ public class TrainService {
         }
         if (!isNew && tripDataService.getFirstJourneysAfterNowByTrain(train.getId()) != null)
             errors.rejectValue("capacity", "CannotUpdate", "There are journeys planned already");
-
-        return !errors.hasErrors();
     }
 
     public boolean isValidPath(Map<Integer, StationBeanExpanded> stationsData) {

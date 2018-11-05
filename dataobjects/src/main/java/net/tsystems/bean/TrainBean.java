@@ -5,6 +5,7 @@ public class TrainBean {
     private int id;
     private Long number;
     private Long capacity;
+    private TripBean trip;
 
     public int getId() {
         return id;
@@ -25,5 +26,13 @@ public class TrainBean {
     }
     public void setCapacity(Long capacity) {
         this.capacity = capacity;
+    }
+
+    public TripBean getTrip() {
+        return trip;
+    }
+
+    public void setTrip(TripBean trip) {
+        this.trip = trip;
     }
 }

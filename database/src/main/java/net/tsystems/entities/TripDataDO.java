@@ -22,6 +22,8 @@ public class TripDataDO {
     private byte isLate;
     @Column(name = "departureDay", nullable = false)
     private Date date;
+    @Column(name = "trip_departure", nullable = false)
+    private Date tripDeparture;
 
     public int getId() {
         return id;
@@ -65,6 +67,13 @@ public class TripDataDO {
         this.date = date;
     }
 
+    public Date getTripDeparture() {
+        return tripDeparture;
+    }
+    public void setTripDeparture(Date tripDeparture) {
+        this.tripDeparture = tripDeparture;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,6 +86,7 @@ public class TripDataDO {
         if (isCancelled != that.isCancelled) return false;
         if (isLate != that.isLate) return false;
         if (!route.equals(that.route)) return false;
+        if (!tripDeparture.equals(that.tripDeparture)) return false;
         return (date != null ? !date.equals(that.date) : that.date != null);
     }
 

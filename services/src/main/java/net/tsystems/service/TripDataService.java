@@ -56,7 +56,7 @@ public class TripDataService {
         TripBean trip = journey.getTrip();
 
         List<RouteBean> trainPath = routeService.getTrainPathByTrainId(trip.getTrain().getId());
-
+        Date tripDepDay = journey.getDepartureDay();
         Date currDate = journey.getDepartureDay();
         RouteBean prevStData = trainPath.get(0);
         TrainBean train = trip.getTrain();
@@ -68,6 +68,7 @@ public class TripDataService {
             }
             TripDataBean tripDataBean = new TripDataBean();
             tripDataBean.setDate(currDate);
+            tripDataBean.setTripDeparture(tripDepDay);
             tripDataBean.setRoute(stData); //(routeDOToBean(routeDao.find(stData.getRouteId()))));
             tripDataBean.setSeatsLeft(train.getCapacity().intValue());
 

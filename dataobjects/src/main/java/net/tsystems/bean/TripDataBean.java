@@ -9,6 +9,7 @@ public class TripDataBean {
     private byte isCancelled;
     private byte isLate;
     private Date date;
+    private Date tripDeparture;
 
     public int getId() {
         return id;
@@ -56,5 +57,13 @@ public class TripDataBean {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Date getTripDeparture() {
+        return tripDeparture;
+    }
+
+    public void setTripDeparture(Date tripDeparture) {
+        this.tripDeparture = tripDeparture;
     }
 }

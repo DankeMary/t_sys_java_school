@@ -62,7 +62,7 @@ public class TrainController {
                            final RedirectAttributes redirectAttributes) {
         String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
         validator.validate(train, result);
-        trainService.isValid(train, result);
+        trainService.isValid(train, false, result);
 
         if (result.hasErrors() || !pathError.isEmpty()) {
             model.addAttribute("pathErrorMessage", pathError);
@@ -87,7 +87,7 @@ public class TrainController {
                               BindingResult result, Model model,
                               final RedirectAttributes redirectAttributes) {
         String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
-        trainService.isValid(train, result);
+        trainService.isValid(train, false, result);
         //TODO: check if you can update capacity (no trips after right now planned)
         validator.validate(train, result);
         if (result.hasErrors() || !pathError.isEmpty()) {

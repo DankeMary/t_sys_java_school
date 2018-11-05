@@ -78,8 +78,14 @@ public class TripDataService {
         }
     }
 
-    public List<JourneyBean> getFirstJourneysByTrain(int id){
-        List <TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));
+    public List<JourneyBean> getFirstJourneysByTrain(int id, boolean afterNow){
+        List <TripDataBean> tripDataBeans;
+
+        if (afterNow)
+            tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
+        else
+            tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));
+
         List <JourneyBean> journeys = new LinkedList<JourneyBean>();
         if (tripDataBeans != null)
             for (TripDataBean tdb : tripDataBeans) {
@@ -91,9 +97,10 @@ public class TripDataService {
         return journeys;
     }
 
-    public List<JourneyBean> getFirstJourneysAfterNowByTrain(int id){
-        List <TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
-        List <JourneyBean> journeys = new LinkedList<JourneyBean>();
+    /*//TODO: MOVE TO A METHOD?
+    public List<JourneyBean> getFirstJourneysAfterNowByTrain(int id) {
+        List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
+        List<JourneyBean> journeys = new LinkedList<JourneyBean>();
         if (tripDataBeans != null)
             for (TripDataBean tdb : tripDataBeans) {
                 JourneyBean jb = new JourneyBean();
@@ -102,7 +109,7 @@ public class TripDataService {
                 journeys.add(jb);
             }
         return journeys;
-    }
+    }*/
 
     //Mappers
     private TripBean tripDOToBean(TripDO tripDO) {

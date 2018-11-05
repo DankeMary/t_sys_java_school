@@ -29,16 +29,13 @@ import java.util.*;
  */
 @Controller
 public class TrainController {
-    private RouteService routeService;
     private TripService tripService;
     private TripDataService tripDataService;
     private TrainService trainService;
     private StationService stationService;
-    private TrainPathService trainPathService;
 
     private TrainValidator validator;
 
-    private List<String> stations = new ArrayList<String>();
     private Map<Integer, StationBeanExpanded> stationsData = new HashMap<Integer, StationBeanExpanded>();
 
     @RequestMapping(value = "/trains", method = RequestMethod.GET)
@@ -116,7 +113,7 @@ public class TrainController {
 
     @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.GET)
     public String journeys(@PathVariable("id") int id, Model model) {
-        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrain(id);
+        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrain(id, true);
         model.addAttribute("journeys", journeys);
         model.addAttribute("trainId", id);
         model.addAttribute("journeyForm", new JourneyBean());
@@ -189,7 +186,7 @@ public class TrainController {
     @RequestMapping(value = "/addStationToList", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<?> addStationToList(String stationName, String timeArr, String timeDep) {
-        stations.add(stationName);
+        //stations.add(stationName);
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             Date parsedDate = dateFormat.parse(timeArr);
@@ -222,11 +219,6 @@ public class TrainController {
     }
 
     @Autowired
-    public void setRouteService(RouteService routeService) {
-        this.routeService = routeService;
-    }
-
-    @Autowired
     public void setTripService(TripService tripService) {
         this.tripService = tripService;
     }
@@ -234,11 +226,6 @@ public class TrainController {
     @Autowired
     public void setTripDataService(TripDataService tripDataService) {
         this.tripDataService = tripDataService;
-    }
-
-    @Autowired
-    public void setTrainPathService(TrainPathService trainPathService) {
-        this.trainPathService = trainPathService;
     }
 
     @Autowired

@@ -89,7 +89,7 @@ public class TrainService {
                     (!isNew && !isUniqueByNumber(train.getId(), train.getNumber().intValue())))
                 errors.rejectValue("number", "NonUnique", "Train with such number already exists");
         }
-        if (!isNew && tripDataService.getFirstJourneysAfterNowByTrain(train.getId()) != null)
+        if (!isNew && tripDataService.getFirstJourneysAfterNowByTrain(train.getId()).size() != 0)
             errors.rejectValue("capacity", "CannotUpdate", "There are journeys planned already");
     }
 

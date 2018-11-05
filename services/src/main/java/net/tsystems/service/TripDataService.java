@@ -81,24 +81,26 @@ public class TripDataService {
     public List<JourneyBean> getFirstJourneysByTrain(int id){
         List <TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));
         List <JourneyBean> journeys = new LinkedList<JourneyBean>();
-        for (TripDataBean tdb : tripDataBeans) {
-            JourneyBean jb = new JourneyBean();
-            jb.setTrip(tdb.getRoute().getTrip());
-            jb.setDepartureDay(tdb.getDate());
-            journeys.add(jb);
-        }
+        if (tripDataBeans != null)
+            for (TripDataBean tdb : tripDataBeans) {
+                JourneyBean jb = new JourneyBean();
+                jb.setTrip(tdb.getRoute().getTrip());
+                jb.setDepartureDay(tdb.getDate());
+                journeys.add(jb);
+            }
         return journeys;
     }
 
     public List<JourneyBean> getFirstJourneysAfterNowByTrain(int id){
         List <TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
         List <JourneyBean> journeys = new LinkedList<JourneyBean>();
-        for (TripDataBean tdb : tripDataBeans) {
-            JourneyBean jb = new JourneyBean();
-            jb.setTrip(tdb.getRoute().getTrip());
-            jb.setDepartureDay(tdb.getDate());
-            journeys.add(jb);
-        }
+        if (tripDataBeans != null)
+            for (TripDataBean tdb : tripDataBeans) {
+                JourneyBean jb = new JourneyBean();
+                jb.setTrip(tdb.getRoute().getTrip());
+                jb.setDepartureDay(tdb.getDate());
+                journeys.add(jb);
+            }
         return journeys;
     }
 

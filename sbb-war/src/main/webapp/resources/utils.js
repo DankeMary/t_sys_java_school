@@ -75,23 +75,50 @@ $(document).ready(function () {
 });
 
 function add() {
+    let valid = true;
+
     let stationName = $("#station-input-search2").val();
+    if ($.trim(stationName) === "") {
+        $('#station-input-search2').css('border-color', 'red');
+        valid = false;
+    }
+    else {
+        $('#station-input-search2').css('border-color', '');
+    }
+
     let timeArr = $("#timeArr").val();
+    if (timeArr === "") {
+        $('#timeArr').css('border-color', 'red');
+        valid = false;
+    }
+    else {
+        $('#timeArr').css('border-color', '');
+    }
+
     let timeDep = $("#timeDep").val();
-    $.ajax({
-        type: "POST",
-        url: "/addStationToList",
-        data: "stationName=" + stationName + "&timeArr=" + timeArr + "&timeDep=" + timeDep,
-        success: function (data) {
-            console.log("success");
-            $("#station-input-search2").val("");
-            $("#timeArr").val("");
-            $("#timeDep").val("");
-        },
-        error: function (error) {
-            alert('search error');
-        }
-    });
+    if (timeDep === "") {
+        $('#timeDep').css('border-color', 'red');
+        valid = false;
+    }
+    else {
+        $('#timeDep').css('border-color', '');
+    }
+    if (valid) {
+        $.ajax({
+            type: "POST",
+            url: "/addStationToList",
+            data: "stationName=" + stationName + "&timeArr=" + timeArr + "&timeDep=" + timeDep,
+            success: function (data) {
+                console.log("success");
+                $("#station-input-search2").val("");
+                $("#timeArr").val("");
+                $("#timeDep").val("");
+            },
+            error: function (error) {
+                alert('search error');
+            }
+        });
+    }
     return false;
 }
 

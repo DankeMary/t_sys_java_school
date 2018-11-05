@@ -11,6 +11,7 @@ import net.tsystems.serviceobject.StationSO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
 
 import java.util.List;
 
@@ -45,6 +46,11 @@ public class StationService {
         return stationDao.isUniqueByName(id, name);
     }
 
+    public void validate(StationBean station, boolean isNew, Errors errors) {
+        if ((isNew && getStationByName(station.getName()) != null) ||
+                (!isNew && !isUniqueByName(station.getId(), station.getName())))
+            errors.rejectValue("name", "NonUnique", "Station with such name already exists");
+    }
     //Mappers
     public StationBean stationDOToBean (StationDO station) {
         return beanMapper.stationToBean(entityMapper.stationToSO(station));

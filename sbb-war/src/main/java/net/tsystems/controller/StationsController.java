@@ -20,13 +20,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 /**
-GET /stations
-GET /stations/add
-POST /stations
-GET /stations/{id}/update
-POST /stations/{id}  (update)
-POST /stations/{id}/delete
-*/
+ * GET /stations
+ * GET /stations/add
+ * POST /stations
+ * GET /stations/{id}/update
+ * POST /stations/{id}  (update)
+ * POST /stations/{id}/delete
+ */
 @Controller
 public class StationsController {
     private StationService stationService;
@@ -55,11 +55,8 @@ public class StationsController {
     public String addStation(@ModelAttribute("stationForm") @Validated StationBean station,
                              BindingResult result, Model model,
                              final RedirectAttributes redirectAttributes) {
-
-        if (stationService.getStationByName(station.getName()) != null)
-            result.rejectValue("name", "NonUnique", "Station with such name already exists");
-        else
-            validator.validate(station, result);
+        validator.validate(station, result);
+        stationService.validate(station, true, result);
         if (result.hasErrors()) {
             return "addStation";
         } else {
@@ -80,10 +77,8 @@ public class StationsController {
                                 @ModelAttribute("stationForm") @Validated StationBean station,
                                 BindingResult result, Model model,
                                 final RedirectAttributes redirectAttributes) {
-        if (!stationService.isUniqueByName(station.getId(), station.getName()))
-            result.rejectValue("name", "NonUnique", "Station with such name already exists");
-        else
-            validator.validate(station, result);
+        validator.validate(station, result);
+        stationService.validate(station, false, result);
         if (result.hasErrors()) {
             return "editStation";
         } else {

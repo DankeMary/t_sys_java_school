@@ -38,10 +38,9 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="/trains">View All</a>
                     <a class="dropdown-item" href="/trains/add">Add New</a>
-                    <a class="dropdown-item" href="/newTrain">Add New Path</a>
                 </div>
             </li>
-            <li class="nav-item dropdown">
+            <!--<li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Trips
                 </a>
@@ -49,10 +48,7 @@
                     <a class="dropdown-item" href="/trips">View All</a>
                     <a class="dropdown-item" href="/trips/add">Add New</a>
                 </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/future">For Future!</a>
-            </li>
+            </li>-->
         </ul>
     </div>
 </nav>

@@ -55,6 +55,9 @@
                     </div>
 
                     <h5>Add Train Path</h5>
+                    <c:if test="${not empty pathErrorMessage}">
+                        <span style="color:red"><c:out value="${pathErrorMessage}"/></span>
+                    </c:if>
                     <div class="formFragment">
                         <form:label path="">Station</form:label>
                         <input type="text" id="station-input-search2" value="${status.value}"

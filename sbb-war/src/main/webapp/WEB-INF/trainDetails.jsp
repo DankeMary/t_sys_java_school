@@ -18,7 +18,16 @@
         <div class="col-8" style="border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
-                <h5>Train Path</h5>
+                <h5>Train Details</h5>
+                <div style="display:inline-block; margin-right: 15px;"><b>Train : </b>${trainData.trainBean.number}</div>
+                <div style="display:inline-block; margin-right: 15px;"><b>Capacity :</b> ${trainData.trainBean.capacity}</div>
+                <div style="display:inline-block">
+                    <a href="/trains/${trainData.trainBean.id}/update">Edit</a> |
+                    <a href="/trains/${trainData.trainBean.id}/delete"
+                       onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${trainData.trainBean.id}/delete')">Delete</a>
+                </div>
+                <p><b>Journeys : </b> <a href="/trains/${trainData.trainBean.id}/journeys">See More...</a></p>
+                <h5>Train Path:</h5>
                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                     <thead class="thead-light">
                     <tr>

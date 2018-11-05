@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <title>Train Journeys</title>
@@ -18,15 +20,36 @@
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h5>Train Journeys</h5>
+                <form:form method="POST"
+                           action="/trains/${trainId}/journeys"
+                           modelAttribute="journeyForm">
+                    <div class="formFragment">
+                        <form:label path="departureDay">Departure Day</form:label>
+                        <spring:bind path="departureDay">
+                            <input type="date" value="${status.value}"
+                                   name="${status.expression}">
+                            <span style="color: red">
+                            <c:if test="${status.error}">
+                                <c:forEach items="${status.errorMessages}" var="error">
+                                    <c:out value="${error}"/>
+                                </c:forEach>
+                            </c:if></span>
+                            </input>
+                        </spring:bind>
+                    </div>
+                    <div style="display: inline-block;">
+                        <input type="submit" value="Add New" id="submit" class="submit-btn"/>
+                    </div>
+                </form:form>
                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                     <thead class="thead-light">
                     <tr>
                         <th>Date</th>
                     </tr>
                     </thead>
-                    <c:forEach items="${trainData.trainRoute}" var="routePoint">
+                    <c:forEach items="${journeys}" var="journey">
                         <tr>
-                            <td>${routePoint.station.name}</td>
+                            <td>${journey.departureDay}</td>
                         </tr>
                     </c:forEach>
                 </table>

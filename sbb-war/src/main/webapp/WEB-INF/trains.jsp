@@ -28,18 +28,21 @@
                             <thead class="thead-light">
                             <tr>
                                 <th>Train Number</th>
-                                <th>Capacity</th>
+                                <th>From</th>
+                                <th>To</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <c:forEach items="${trains}" var="train">
                                 <tr>
                                     <td>${train.number}</td>
-                                    <td>${train.capacity}</td>
-                                    <td><a href="/trains/${train.id}/update">Edit</a> |
+                                    <td>${train.trip.from.name}</td>
+                                    <td>${train.trip.to.name}</td>
+                                    <td><a href="/trains/${train.id}">Details</a></td>
+                                    <!--<td><a href="/trains/${train.id}/update">Edit</a> |
                                         <a href="/trains/${train.id}/delete"
                                            onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${train.id}/delete')">Delete</a>
-                                    </td>
+                                    </td>-->
                                 </tr>
                             </c:forEach>
                         </table>

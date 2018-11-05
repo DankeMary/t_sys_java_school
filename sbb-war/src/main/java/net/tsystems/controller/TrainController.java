@@ -52,6 +52,7 @@ public class TrainController {
     public String showAddTrainForm(Model model) {
         TrainBean train = new TrainBean();
         model.addAttribute("trainForm", train);
+        model.addAttribute("pathErrorMessage", new String());
         return "addTrain";
     }
 
@@ -59,11 +60,13 @@ public class TrainController {
     public String addTrain(@ModelAttribute("trainForm") @Validated TrainBean train,
                            BindingResult result, Model model,
                            final RedirectAttributes redirectAttributes) {
+        String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
+        validator.validate(train, result);
+        trainService.isValid(train, result);
 
-        if (trainService.isValid(train, result))
-            validator.validate(train, result);
-        //validate stations
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !pathError.isEmpty()) {
+            model.addAttribute("pathErrorMessage", pathError);
+            stationsData = new HashMap<>();
             return "addTrain";
         } else {
             trainService.create(train, stationsData);
@@ -83,10 +86,13 @@ public class TrainController {
                               @ModelAttribute("trainForm") @Validated TrainBean train,
                               BindingResult result, Model model,
                               final RedirectAttributes redirectAttributes) {
-        if (trainService.isValid(train, result))
-            //TODO: check if you can update capacity (no trips after right now planned)
-            validator.validate(train, result);
-        if (result.hasErrors()) {
+        String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
+        trainService.isValid(train, result);
+        //TODO: check if you can update capacity (no trips after right now planned)
+        validator.validate(train, result);
+        if (result.hasErrors() || !pathError.isEmpty()) {
+            model.addAttribute("pathErrorMessage", pathError);
+            stationsData = new HashMap<>();
             return "editTrain";
         } else {
             trainService.update(train);
@@ -103,19 +109,20 @@ public class TrainController {
 
 
 
-    @RequestMapping(value = "/trains/{id}/path", method = RequestMethod.GET)
+    @RequestMapping(value = "/trains/{id}", method = RequestMethod.GET)
     public String showTrainPath(@PathVariable("id") int id, Model model) {
         TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
         model.addAttribute("trainData", trainBean);
-        return "trainPath";
+        return "trainDetails";
     }
 
     @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.GET)
     public String journeys(@PathVariable("id") int id, Model model) {
         List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrain(id);
-        model.addAttribute("journeys", new JourneyBean());
+        model.addAttribute("journeys", journeys);
         model.addAttribute("trainId", id);
-        return "newJourney";
+        model.addAttribute("journeyForm", new JourneyBean());
+        return "journeys";
     }
 
     @RequestMapping(value = "/trains/{id}/journeys/newJourney", method = RequestMethod.GET)
@@ -123,7 +130,7 @@ public class TrainController {
 
         model.addAttribute("journey", new JourneyBean());
         model.addAttribute("trainId", id);
-        return "newJourney";
+        return "addJourney";
     }
 
     @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.POST)
@@ -132,17 +139,40 @@ public class TrainController {
                                 BindingResult result, Model model,
                                 final RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "newJourney";
+            return "addJourney";
         } else {
             journey.setTrip(tripService.getTripByTrainId(id));
             tripDataService.createAll(journey);
             //tripDataService.createNew
             //routeService.createTrainRoutes(data.getTrainNumber(), stationsData);
             //return "redirect:/passengers";
-            return "trains";
+            return "redirect:/journeys";
         }
     }
 
+    @RequestMapping(value = "/trains/find", method = RequestMethod.GET)
+    public String journeys(@RequestParam(required = false, defaultValue = "") String fromDay,
+                           @RequestParam(required = false, defaultValue = "") String fromTime,
+                           @RequestParam(required = false, defaultValue = "") String toDay,
+                           @RequestParam(required = false, defaultValue = "") String toTime,
+                           @RequestParam(required = false, defaultValue = "") String fromStation,
+                           @RequestParam(required = false, defaultValue = "") String toStation,
+                           Model model) {
+        model.addAttribute("fromDay", fromDay); //tripData
+        model.addAttribute("fromTime", fromTime); //route
+        model.addAttribute("toDay", toDay);  //tripData
+        model.addAttribute("toTime", toTime);  //route
+        model.addAttribute("fromStation", fromStation); //
+        model.addAttribute("toStation", toStation);
+
+
+
+        /*List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrain(id);
+        model.addAttribute("journeys", journeys);
+        model.addAttribute("trainId", id);
+        model.addAttribute("journeyForm", new JourneyBean());*/
+        return "journeys";
+    }
 
     //Ajax related
     @RequestMapping(value = "/getStationsForTrain", method = RequestMethod.GET)

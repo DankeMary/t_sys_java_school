@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service("trainService")
 @Transactional
@@ -28,56 +30,91 @@ public class TrainService {
     private TrainBeanMapper beanMapper = new TrainBeanMapperImpl();
 
     private RouteService routeService;
+    private TripService tripService;
+    private TripDataService tripDataService;
 
-    public void create(TrainBean train){
+    public void create(TrainBean train) {
         trainDao.create(trainBeanToDO(train));
     }
+
     public void create(TrainBean train, Map<Integer, StationBeanExpanded> stationsData) {
         create(train);
         //TODO !!!  Create train with return of just-created object?
         routeService.createTrainRoutes(trainDOToBean(trainDao.findByNumber(train.getNumber().intValue())),
-                                        stationsData);
+                stationsData);
     }
-    public void update(TrainBean train){
+
+    public void update(TrainBean train) {
         trainDao.update(trainBeanToDO(train));
     }
-    public void delete(int id){
+
+    public void delete(int id) {
         trainDao.delete(trainDao.find(id));
     }
 
     public List<TrainBean> getAll() {
-        return trainDOListToBeanList(trainDao.findAll());
+        List<TrainBean> trains = trainDOListToBeanList(trainDao.findAll());
+        for (TrainBean train : trains)
+            train.setTrip(tripService.getTripByTrainId(train.getId()));
+        return trains;
     }
-    public TrainBean getTrainById(int id){
-        return trainDOToBean(trainDao.find(id));
+
+    public TrainBean getTrainById(int id) {
+        TrainBean train = trainDOToBean(trainDao.find(id));
+        if (train != null)
+            train.setTrip(tripService.getTripByTrainId(train.getId()));
+        return train;
     }
-    public TrainBean getTrainByNumber(int number){
-        return trainDOToBean(trainDao.findByNumber(number));
+
+    public TrainBean getTrainByNumber(int number) {
+        TrainBean train = trainDOToBean(trainDao.findByNumber(number));
+        if (train != null)
+            train.setTrip(tripService.getTripByTrainId(train.getId()));
+        return train;
     }
+
     public TrainBeanExpanded getTrainWithPath(int id) {
         TrainBeanExpanded train = new TrainBeanExpanded();
         train.setTrainBean(getTrainById(id));
+        train.getTrainBean().setTrip(tripService.getTripByTrainId(id));
         train.setTrainRoute(routeService.getTrainPathByTrainId(id));
         return train;
     }
 
-    public boolean isValid(TrainBean train, Errors errors) {
-        if (train.getNumber() != null && getTrainByNumber(train.getNumber().intValue()) != null)
-            errors.rejectValue("number", "NonUnique", "Train with such number already exists");
+    public boolean isValid(TrainBean train, boolean isNew, Errors errors) {
+        if (train.getNumber() != null &&
+                train.getNumber() < Integer.MAX_VALUE &&
+                train.getNumber() > 0) {
+            if ((isNew && getTrainByNumber(train.getNumber().intValue()) != null) ||
+                    (!isNew && !isUniqueByNumber(train.getId(), train.getNumber().intValue())))
+                errors.rejectValue("number", "NonUnique", "Train with such number already exists");
+        }
+        if (!isNew && tripDataService.getFirstJourneysAfterNowByTrain(train.getId()) != null)
+            errors.rejectValue("capacity", "CannotUpdate", "There are journeys planned already");
+
         return !errors.hasErrors();
     }
+
+    public boolean isValidPath(Map<Integer, StationBeanExpanded> stationsData) {
+        Set<String> stations = new HashSet<>();
+        stationsData.values().forEach(station -> stations.add(station.getStation().getName()));
+        return stationsData.values().size() == stations.size();
+    }
+
     public boolean isUniqueByNumber(int id, int number) {
         return trainDao.isUniqueByNumber(id, number);
     }
 
     //Mappers
-    private TrainBean trainDOToBean (TrainDO train) {
+    private TrainBean trainDOToBean(TrainDO train) {
         return beanMapper.trainToBean(entityMapper.trainToSO(train));
     }
-    private TrainDO trainBeanToDO (TrainBean train) {
+
+    private TrainDO trainBeanToDO(TrainBean train) {
         return entityMapper.trainToDO(beanMapper.trainToSO(train));
     }
-    private List<TrainBean> trainDOListToBeanList (List<TrainDO> trains) {
+
+    private List<TrainBean> trainDOListToBeanList(List<TrainDO> trains) {
         return beanMapper.trainListToBeanList(entityMapper.trainListToSOList(trains));
     }
 
@@ -85,9 +122,20 @@ public class TrainService {
     public void setTrainDao(TrainDAO trainDao) {
         this.trainDao = trainDao;
     }
+
     @Autowired
     public void setRouteService(RouteService routeService) {
         this.routeService = routeService;
+    }
+
+    @Autowired
+    public void setTripService(TripService tripService) {
+        this.tripService = tripService;
+    }
+
+    @Autowired
+    public void setTripDataService(TripDataService tripDataService) {
+        this.tripDataService = tripDataService;
     }
 }
 

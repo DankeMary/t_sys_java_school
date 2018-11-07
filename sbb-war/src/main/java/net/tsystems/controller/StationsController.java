@@ -55,7 +55,7 @@ public class StationsController {
     public String addStation(@ModelAttribute("stationForm") @Validated StationBean station,
                              BindingResult result, Model model,
                              final RedirectAttributes redirectAttributes) {
-        validator.validate(station, result);
+
         stationService.validate(station, true, result);
         if (result.hasErrors()) {
             return "addStation";
@@ -77,7 +77,7 @@ public class StationsController {
                                 @ModelAttribute("stationForm") @Validated StationBean station,
                                 BindingResult result, Model model,
                                 final RedirectAttributes redirectAttributes) {
-        validator.validate(station, result);
+
         stationService.validate(station, false, result);
         if (result.hasErrors()) {
             return "editStation";

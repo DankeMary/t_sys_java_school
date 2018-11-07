@@ -30,7 +30,6 @@ POST /passengers/{id}/delete
 @Controller
 public class PassengersController {
     private PassengerService passengerService;
-    private PassengerValidator validator = new PassengerValidator();
 
     @Autowired
     public void setPassengerService(PassengerService passengerService) {
@@ -63,7 +62,6 @@ public class PassengersController {
                                BindingResult result, Model model,
                                final RedirectAttributes redirectAttributes) {
 
-        validator.validate(passenger, result);
         if (result.hasErrors()) {
             return "addPassenger";
         } else {
@@ -85,7 +83,6 @@ public class PassengersController {
                                    BindingResult result, Model model,
                                    final RedirectAttributes redirectAttributes) {
 
-        validator.validate(passenger, result);
         if (result.hasErrors()) {
             return "editPassenger";
         } else {

@@ -34,7 +34,6 @@ public class TrainController {
     private TrainService trainService;
     private StationService stationService;
 
-    private TrainValidator validator;
 
     private Map<Integer, StationBeanExpanded> stationsData = new HashMap<Integer, StationBeanExpanded>();
 
@@ -58,7 +57,7 @@ public class TrainController {
                            BindingResult result, Model model,
                            final RedirectAttributes redirectAttributes) {
         String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
-        validator.validate(train, result);
+
         trainService.validate(train, true, result);
 
         if (result.hasErrors() || !pathError.isEmpty()) {
@@ -84,7 +83,7 @@ public class TrainController {
                               BindingResult result, Model model,
                               final RedirectAttributes redirectAttributes) {
         String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
-        validator.validate(train, result);
+
         trainService.validate(train, false, result);
         if (result.hasErrors() || !pathError.isEmpty()) {
             model.addAttribute("pathErrorMessage", pathError);
@@ -138,8 +137,28 @@ public class TrainController {
         } else {
             journey.setTrip(tripService.getTripByTrainId(id));
             tripDataService.createAll(journey);
-            return "redirect:/journeys";
+            //TODO !!!!
+            return "redirect:/trains/{id}/journeys";
         }
+    }
+
+    @RequestMapping(value = "/trains/{train_id}/journeys/{journey_id}/delete")
+    public String deleteJourney(@PathVariable("train_id") int trainId,
+                                @PathVariable("journey_id") int journeyId,
+                                Model model) {
+        try {
+            /*SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            Date parsedDate = dateFormat.parse(departureDay);
+            Timestamp timestampDate = new java.sql.Timestamp(parsedDate.getTime());
+
+            tripDataService.removeJourney(trainId, timestampDate);*/
+            tripDataService.removeJourney(trainId, journeyId);
+        } catch (Exception e) {
+            return "/trains/{train_id}/journeys";
+        }
+        //TODO check that no tickets were sold!
+
+        return "/trains/{train_id}/journeys";
     }
 
     @RequestMapping(value = "/trains/find", method = RequestMethod.GET)
@@ -226,10 +245,5 @@ public class TrainController {
     @Autowired
     public void setTripDataService(TripDataService tripDataService) {
         this.tripDataService = tripDataService;
-    }
-
-    @Autowired
-    public void setValidator(TrainValidator validator) {
-        this.validator = validator;
     }
 }

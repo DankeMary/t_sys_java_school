@@ -1,13 +1,9 @@
 package net.tsystems.service;
 
 import net.tsystems.bean.*;
-import net.tsystems.beanmapper.*;
-import net.tsystems.entities.RouteDO;
-import net.tsystems.entities.TripDO;
+import net.tsystems.beanmapper.TripDataBeanMapper;
+import net.tsystems.beanmapper.TripDataBeanMapperImpl;
 import net.tsystems.entities.TripDataDO;
-import net.tsystems.entitydao.RouteDAO;
-import net.tsystems.entitydao.TrainDAO;
-import net.tsystems.entitydao.TripDAO;
 import net.tsystems.entitydao.TripDataDAO;
 import net.tsystems.entitymapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,29 +19,17 @@ import java.util.List;
 @Transactional
 public class TripDataService {
     //TODO: Use calendar
-    @Autowired
-    private RouteService routeService = new RouteService();
 
     @Autowired
     private TripDataDAO tripDataDAO;
     private TripDataEntityMapper tripDataEntityMapper = new TripDataEntityMapperImpl();
     private TripDataBeanMapper tripDataBeanMapper = new TripDataBeanMapperImpl();
-    @Autowired
-    private TrainDAO trainDao;
-    private TrainEntityMapper trainEntityMapper = new TrainEntityMapperImpl();
-    private TrainBeanMapper trainBeanMapper = new TrainBeanMapperImpl();
-    @Autowired
-    private RouteDAO routeDao;
-    private RouteEntityMapper routeEntityMapper = new RouteEntityMapperImpl();
-    private RouteBeanMapper routeBeanMapper = new RouteBeanMapperImpl();
-    @Autowired
-    private TripDAO tripDao;
-    private TripEntityMapper tripEntityMapper = new TripEntityMapperImpl();
-    private TripBeanMapper tripBeanMapper = new TripBeanMapperImpl();
+
+    private RouteService routeService = new RouteService();
 
     //TODO create, update, delete
     public void create(TripDataBean tripDataBean){
-        tripDataDAO.create(tripDataEntityMapper.tripDataToDO(tripDataBeanMapper.tripDataToSO(tripDataBean)));
+        tripDataDAO.create(tripDataBeanToDO(tripDataBean));
     }
 
     public void createAll(JourneyBean journey) {
@@ -69,7 +53,7 @@ public class TripDataService {
             TripDataBean tripDataBean = new TripDataBean();
             tripDataBean.setDate(currDate);
             tripDataBean.setTripDeparture(tripDepDay);
-            tripDataBean.setRoute(stData); //(routeDOToBean(routeDao.find(stData.getRouteId()))));
+            tripDataBean.setRoute(stData);
             tripDataBean.setSeatsLeft(train.getCapacity().intValue());
 
             tripDataBean.setIsCancelled((byte)0);
@@ -91,6 +75,7 @@ public class TripDataService {
         if (tripDataBeans != null)
             for (TripDataBean tdb : tripDataBeans) {
                 JourneyBean jb = new JourneyBean();
+                jb.setJourneyId(tdb.getId());
                 jb.setTrip(tdb.getRoute().getTrip());
                 jb.setDepartureDay(tdb.getDate());
                 journeys.add(jb);
@@ -98,29 +83,35 @@ public class TripDataService {
         return journeys;
     }
 
-    /*//TODO: MOVE TO A METHOD?
-    public List<JourneyBean> getFirstJourneysAfterNowByTrain(int id) {
-        List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
-        List<JourneyBean> journeys = new LinkedList<JourneyBean>();
-        if (tripDataBeans != null)
-            for (TripDataBean tdb : tripDataBeans) {
-                JourneyBean jb = new JourneyBean();
-                jb.setTrip(tdb.getRoute().getTrip());
-                jb.setDepartureDay(tdb.getDate());
-                journeys.add(jb);
-            }
-        return journeys;
-    }*/
+    //TODO
+    //public void removeJourney(int trainId, Date departureDay) {
+    public void removeJourney(int trainId, int journeyId) {
+        //TODO check that journey with such Id exists
+        //TODO how to pass the date?
+        TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
+        List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getDate().toString()));
+
+        if (journeyParts != null)
+            for (TripDataBean tdBean : journeyParts)
+                tripDataDAO.delete(tripDataBeanToDO(tdBean));
+    }
 
     //Mappers
-    private TripBean tripDOToBean(TripDO tripDO) {
-        return tripBeanMapper.tripToBean(tripEntityMapper.tripToSO(tripDO));
+    private TripDataDO tripDataBeanToDO (TripDataBean tdBean) {
+        return tripDataEntityMapper.tripDataToDO(tripDataBeanMapper.tripDataToSO(tdBean));
     }
-    public RouteBean routeDOToBean (RouteDO route) {
-        return routeBeanMapper.routeToBean(routeEntityMapper.routeToSO(route));
+
+    private TripDataBean tripDataDOToBean (TripDataDO tdDO) {
+        return tripDataBeanMapper.tripDataToBean(tripDataEntityMapper.tripDataToSO(tdDO));
     }
 
     public List<TripDataBean> tripDataDOListToBeanList(List<TripDataDO> tripData) {
         return tripDataBeanMapper.tripDataListToBeanList(tripDataEntityMapper.tripDataListToSOList(tripData));
+    }
+
+    //Autowired
+    @Autowired
+    public void setRouteService(RouteService routeService) {
+        this.routeService = routeService;
     }
 }

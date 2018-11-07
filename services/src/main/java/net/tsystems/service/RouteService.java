@@ -3,13 +3,8 @@ package net.tsystems.service;
 import net.tsystems.bean.*;
 import net.tsystems.beanmapper.*;
 import net.tsystems.entities.RouteDO;
-import net.tsystems.entities.TrainDO;
 import net.tsystems.entitydao.RouteDAO;
-import net.tsystems.entitydao.StationDAO;
-import net.tsystems.entitydao.TrainDAO;
-import net.tsystems.entitydao.TripDAO;
 import net.tsystems.entitymapper.*;
-import net.tsystems.serviceobject.RouteSO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,45 +17,32 @@ import java.util.Map;
 @Service("routeService")
 @Transactional
 public class RouteService {
-    @Autowired
-    private TrainDAO trainDao;
-    private TrainEntityMapper trainEntityMapper = new TrainEntityMapperImpl();
-    private TrainBeanMapper trainBeanMapper = new TrainBeanMapperImpl();
-    @Autowired
-    private TripDAO tripDao;
-    private TripEntityMapper tripEntityMapper = new TripEntityMapperImpl();
-    private TripBeanMapper tripBeanMapper = new TripBeanMapperImpl();
-    @Autowired
-    private TripService tripService;
-    @Autowired
+
     private RouteDAO routeDao;
     private RouteEntityMapper routeEntityMapper = new RouteEntityMapperImpl();
     private RouteBeanMapper routeBeanMapper = new RouteBeanMapperImpl();
-    @Autowired
-    private StationDAO stationDao;
-    private StationEntityMapper stationEntityMapper = new StationEntityMapperImpl();
-    private StationBeanMapper stationBeanMapper = new StationBeanMapperImpl();
-    @Autowired
-    private StationService stationService;
 
-    public void create(RouteSO psngr) {
-        routeDao.create(routeEntityMapper.routeToDO(psngr));
+    private StationService stationService;
+    private TripService tripService;
+
+    public void create(RouteBean psngr) {
+        routeDao.create(routeBeanToDO(psngr));
     }
 
-    public void update(RouteSO psngr) {
-        routeDao.update(routeEntityMapper.routeToDO(psngr));
+    public void update(RouteBean psngr) {
+        routeDao.update(routeBeanToDO(psngr));
     }
 
     public void delete(int id) {
         routeDao.delete(routeDao.find(id));
     }
 
-    public List<RouteSO> getAll() {
-        return routeEntityMapper.routeListToSOList(routeDao.findAll());
+    public List<RouteBean> getAll() {
+        return routeDOListToBeanList(routeDao.findAll());
     }
 
-    public RouteSO getRoute(int id) {
-        return routeEntityMapper.routeToSO(routeDao.find(id));
+    public RouteBean getRoute(int id) {
+        return routeDOToBean(routeDao.find(id));
     }
     public List<RouteBean> getRoutesByTrainId(int trainId) { return routeDOListToBeanList(routeDao.getRoutesByTrainId(trainId)); }
 
@@ -117,19 +99,28 @@ public class RouteService {
     }
 
     //Mappers
-    private TrainBean trainDOToBean(TrainDO trainDO) {
-        return trainBeanMapper.trainToBean(trainEntityMapper.trainToSO(trainDO));
-    }
-
-    private TrainDO trainBeanToDO(TrainBean trainBean) {
-        return trainEntityMapper.trainToDO(trainBeanMapper.trainToSO(trainBean));
-    }
-
     public RouteDO routeBeanToDO (RouteBean route) {
         return routeEntityMapper.routeToDO(routeBeanMapper.routeToSO(route));
+    }
+    public RouteBean routeDOToBean (RouteDO rDO) {
+        return routeBeanMapper.routeToBean(routeEntityMapper.routeToSO(rDO));
     }
 
     public List<RouteBean> routeDOListToBeanList (List<RouteDO> routes) {
         return routeBeanMapper.routeListToBeanList(routeEntityMapper.routeListToSOList(routes));
+    }
+
+    //Autowired
+    @Autowired
+    public void setTripService(TripService tripService) {
+        this.tripService = tripService;
+    }
+    @Autowired
+    public void setRouteDao(RouteDAO routeDao) {
+        this.routeDao = routeDao;
+    }
+    @Autowired
+    public void setStationService(StationService stationService) {
+        this.stationService = stationService;
     }
 }

@@ -8,7 +8,6 @@ import net.tsystems.entities.PassengerDO;
 import net.tsystems.entitydao.PassengerDAO;
 import net.tsystems.entitymapper.PassengerEntityMapper;
 import net.tsystems.entitymapper.PassengerEntityMapperImpl;
-import net.tsystems.serviceobject.PassengerSO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +51,7 @@ public class PassengerService {
         return beanMapper.passengerListToBeanList(entityMapper.passengerListToSOList(psngrs));
     }
 
+    //Autowired
     @Autowired
     public void setPsngrDao(PassengerDAO psngrDao) {
         this.psngrDao = psngrDao;

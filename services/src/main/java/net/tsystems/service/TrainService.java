@@ -1,6 +1,5 @@
 package net.tsystems.service;
 
-import net.tsystems.bean.StationBean;
 import net.tsystems.bean.StationBeanExpanded;
 import net.tsystems.bean.TrainBean;
 import net.tsystems.bean.TrainBeanExpanded;
@@ -10,7 +9,6 @@ import net.tsystems.entities.TrainDO;
 import net.tsystems.entitydao.TrainDAO;
 import net.tsystems.entitymapper.TrainEntityMapper;
 import net.tsystems.entitymapper.TrainEntityMapperImpl;
-import net.tsystems.serviceobject.TrainSO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -116,6 +114,7 @@ public class TrainService {
         return beanMapper.trainListToBeanList(entityMapper.trainListToSOList(trains));
     }
 
+    //Autowired
     @Autowired
     public void setTrainDao(TrainDAO trainDao) {
         this.trainDao = trainDao;

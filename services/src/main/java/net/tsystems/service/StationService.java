@@ -7,7 +7,6 @@ import net.tsystems.entities.StationDO;
 import net.tsystems.entitydao.StationDAO;
 import net.tsystems.entitymapper.StationEntityMapper;
 import net.tsystems.entitymapper.StationEntityMapperImpl;
-import net.tsystems.serviceobject.StationSO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

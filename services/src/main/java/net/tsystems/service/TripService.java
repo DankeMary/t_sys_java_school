@@ -7,7 +7,6 @@ import net.tsystems.entities.TripDO;
 import net.tsystems.entitydao.TripDAO;
 import net.tsystems.entitymapper.TripEntityMapper;
 import net.tsystems.entitymapper.TripEntityMapperImpl;
-import net.tsystems.serviceobject.TripSO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,7 @@ import java.util.List;
 @Service("tripService")
 @Transactional
 public class TripService {
-    @Autowired
+
     private TripDAO tripDao;
     private TripEntityMapper entityMapper = new TripEntityMapperImpl();
     private TripBeanMapper beanMapper = new TripBeanMapperImpl();
@@ -44,6 +43,7 @@ public class TripService {
         return tripDOToBean(tripDao.getByTrainId(id));
     }
 
+    //Mappers
     public TripBean tripDOToBean (TripDO trip) {
         return beanMapper.tripToBean(entityMapper.tripToSO(trip));
     }
@@ -52,5 +52,10 @@ public class TripService {
     }
     public List<TripBean> tripDOListToBeanList (List<TripDO> trips) {
         return beanMapper.tripListToBeanList(entityMapper.tripListToSOList(trips));
+    }
+    //Autowired
+    @Autowired
+    public void setTripDao(TripDAO tripDao) {
+        this.tripDao = tripDao;
     }
 }

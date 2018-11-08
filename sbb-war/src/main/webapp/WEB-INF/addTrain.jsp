@@ -25,8 +25,8 @@
                            modelAttribute="trainForm"
                            onsubmit="return validateTrain(this, '${pageContext.request.contextPath}/trains')">
                     <div class="formFragment">
-                        <form:label path="number">Number</form:label>
-                        <spring:bind path="number">
+                        <form:label path="train.number">Number</form:label>
+                        <spring:bind path="train.number">
                             <input id="train-number" value="${status.value}" name="${status.expression}">
                             <span id="js-number-error" style="color: red">
                                 <c:if test="${status.error}">
@@ -40,8 +40,8 @@
                     </div>
 
                     <div class="formFragment">
-                        <form:label path="capacity">Capacity</form:label>
-                        <spring:bind path="capacity">
+                        <form:label path="train.capacity">Capacity</form:label>
+                        <spring:bind path="train.capacity">
                             <input id="train-capacity" value="${status.value}" name="${status.expression}">
                             <span id="js-capacity-error" style="color: red">
                                 <c:if test="${status.error}">
@@ -55,25 +55,53 @@
                     </div>
 
                     <h5>Add Train Path</h5>
-                    <c:if test="${not empty pathErrorMessage}">
-                        <span style="color:red"><c:out value="${pathErrorMessage}"/></span>
+                    <c:if test="${not empty pathErrors}">
+                        <c:forEach items="${pathErrors}" var="error">
+                            <span style="color:red; display: block;"><c:out value="${error}"/></span>
+                        </c:forEach>
                     </c:if>
-                    <div class="formFragment">
-                        <form:label path="">Station</form:label>
-                        <input type="text" id="station-input-search2" value="${status.value}"
-                               name="inp1"/>
-                    </div>
 
                     <div class="formFragment">
-                        <form:label path="">Arrival</form:label>
-                        <input type="time" id="timeArr" value="${status.value}"
-                               name="inp2" style="margin-right:20px"/>
-
-                        <form:label path="">Departure</form:label>
-                        <input type="time" id="timeDep" value="${status.value}"
-                               name="inp3"/>
+                        <table id="pathRoutes">
+                            <thead>
+                            <tr>
+                                <th>Station</th>
+                                <th>Arrival</th>
+                                <th>Departure</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach items="${primitivePath}" var="route" varStatus="status">
+                                <tr>
+                                    <spring:bind path='route.orderIndex'>
+                                        <input type='hidden'
+                                               value='${status.index}' name="${status.expression}"/>
+                                    </spring:bind>
+                                    <td>
+                                        <spring:bind path="route.station">
+                                            <input onchange='createTrainAutoCompl(this);'
+                                                   id='station-input-search-${status.index}' value="${status.value}"
+                                                   name="${status.expression}"/>
+                                        </spring:bind>
+                                    </td>
+                                    <td>
+                                        <spring:bind path="route.arrival">
+                                            <input type='time' value="${status.value}" name="${status.expression}"/>
+                                        </spring:bind>
+                                    </td>
+                                    <td>
+                                        <spring:bind path="route.departure">
+                                            <input type='time' value="${status.value}" name="${status.expression}"/>
+                                        </spring:bind>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            <tr id="addRouteRow">
+                                <td align="right"><input type="button" id="addRouteButton" value="Add"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <a href="#" style="margin: 10px 24% 10px;" onclick="return add()">Add</a>
 
                     <div style="margin: auto;">
                         <input type="submit" value="Submit" class="submit-btn"/>
@@ -89,9 +117,6 @@
 <script src="<c:url value="/resources/jquery-3.3.1.min.js" />"></script>
 <script src="<c:url value="/resources/jquery-ui.js" />"></script>
 <script src="<c:url value="/resources/utils.js" />"></script>
-<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
         integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>

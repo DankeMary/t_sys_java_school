@@ -14,10 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Service("trainService")
 @Transactional
@@ -31,14 +29,18 @@ public class TrainService {
     private TripService tripService;
     private TripDataService tripDataService;
 
-    public void create(TrainBean train) {
-        trainDao.create(trainBeanToDO(train));
+    public Integer create(TrainBean train) {
+        return trainDao.createReturnObject(trainBeanToDO(train)).getId();
+    }
+
+    public TrainBean createReturnObject(TrainBean train) {
+        return trainDOToBean(trainDao.createReturnObject(trainBeanToDO(train)));
     }
 
     public void create(TrainBean train, Map<Integer, StationBeanExpanded> stationsData) {
-        create(train);
-        //TODO !!!  Create train with return of just-created object?
-        routeService.createTrainRoutes(trainDOToBean(trainDao.findByNumber(train.getNumber().intValue())),
+        train = createReturnObject(train);
+
+        routeService.createTrainPath(train,
                 stationsData);
     }
 
@@ -79,27 +81,26 @@ public class TrainService {
         return train;
     }
 
+    //Validation Utils
     public void validate(TrainBean train, boolean isNew, Errors errors) {
         if (train.getNumber() != null &&
                 train.getNumber() < Integer.MAX_VALUE &&
                 train.getNumber() > 0) {
             if ((isNew && getTrainByNumber(train.getNumber().intValue()) != null) ||
                     (!isNew && !isUniqueByNumber(train.getId(), train.getNumber().intValue())))
-                errors.rejectValue("number", "NonUnique", "Train with such number already exists");
+                errors.rejectValue("train.number", "NonUnique", "Train with such number already exists");
         }
         if (!isNew && tripDataService.getFirstJourneysByTrain(train.getId(), true).size() != 0)
-            errors.rejectValue("capacity", "CannotUpdate", "There are journeys planned already");
-    }
-
-    public boolean isValidPath(Map<Integer, StationBeanExpanded> stationsData) {
-        Set<String> stations = new HashSet<>();
-        stationsData.values().forEach(station -> stations.add(station.getStation().getName()));
-        return stationsData.values().size() == stations.size();
+            //TODO in general or only if no tickets were sold yet?
+            errors.rejectValue("train.capacity", "CannotUpdate", "There are journeys planned already");
     }
 
     public boolean isUniqueByNumber(int id, int number) {
         return trainDao.isUniqueByNumber(id, number);
     }
+
+    //Help Functions
+
 
     //Mappers
     private TrainBean trainDOToBean(TrainDO train) {

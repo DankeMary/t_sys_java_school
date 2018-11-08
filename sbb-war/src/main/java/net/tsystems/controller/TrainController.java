@@ -2,11 +2,7 @@ package net.tsystems.controller;
 
 import net.tsystems.bean.*;
 import net.tsystems.service.*;
-import net.tsystems.validator.TrainValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,9 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -30,12 +23,11 @@ import java.util.*;
 @Controller
 public class TrainController {
     private TripService tripService;
+    private RouteService routeService;
     private TripDataService tripDataService;
     private TrainService trainService;
     private StationService stationService;
 
-
-    private Map<Integer, StationBeanExpanded> stationsData = new HashMap<Integer, StationBeanExpanded>();
 
     @RequestMapping(value = "/trains", method = RequestMethod.GET)
     public String trains(Model model) {
@@ -46,26 +38,27 @@ public class TrainController {
 
     @RequestMapping(value = "/trains/add", method = RequestMethod.GET)
     public String showAddTrainForm(Model model) {
-        TrainBean train = new TrainBean();
+        CreateTrainForm train = new CreateTrainForm();
         model.addAttribute("trainForm", train);
         model.addAttribute("pathErrorMessage", "");
         return "addTrain";
     }
 
     @RequestMapping(value = "/trains", method = RequestMethod.POST)
-    public String addTrain(@ModelAttribute("trainForm") @Validated TrainBean train,
+    public String addTrain(@ModelAttribute("trainForm") @Validated CreateTrainForm train,
                            BindingResult result, Model model,
                            final RedirectAttributes redirectAttributes) {
-        String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
 
-        trainService.validate(train, true, result);
-
-        if (result.hasErrors() || !pathError.isEmpty()) {
-            model.addAttribute("pathErrorMessage", pathError);
-            stationsData = new HashMap<>();
+        List<String> customErrors = new LinkedList<>();
+        trainService.validate(train.getTrain(), true, result);
+        routeService.validatePrimitive(train.getPrimitivePath(), customErrors);
+        //todo customErrors list
+        if (result.hasErrors() || !customErrors.isEmpty()) {
+            model.addAttribute("pathErrors", customErrors);
+            //stationsData = new HashMap<>();
             return "addTrain";
         } else {
-            trainService.create(train, stationsData);
+            trainService.create(train.getTrain(), routeService.generatePathMapFromPrimitiveData(train.getPrimitivePath()));
             return "redirect:/trains";
         }
     }
@@ -82,12 +75,9 @@ public class TrainController {
                               @ModelAttribute("trainForm") @Validated TrainBean train,
                               BindingResult result, Model model,
                               final RedirectAttributes redirectAttributes) {
-        String pathError = trainService.isValidPath(stationsData) ? "" : "Path has to have unique stations";
 
         trainService.validate(train, false, result);
-        if (result.hasErrors() || !pathError.isEmpty()) {
-            model.addAttribute("pathErrorMessage", pathError);
-            stationsData = new HashMap<>();
+        if (result.hasErrors()) {
             return "editTrain";
         } else {
             trainService.update(train);
@@ -101,7 +91,6 @@ public class TrainController {
         trainService.delete(id);
         return "redirect:/trains";
     }
-
 
     @RequestMapping(value = "/trains/{id}", method = RequestMethod.GET)
     public String showTrainDetails(@PathVariable("id") int id, Model model) {
@@ -147,6 +136,7 @@ public class TrainController {
                                 @PathVariable("journey_id") int journeyId,
                                 Model model) {
         try {
+            //TODO!
             /*SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             Date parsedDate = dateFormat.parse(departureDay);
             Timestamp timestampDate = new java.sql.Timestamp(parsedDate.getTime());
@@ -202,34 +192,14 @@ public class TrainController {
         return result;
     }
 
-    @RequestMapping(value = "/addStationToList", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<?> addStationToList(String stationName, String timeArr, String timeDep) {
-        //stations.add(stationName);
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-            Date parsedDate = dateFormat.parse(timeArr);
-            Timestamp timestampArr = new java.sql.Timestamp(parsedDate.getTime());
-
-            parsedDate = dateFormat.parse(timeDep);
-            Timestamp timestampDep = new java.sql.Timestamp(parsedDate.getTime());
-
-            StationBeanExpanded b = new StationBeanExpanded();
-            //TODO!!!!
-            b.setStation(new StationBean());
-            b.getStation().setName(stationName);
-            b.setArrTime(timestampArr);
-            b.setDepTime(timestampDep);
-
-            stationsData.put(stationsData.size() + 1, b);
-        } catch (ParseException e) {
-        }
-        return new ResponseEntity<Object>(HttpStatus.CREATED);
-    }
-
     @Autowired
     public void setTrainService(TrainService trainService) {
         this.trainService = trainService;
+    }
+
+    @Autowired
+    public void setRouteService(RouteService routeService) {
+        this.routeService = routeService;
     }
 
     @Autowired

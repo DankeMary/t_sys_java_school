@@ -45,11 +45,15 @@
                     <thead class="thead-light">
                     <tr>
                         <th>Date</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <c:forEach items="${journeys}" var="journey">
                         <tr>
                             <td>${journey.departureDay}</td>
+                            <td><a href="/trains/${trainId}/journeys/${journey.journeyId}/delete"
+                                   onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${trainId}/journeys/${journey.journeyId}/delete')">Delete</a>
+                            </td>
                         </tr>
                     </c:forEach>
                 </table>

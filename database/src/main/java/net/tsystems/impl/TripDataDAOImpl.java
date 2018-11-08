@@ -4,6 +4,7 @@ import net.tsystems.entities.TripDataDO;
 import net.tsystems.entitydao.TripDataDAO;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -22,6 +23,15 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                 .createQuery("from TripDataDO where route.trip.train=" + id
                         + " and route.station = route.trip.from"
                         + " and date >= now()")
+                .list();
+        return list.size() == 0 ? null : list;
+    }
+
+    @Override
+    public List<TripDataDO> findByTrainIdAndTripDepartureDay(int trainId, String date) {
+        List<TripDataDO> list = (List<TripDataDO>)getEntityManager()
+                .createQuery("from TripDataDO where route.trip.train=" + trainId
+                        + " and date=" + date)
                 .list();
         return list.size() == 0 ? null : list;
     }

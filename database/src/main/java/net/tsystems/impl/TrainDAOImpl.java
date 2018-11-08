@@ -15,6 +15,13 @@ public class TrainDAOImpl extends AbstractDaoImpl<TrainDO, Integer> implements T
         return list.size() == 0 ? null : list.get(0);
     }
 
+    @Override
+    public TrainDO createReturnObject(TrainDO t) {
+         //t = (TrainDO)getEntityManager().merge(t);
+         getEntityManager().persist(t);
+         return t;
+    }
+
     public boolean isUniqueByNumber(int id, int number) {
         List<TrainDO> list = (List<TrainDO>)getEntityManager()
                 .createQuery("from TrainDO where number=" + number + " and id<>" + id)

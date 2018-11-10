@@ -50,8 +50,9 @@ public class TripDataService {
         RouteBean prevStData = trainPath.get(0);
         TrainBean train = trip.getTrain();
 
+        //TODO STUPIIIIIID for (int i ... ?) OR compare only arrivals
         for (RouteBean stData : trainPath) {
-            if (prevStData.getDeparture().after(stData.getArrival())) {
+            if (prevStData.getArrival().getTime() > stData.getArrival().getTime()) {
                 currDate = currDate.plusDays(1);
             }
             TripDataBean tripDataBean = new TripDataBean();

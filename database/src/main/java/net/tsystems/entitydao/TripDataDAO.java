@@ -9,5 +9,6 @@ import java.util.List;
 public interface TripDataDAO extends AbstractDao<TripDataDO, Integer> {
     List<TripDataDO> findFirstByTrain(int id);
     List<TripDataDO> findFirstAfterNowByTrain(int id);
-    List<TripDataDO> findByTrainIdAndTripDepartureDay (int trainId, String date);
+    List<TripDataDO> findByTrainIdAndTripDepartureDay (int trainId, Date date);
+    List<TripDataDO> getScheduleForStation(String stationName, int maxResults);
 }

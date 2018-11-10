@@ -2,14 +2,14 @@ package net.tsystems.bean;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class JourneyBean {
     private int journeyId;
     private TripBean trip;
     //private int routeId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date departureDay;
+    private LocalDate departureDay;
     //TODO seats left, canceleld, late
 
 
@@ -37,11 +37,11 @@ public class JourneyBean {
         this.routeId = routeId;
     }*/
 
-    public Date getDepartureDay() {
+    public LocalDate getDepartureDay() {
         return departureDay;
     }
 
-    public void setDepartureDay(Date departureDay) {
+    public void setDepartureDay(LocalDate departureDay) {
         this.departureDay = departureDay;
     }
 }

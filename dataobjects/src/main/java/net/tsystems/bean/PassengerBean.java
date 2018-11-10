@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 
 public class PassengerBean implements Serializable{
@@ -25,7 +25,7 @@ public class PassengerBean implements Serializable{
 
     @NotNull(message = "Birthday cannot be empty")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthday;
+    private LocalDate birthday;
 
     public int getId() {
         return id;
@@ -48,10 +48,10 @@ public class PassengerBean implements Serializable{
         this.lastName = lastName.trim();
     }
 
-    public Date getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 }

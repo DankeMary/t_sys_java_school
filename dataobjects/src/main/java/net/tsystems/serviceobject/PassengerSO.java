@@ -1,7 +1,7 @@
 package net.tsystems.serviceobject;
 
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class PassengerSO {
@@ -9,7 +9,7 @@ public class PassengerSO {
     private int id;
     private String firstName;
     private String lastName;
-    private Date birthday;
+    private LocalDate birthday;
 
     public int getId() {
         return id;
@@ -32,10 +32,10 @@ public class PassengerSO {
         this.lastName = lastName;
     }
 
-    public Date getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 

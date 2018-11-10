@@ -1,15 +1,15 @@
 package net.tsystems.bean;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class TripDataBean {
     private int id;
     private RouteBean route;
     private int seatsLeft;
-    private byte isCancelled;
-    private byte isLate;
-    private Date date;
-    private Date tripDeparture;
+    private boolean isCancelled;
+    private boolean isLate;
+    private LocalDate date;
+    private LocalDate tripDeparture;
 
     public int getId() {
         return id;
@@ -35,35 +35,35 @@ public class TripDataBean {
         this.seatsLeft = seatsLeft;
     }
 
-    public byte getIsCancelled() {
+    public boolean getIsCancelled() {
         return isCancelled;
     }
 
-    public void setIsCancelled(byte isCancelled) {
+    public void setIsCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
     }
 
-    public byte getIsLate() {
+    public boolean getIsLate() {
         return isLate;
     }
 
-    public void setIsLate(byte isLate) {
+    public void setIsLate(boolean isLate) {
         this.isLate = isLate;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public Date getTripDeparture() {
+    public LocalDate getTripDeparture() {
         return tripDeparture;
     }
 
-    public void setTripDeparture(Date tripDeparture) {
+    public void setTripDeparture(LocalDate tripDeparture) {
         this.tripDeparture = tripDeparture;
     }
 }

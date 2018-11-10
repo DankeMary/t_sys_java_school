@@ -40,15 +40,11 @@
                     <a class="dropdown-item" href="/trains/add">Add New</a>
                 </div>
             </li>
-            <!--<li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Trips
+            <li class="nav-item dropdown">
+                <a class="nav-link" href="/schedule"  role="button" aria-haspopup="true" aria-expanded="false">
+                    Schedule
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/trips">View All</a>
-                    <a class="dropdown-item" href="/trips/add">Add New</a>
-                </div>
-            </li>-->
+            </li>
         </ul>
     </div>
 </nav>

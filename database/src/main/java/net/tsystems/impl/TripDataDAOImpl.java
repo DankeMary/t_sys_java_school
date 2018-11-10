@@ -31,7 +31,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     public List<TripDataDO> findByTrainIdAndTripDepartureDay(int trainId, Date date) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery("from TripDataDO td where td.route.trip.train.id=" + trainId
-                        + " and date=" + date)
+                        + " and tripDeparture=\'" + date + "\'")
                 .list();
         return list.size() == 0 ? null : list;
     }

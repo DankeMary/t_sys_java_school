@@ -5,18 +5,17 @@ import net.tsystems.bean.StationBean;
 import net.tsystems.beanmapper.StationBeanMapper;
 import net.tsystems.beanmapper.StationBeanMapperImpl;
 import net.tsystems.service.StationService;
+import net.tsystems.service.TripDataService;
 import net.tsystems.validator.StationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -32,10 +31,8 @@ public class StationsController {
     private StationService stationService;
     private StationValidator validator = new StationValidator();
 
-    @Autowired
-    public void setStationService(StationService stationService) {
-        this.stationService = stationService;
-    }
+    private TripDataService tripDataService;
+
 
     @RequestMapping(value = "/stations", method = RequestMethod.GET)
     public String stations(Model model) {
@@ -92,5 +89,35 @@ public class StationsController {
                                 final RedirectAttributes redirectAttributes) {
         stationService.delete(id);
         return "redirect:/stations";
+    }
+
+    @RequestMapping(value = "/schedule", method = RequestMethod.GET)
+    public String showStationSchedule(@RequestParam(name = "stationName", required = false, defaultValue = "") String stationName, Model model) {
+        String trimmedStationName = stationName.trim();
+
+        if (!trimmedStationName.equals(""))
+            if (stationService.getStationByName(trimmedStationName) != null) {
+                model.addAttribute("schedule", tripDataService.getScheduleForStation(trimmedStationName, 10));
+
+            } else {
+                model.addAttribute("noStationMessage", "No station with such name found");
+            }
+        //TODO Say no such station
+        else {
+            model.addAttribute("noStationMessage", "");
+            model.addAttribute("schedule", new LinkedList<>());
+        }
+        model.addAttribute("stationName", stationName);
+        return "schedule";
+    }
+
+    @Autowired
+    public void setStationService(StationService stationService) {
+        this.stationService = stationService;
+    }
+
+    @Autowired
+    public void setTripDataService(TripDataService tripDataService) {
+        this.tripDataService = tripDataService;
     }
 }

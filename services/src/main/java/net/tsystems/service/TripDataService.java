@@ -6,12 +6,13 @@ import net.tsystems.beanmapper.TripDataBeanMapperImpl;
 import net.tsystems.entities.TripDataDO;
 import net.tsystems.entitydao.TripDataDAO;
 import net.tsystems.entitymapper.*;
+import net.tsystems.utilmapper.LocalDateMapper;
+import net.tsystems.utilmapper.LocalDateMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +26,9 @@ public class TripDataService {
     private TripDataEntityMapper tripDataEntityMapper = new TripDataEntityMapperImpl();
     private TripDataBeanMapper tripDataBeanMapper = new TripDataBeanMapperImpl();
 
-    private RouteService routeService = new RouteService();
+    private RouteService routeService;
+
+    private LocalDateMapper dateMapper = new LocalDateMapperImpl();
 
     //TODO create, update, delete
     public void create(TripDataBean tripDataBean){
@@ -34,21 +37,22 @@ public class TripDataService {
 
     public void createAll(JourneyBean journey) {
         //TODO check that no journey on that day already
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(journey.getDepartureDay());
+
+
+        //Calendar cal = Calendar.getInstance();
+        //cal.setTime(journey.getDepartureDay());
 
         TripBean trip = journey.getTrip();
 
         List<RouteBean> trainPath = routeService.getTrainPathByTrainId(trip.getTrain().getId());
-        Date tripDepDay = journey.getDepartureDay();
-        Date currDate = journey.getDepartureDay();
+        LocalDate tripDepDay = journey.getDepartureDay();
+        LocalDate currDate = journey.getDepartureDay();
         RouteBean prevStData = trainPath.get(0);
         TrainBean train = trip.getTrain();
 
         for (RouteBean stData : trainPath) {
             if (prevStData.getDeparture().after(stData.getArrival())) {
-                cal.add(Calendar.DATE, 1);
-                currDate = cal.getTime();
+                currDate = currDate.plusDays(1);
             }
             TripDataBean tripDataBean = new TripDataBean();
             tripDataBean.setDate(currDate);
@@ -56,8 +60,8 @@ public class TripDataService {
             tripDataBean.setRoute(stData);
             tripDataBean.setSeatsLeft(train.getCapacity().intValue());
 
-            tripDataBean.setIsCancelled((byte)0);
-            tripDataBean.setIsLate((byte)0);
+            tripDataBean.setIsCancelled(false);
+            tripDataBean.setIsLate(false);
             create(tripDataBean);
             prevStData = stData;
         }
@@ -83,17 +87,36 @@ public class TripDataService {
         return journeys;
     }
 
-    //TODO
+    //TODO doesn't work?
     //public void removeJourney(int trainId, Date departureDay) {
     public void removeJourney(int trainId, int journeyId) {
         //TODO check that journey with such Id exists
         //TODO how to pass the date?
         TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
-        List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getDate().toString()));
+        List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, dateMapper.asSqlDate(first.getDate())));
 
         if (journeyParts != null)
             for (TripDataBean tdBean : journeyParts)
                 tripDataDAO.delete(tripDataBeanToDO(tdBean));
+    }
+
+    public List<ScheduleBean> getScheduleForStation(String stationName, int maxResults) {
+        List<TripDataBean> tripData = tripDataDOListToBeanList(tripDataDAO.getScheduleForStation(stationName.trim(), 10));
+
+        List<ScheduleBean> schedule = new LinkedList<>();
+        if (tripData != null) {
+
+            for (TripDataBean tdBean : tripData) {
+                ScheduleBean item = new ScheduleBean();
+                item.setTripData(tdBean);
+                item.setRoute(tdBean.getRoute());
+                item.setTrip(tdBean.getRoute().getTrip());
+                item.setTrain(item.getTrip().getTrain());
+                schedule.add(item);
+            }
+        }
+
+        return schedule;
     }
 
     //Mappers

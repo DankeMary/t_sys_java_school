@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,10 +41,6 @@ public class TripDataService {
     public void createAll(JourneyBean journey) {
         //TODO check that no journey on that day already
 
-
-        //Calendar cal = Calendar.getInstance();
-        //cal.setTime(journey.getDepartureDay());
-
         TripBean trip = journey.getTrip();
 
         List<RouteBean> trainPath = routeService.getTrainPathByTrainId(trip.getTrain().getId());
@@ -50,9 +49,8 @@ public class TripDataService {
         RouteBean prevStData = trainPath.get(0);
         TrainBean train = trip.getTrain();
 
-        //TODO STUPIIIIIID for (int i ... ?) OR compare only arrivals
         for (RouteBean stData : trainPath) {
-            if (prevStData.getArrival().getTime() > stData.getArrival().getTime()) {
+            if (prevStData.getArrival().isAfter(stData.getArrival())) {
                 currDate = currDate.plusDays(1);
             }
             TripDataBean tripDataBean = new TripDataBean();
@@ -120,6 +118,21 @@ public class TripDataService {
         return schedule;
     }
 
+    public List<TripDataBean> getDataForSection(LocalDate fromDay,
+                                                LocalTime fromTime,
+                                                LocalDate toDay,
+                                                LocalTime toTime,
+                                                String fromStation,
+                                                String toStation) {
+        List <TripDataBean> result = tripDataDOListToBeanList(tripDataDAO.getDataForSection(dateMapper.asSqlDate(fromDay),
+                                        Time.valueOf(fromTime),
+                                        dateMapper.asSqlDate(toDay),
+                                        Time.valueOf(toTime),
+                                        fromStation,
+                                        toStation));
+
+        return result;
+    }
     //Mappers
     private TripDataDO tripDataBeanToDO (TripDataBean tdBean) {
         return tripDataEntityMapper.tripDataToDO(tripDataBeanMapper.tripDataToSO(tdBean));

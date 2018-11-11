@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service("routeService")
@@ -120,30 +122,20 @@ public class RouteService {
     public Map<Integer, StationBeanExpanded> generatePathMapFromPrimitiveData(List<PrimitiveRouteBean> primitivePath) {
         Map<Integer, StationBeanExpanded> result = new HashMap<>();
 
-        try {
-            for (PrimitiveRouteBean prBean : primitivePath) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-                Date parsedDate = dateFormat.parse(prBean.getArrival());
-                Timestamp timeArr = new java.sql.Timestamp(parsedDate.getTime());
+        for (PrimitiveRouteBean prBean : primitivePath) {
+            LocalTime timeArr = LocalTime.parse(prBean.getArrival());
+            LocalTime timeDep = LocalTime.parse(prBean.getDeparture());
 
-                parsedDate = dateFormat.parse(prBean.getDeparture());
-                Timestamp timeDep = new java.sql.Timestamp(parsedDate.getTime());
+            StationBeanExpanded b = new StationBeanExpanded();
+            b.setStation(new StationBean());
+            b.getStation().setName(prBean.getStation());
+            b.setArrTime(timeArr);
+            b.setDepTime(timeDep);
 
-                StationBeanExpanded b = new StationBeanExpanded();
-                b.setStation(new StationBean());
-                b.getStation().setName(prBean.getStation());
-                b.setArrTime(timeArr);
-                b.setDepTime(timeDep);
-
-                result.put(result.size() + 1, b);
-            }
-
-            return result;
-
-        } catch (ParseException e) {
-            //TODO !!!
+            result.put(result.size() + 1, b);
         }
-        return null;
+
+        return result;
     }
 
     private void createRoutesFromList(Map<Integer, StationBeanExpanded> routesData, TripBean trip) {

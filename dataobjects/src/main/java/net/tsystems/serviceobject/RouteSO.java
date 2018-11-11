@@ -1,14 +1,14 @@
 package net.tsystems.serviceobject;
 
-import java.sql.Timestamp;
+import java.time.LocalTime;
 
 public class RouteSO {
     private int id;
     private TripSO trip;
     private StationSO station;
     private StationSO nextStation;
-    private Timestamp arrival;
-    private Timestamp departure;
+    private LocalTime arrival;
+    private LocalTime departure;
 
     public int getId() {
         return id;
@@ -38,17 +38,17 @@ public class RouteSO {
         this.nextStation = nextStation;
     }
 
-    public Timestamp getArrival() {
+    public LocalTime getArrival() {
         return arrival;
     }
-    public void setArrival(Timestamp arrival) {
+    public void setArrival(LocalTime arrival) {
         this.arrival = arrival;
     }
 
-    public Timestamp getDeparture() {
+    public LocalTime getDeparture() {
         return departure;
     }
-    public void setDeparture(Timestamp departure) {
+    public void setDeparture(LocalTime departure) {
         this.departure = departure;
     }
 

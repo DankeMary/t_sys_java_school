@@ -3,14 +3,16 @@ package net.tsystems.bean;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 public class StationBeanExpanded {
     private int routeId;
     //private String stationName;
     private StationBean station;
-    private Timestamp arrTime;
-    private Timestamp depTime;
+    private LocalTime arrTime;
+    private LocalTime depTime;
 
     public int getRouteId() {
         return routeId;
@@ -28,19 +30,19 @@ public class StationBeanExpanded {
         this.station = station;
     }
 
-    public Timestamp getArrTime() {
+    public LocalTime getArrTime() {
         return arrTime;
     }
 
-    public void setArrTime(Timestamp arrTime) {
+    public void setArrTime(LocalTime arrTime) {
         this.arrTime = arrTime;
     }
 
-    public Timestamp getDepTime() {
+    public LocalTime getDepTime() {
         return depTime;
     }
 
-    public void setDepTime(Timestamp depTime) {
+    public void setDepTime(LocalTime depTime) {
         this.depTime = depTime;
     }
 }

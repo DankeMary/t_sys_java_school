@@ -1,8 +1,9 @@
 package net.tsystems.bean;
 
-import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 public class RouteBean {
@@ -10,8 +11,8 @@ public class RouteBean {
     private TripBean trip;
     private StationBean station;
     private StationBean nextStation;
-    private Timestamp arrival;
-    private Timestamp departure;
+    private LocalTime arrival;
+    private LocalTime departure;
 
     public int getId() {
         return id;
@@ -41,17 +42,17 @@ public class RouteBean {
         this.nextStation = nextStation;
     }
 
-    public Timestamp getArrival() {
+    public LocalTime getArrival() {
         return arrival;
     }
-    public void setArrival(Timestamp arrival) {
+    public void setArrival(LocalTime arrival) {
         this.arrival = arrival;
     }
 
-    public Timestamp getDeparture() {
+    public LocalTime getDeparture() {
         return departure;
     }
-    public void setDeparture(Timestamp departure) {
+    public void setDeparture(LocalTime departure) {
         this.departure = departure;
     }
 }

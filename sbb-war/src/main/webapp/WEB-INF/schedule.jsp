@@ -22,7 +22,7 @@
             <div class="col-12" style="overflow:auto">
                 <h5>Station Schedule</h5>
                 <div class="formFragment">
-                    <form method="get" action="/schedule">
+                    <form method="GET" action="/schedule">
                         <input type="text" placeholder="Station Name" id="station-input-search" value="${stationName}"
                                name="stationName">
                         <input type="submit" value="Show"/>
@@ -60,8 +60,7 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${not item.tripData.isLate}">
-                                                                <fmt:formatDate value="${item.route.arrival}"
-                                                                                pattern="HH:mm"/>
+                                                                ${item.route.arrival}
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <span style="color: red">is late</span>
@@ -71,8 +70,7 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${not item.tripData.isLate}">
-                                                                <fmt:formatDate value="${item.route.departure}"
-                                                                                pattern="HH:mm"/>
+                                                                ${item.route.departure}
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <span style="color: red">is late</span>

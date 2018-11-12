@@ -39,8 +39,8 @@
                     <c:forEach items="${trainData.trainRoute}" var="routePoint">
                         <tr>
                             <td>${routePoint.station.name}</td>
-                            <td><fmt:formatDate value="${routePoint.arrival}" pattern="HH:mm" /></td>
-                            <td><fmt:formatDate value="${routePoint.departure}" pattern="HH:mm" /></td>
+                            <td>${routePoint.arrival}</td>
+                            <td>${routePoint.departure}</td>
                             <!--<td>${routePoint.arrival}</td>
                             <td>${routePoint.departure}</td>-->
                         </tr>

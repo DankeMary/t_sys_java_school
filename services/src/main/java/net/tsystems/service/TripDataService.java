@@ -119,15 +119,22 @@ public class TripDataService {
         return schedule;
     }
 
-    public List<SearchTicketForm> getDataForSection(LocalDate fromDay, LocalTime fromTime,
-                                                LocalDate toDay, LocalTime toTime,
+    public List<SearchTicketForm> getDataForSection(String fromDay, String fromTime,
+                                                    String toDay, String toTime,
                                                 String fromStation, String toStation) {
+        LocalDate fromDate = LocalDate.parse(fromDay.trim());
+        LocalDate toDate = LocalDate.parse(toDay.trim());
+
+        LocalTime fromLocalTime = LocalTime.parse(fromTime);
+        LocalTime toLocalTime = LocalTime.parse(toTime);
+
         //TODO Check that stations exist
+
         //1. Find data which satisfies the conditions
-        List <TripDataBean> result = tripDataDOListToBeanList(tripDataDAO.getDataForSection(dateMapper.asSqlDate(fromDay),
-                                        Time.valueOf(fromTime),
-                                        dateMapper.asSqlDate(toDay),
-                                        Time.valueOf(toTime),
+        List <TripDataBean> result = tripDataDOListToBeanList(tripDataDAO.getDataForSection(dateMapper.asSqlDate(fromDate),
+                                        Time.valueOf(fromLocalTime),
+                                        dateMapper.asSqlDate(toDate),
+                                        Time.valueOf(toLocalTime),
                                         fromStation,
                                         toStation));
         List<SearchTicketForm> availableTicketsData = new LinkedList<>();

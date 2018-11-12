@@ -18,6 +18,7 @@ import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service("journeyService")
 @Transactional
@@ -118,20 +119,38 @@ public class TripDataService {
         return schedule;
     }
 
-    public List<TripDataBean> getDataForSection(LocalDate fromDay,
-                                                LocalTime fromTime,
-                                                LocalDate toDay,
-                                                LocalTime toTime,
-                                                String fromStation,
-                                                String toStation) {
+    public List<SearchTicketForm> getDataForSection(LocalDate fromDay, LocalTime fromTime,
+                                                LocalDate toDay, LocalTime toTime,
+                                                String fromStation, String toStation) {
+        //TODO Check that stations exist
+        //1. Find data which satisfies the conditions
         List <TripDataBean> result = tripDataDOListToBeanList(tripDataDAO.getDataForSection(dateMapper.asSqlDate(fromDay),
                                         Time.valueOf(fromTime),
                                         dateMapper.asSqlDate(toDay),
                                         Time.valueOf(toTime),
                                         fromStation,
                                         toStation));
+        List<SearchTicketForm> availableTicketsData = new LinkedList<>();
 
-        return result;
+        for (TripDataBean tdBean : result) {
+            //2. For each find all the related TripDatas (for now we've only found the 'from' ones)
+            List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(tdBean.getRoute().getTrip().getId(),
+                    dateMapper.asSqlDate(tdBean.getTripDeparture())));
+            //3. Extract only the ones between needed stations
+            TripDataBean fromTDBean = journeyTripData.stream().filter(i -> i.getRoute().getStation().getName().equals(fromStation.trim())).findFirst().get();
+            int fromTDBeanIndex = journeyTripData.indexOf(fromTDBean);
+
+            TripDataBean toTDBean = journeyTripData.stream().filter(i -> i.getRoute().getStation().getName().equals(toStation.trim())).findFirst().get();
+            int toTDBeanIndex = journeyTripData.indexOf(toTDBean);
+
+            List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex);
+            //4. Get the min "seats" number - that's the number of tickets available
+            int ticketsAvailable = ticketRelatedTDBeans.stream().min(Comparator.comparing(TripDataBean::getSeatsLeft)).get().getSeatsLeft();
+
+            availableTicketsData.add(new SearchTicketForm(fromTDBean, toTDBean, ticketsAvailable));
+        }
+
+        return availableTicketsData;
     }
     //Mappers
     private TripDataDO tripDataBeanToDO (TripDataBean tdBean) {

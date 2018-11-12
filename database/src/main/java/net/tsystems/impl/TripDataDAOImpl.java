@@ -39,6 +39,15 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     }
 
     @Override
+    public List<TripDataDO> findByTripIdAndTripDepartureDay(int tripId, Date date) {
+        List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
+                .createQuery("from TripDataDO td where td.route.trip.id=" + tripId
+                        + " and tripDeparture=\'" + date + "\'")
+                .list();
+        return list.size() == 0 ? null : list;
+    }
+
+    @Override
     public List<TripDataDO> getScheduleForStation(String stationName, int maxResults) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery("select td from TripDataDO td " +
@@ -69,7 +78,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                                               String fromStation,
                                               String toStation) {
         //TODO check that dates and times are after right now?
-
+        //TODO !!! Check that there're more than 10 minutes before the departure
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery(
                         "select td1 from TripDataDO td1 " +

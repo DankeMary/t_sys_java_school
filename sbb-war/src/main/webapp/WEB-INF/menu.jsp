@@ -45,6 +45,11 @@
                     Schedule
                 </a>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link" href="/trains/find"  role="button" aria-haspopup="true" aria-expanded="false">
+                    Buy Tickets
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

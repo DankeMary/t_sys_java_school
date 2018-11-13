@@ -2,6 +2,7 @@ package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -22,9 +23,9 @@ public class RouteDO {
     @JoinColumn(name = "next_station")
     private StationDO nextStation;
     @Column(name = "arrival", nullable = false)
-    private Timestamp arrival;
+    private LocalDateTime arrival;
     @Column(name = "departure", nullable = false)
-    private Timestamp departure;
+    private LocalDateTime departure;
 
     public int getId() {
         return id;
@@ -56,21 +57,21 @@ public class RouteDO {
 
     @Basic
     @Column(name = "arrival", nullable = false)
-    public Timestamp getArrival() {
+    public LocalDateTime getArrival() {
         return arrival;
     }
 
-    public void setArrival(Timestamp arrival) {
+    public void setArrival(LocalDateTime arrival) {
         this.arrival = arrival;
     }
 
     @Basic
     @Column(name = "departure", nullable = false)
-    public Timestamp getDeparture() {
+    public LocalDateTime getDeparture() {
         return departure;
     }
 
-    public void setDeparture(Timestamp departure) {
+    public void setDeparture(LocalDateTime departure) {
         this.departure = departure;
     }
 

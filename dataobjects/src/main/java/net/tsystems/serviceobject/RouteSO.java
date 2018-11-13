@@ -1,5 +1,6 @@
 package net.tsystems.serviceobject;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class RouteSO {
@@ -7,8 +8,8 @@ public class RouteSO {
     private TripSO trip;
     private StationSO station;
     private StationSO nextStation;
-    private LocalTime arrival;
-    private LocalTime departure;
+    private LocalDateTime arrival;
+    private LocalDateTime departure;
 
     public int getId() {
         return id;
@@ -38,17 +39,17 @@ public class RouteSO {
         this.nextStation = nextStation;
     }
 
-    public LocalTime getArrival() {
+    public LocalDateTime getArrival() {
         return arrival;
     }
-    public void setArrival(LocalTime arrival) {
+    public void setArrival(LocalDateTime arrival) {
         this.arrival = arrival;
     }
 
-    public LocalTime getDeparture() {
+    public LocalDateTime getDeparture() {
         return departure;
     }
-    public void setDeparture(LocalTime departure) {
+    public void setDeparture(LocalDateTime departure) {
         this.departure = departure;
     }
 

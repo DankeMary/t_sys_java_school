@@ -1,6 +1,7 @@
 package net.tsystems.bean;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TripDataBean {
     private int id;
@@ -8,7 +9,7 @@ public class TripDataBean {
     private int seatsLeft;
     private boolean isCancelled;
     private boolean isLate;
-    private LocalDate date;
+    private LocalDateTime date;
     private LocalDate tripDeparture;
 
     public int getId() {
@@ -51,11 +52,11 @@ public class TripDataBean {
         this.isLate = isLate;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

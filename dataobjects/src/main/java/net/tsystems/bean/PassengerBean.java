@@ -1,7 +1,6 @@
 package net.tsystems.bean;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -11,11 +10,11 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 
-public class PassengerBean implements Serializable{
+public class PassengerBean implements Serializable {
     private int id;
 
     @Size(max = 45, message = "Max length - 45")
-    @Pattern(regexp = "^[a-zA-Z \\-]+$", message = "Only latin letters, spaces and hyphens are allowed")
+    @Pattern(regexp = "^$|^[a-zA-Z \\-]+$", message = "Only latin letters, spaces and hyphens are allowed")
     private String firstName;
 
     @NotEmpty(message = "Last name required")
@@ -30,6 +29,7 @@ public class PassengerBean implements Serializable{
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -37,6 +37,7 @@ public class PassengerBean implements Serializable{
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName.trim();
     }
@@ -44,6 +45,7 @@ public class PassengerBean implements Serializable{
     public String getLastName() {
         return lastName;
     }
+
     public void setLastName(String lastName) {
         this.lastName = lastName.trim();
     }
@@ -51,6 +53,7 @@ public class PassengerBean implements Serializable{
     public LocalDate getBirthday() {
         return birthday;
     }
+
     public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }

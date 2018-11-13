@@ -2,6 +2,8 @@ package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "trip_data")
@@ -20,10 +22,10 @@ public class TripDataDO {
     private byte isCancelled;
     @Column(name = "is_late", nullable = false)
     private byte isLate;
-    @Column(name = "departureDay", nullable = false)
-    private Date date;
+    @Column(name = "departure_day_time", nullable = false)
+    private LocalDateTime date;
     @Column(name = "trip_departure", nullable = false)
-    private Date tripDeparture;
+    private LocalDate tripDeparture;
 
     public int getId() {
         return id;
@@ -60,17 +62,17 @@ public class TripDataDO {
         this.isLate = isLate;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
-    public Date getTripDeparture() {
+    public LocalDate getTripDeparture() {
         return tripDeparture;
     }
-    public void setTripDeparture(Date tripDeparture) {
+    public void setTripDeparture(LocalDate tripDeparture) {
         this.tripDeparture = tripDeparture;
     }
 

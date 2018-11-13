@@ -2,6 +2,7 @@ package net.tsystems.entities;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -17,11 +18,12 @@ public class PassengerDO {
     @Column(name = "last_name", nullable = false, length = 45)
     private String lastName;
     @Column(name = "birthday")
-    private Date birthday;
+    private LocalDate birthday;
 
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -29,6 +31,7 @@ public class PassengerDO {
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -36,14 +39,16 @@ public class PassengerDO {
     public String getLastName() {
         return lastName;
     }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public Date getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
-    public void setBirthday(Date birthday) {
+
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 

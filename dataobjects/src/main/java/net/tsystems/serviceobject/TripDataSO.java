@@ -1,6 +1,7 @@
 package net.tsystems.serviceobject;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TripDataSO {
     private int id;
@@ -8,7 +9,7 @@ public class TripDataSO {
     private int seatsLeft;
     private byte isCancelled;
     private byte isLate;
-    private LocalDate date;
+    private LocalDateTime date;
     private LocalDate tripDeparture;
 
     public int getId() {
@@ -46,10 +47,10 @@ public class TripDataSO {
         this.isLate = isLate;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

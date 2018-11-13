@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -55,7 +56,7 @@ public class TripDataService {
                 currDate = currDate.plusDays(1);
             }
             TripDataBean tripDataBean = new TripDataBean();
-            tripDataBean.setDate(currDate);
+            tripDataBean.setDate(LocalDateTime.of(currDate, stData.getDeparture()));
             tripDataBean.setTripDeparture(tripDepDay);
             tripDataBean.setRoute(stData);
             tripDataBean.setSeatsLeft(train.getCapacity().intValue());
@@ -81,7 +82,7 @@ public class TripDataService {
                 JourneyBean jb = new JourneyBean();
                 jb.setJourneyId(tdb.getId());
                 jb.setTrip(tdb.getRoute().getTrip());
-                jb.setDepartureDay(tdb.getDate());
+                jb.setDepartureDay(tdb.getDate().toLocalDate());
                 journeys.add(jb);
             }
         return journeys;
@@ -93,7 +94,7 @@ public class TripDataService {
         //TODO check that journey with such Id exists
         //TODO how to pass the date?
         TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
-        List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, dateMapper.asSqlDate(first.getDate())));
+        List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getDate().toLocalDate()/*dateMapper.asSqlDate(first.getDate())*/));
 
         if (journeyParts != null)
             for (TripDataBean tdBean : journeyParts)

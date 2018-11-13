@@ -8,6 +8,8 @@ import net.tsystems.entitydao.TripDataDAO;
 import net.tsystems.entitymapper.*;
 import net.tsystems.utilmapper.LocalDateMapper;
 import net.tsystems.utilmapper.LocalDateMapperImpl;
+import net.tsystems.utilmapper.LocalTimeMapper;
+import net.tsystems.utilmapper.LocalTimeMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +34,13 @@ public class TripDataService {
     private TripDataBeanMapper tripDataBeanMapper = new TripDataBeanMapperImpl();
 
     private RouteService routeService;
+    private PassengerService passengerService;
 
     private LocalDateMapper dateMapper = new LocalDateMapperImpl();
+    private LocalTimeMapper timeMapper = new LocalTimeMapperImpl();
 
     //TODO create, update, delete
-    public void create(TripDataBean tripDataBean){
+    public void create(TripDataBean tripDataBean) {
         tripDataDAO.create(tripDataBeanToDO(tripDataBean));
     }
 
@@ -68,15 +72,15 @@ public class TripDataService {
         }
     }
 
-    public List<JourneyBean> getFirstJourneysByTrain(int id, boolean afterNow){
-        List <TripDataBean> tripDataBeans;
+    public List<JourneyBean> getFirstJourneysByTrain(int id, boolean afterNow) {
+        List<TripDataBean> tripDataBeans;
 
         if (afterNow)
             tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
         else
             tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));
 
-        List <JourneyBean> journeys = new LinkedList<JourneyBean>();
+        List<JourneyBean> journeys = new LinkedList<JourneyBean>();
         if (tripDataBeans != null)
             for (TripDataBean tdb : tripDataBeans) {
                 JourneyBean jb = new JourneyBean();
@@ -102,7 +106,7 @@ public class TripDataService {
     }
 
     public List<ScheduleBean> getScheduleForStation(String stationName, int maxResults) {
-        List<TripDataBean> tripData = tripDataDOListToBeanList(tripDataDAO.getScheduleForStation(stationName.trim(), 10));
+        List<TripDataBean> tripData = tripDataDOListToBeanList(tripDataDAO.getScheduleForStation(stationName.trim(), maxResults));
 
         List<ScheduleBean> schedule = new LinkedList<>();
         if (tripData != null) {
@@ -122,7 +126,7 @@ public class TripDataService {
 
     public List<SearchTicketForm> getDataForSection(String fromDay, String fromTime,
                                                     String toDay, String toTime,
-                                                String fromStation, String toStation) {
+                                                    String fromStation, String toStation) {
         LocalDate fromDate = LocalDate.parse(fromDay.trim());
         LocalDate toDate = LocalDate.parse(toDay.trim());
 
@@ -132,12 +136,13 @@ public class TripDataService {
         //TODO Check that stations exist
 
         //1. Find data which satisfies the conditions
-        List <TripDataBean> result = tripDataDOListToBeanList(tripDataDAO.getDataForSection(dateMapper.asSqlDate(fromDate),
-                                        Time.valueOf(fromLocalTime),
-                                        dateMapper.asSqlDate(toDate),
-                                        Time.valueOf(toLocalTime),
-                                        fromStation,
-                                        toStation));
+        List<TripDataBean> result = tripDataDOListToBeanList(tripDataDAO.getDataForSection(
+                timeMapper.asTimestamp(fromDate),
+                timeMapper.asTime(fromLocalTime),
+                timeMapper.asTimestamp(toDate),
+                timeMapper.asTime(toLocalTime),
+                fromStation,
+                toStation));
         List<SearchTicketForm> availableTicketsData = new LinkedList<>();
 
         for (TripDataBean tdBean : result) {
@@ -145,27 +150,59 @@ public class TripDataService {
             List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(tdBean.getRoute().getTrip().getId(),
                     dateMapper.asSqlDate(tdBean.getTripDeparture())));
             //3. Extract only the ones between needed stations
-            TripDataBean fromTDBean = journeyTripData.stream().filter(i -> i.getRoute().getStation().getName().equals(fromStation.trim())).findFirst().get();
+            TripDataBean fromTDBean = journeyTripData.stream().filter(i -> i.getRoute().getStation().getName().equals(fromStation.trim())).findFirst().orElse(null);
             int fromTDBeanIndex = journeyTripData.indexOf(fromTDBean);
 
-            TripDataBean toTDBean = journeyTripData.stream().filter(i -> i.getRoute().getStation().getName().equals(toStation.trim())).findFirst().get();
+            TripDataBean toTDBean = journeyTripData.stream().filter(i -> i.getRoute().getStation().getName().equals(toStation.trim())).findFirst().orElse(null);
             int toTDBeanIndex = journeyTripData.indexOf(toTDBean);
 
-            List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex);
-            //4. Get the min "seats" number - that's the number of tickets available
-            int ticketsAvailable = ticketRelatedTDBeans.stream().min(Comparator.comparing(TripDataBean::getSeatsLeft)).get().getSeatsLeft();
-
-            availableTicketsData.add(new SearchTicketForm(fromTDBean, toTDBean, ticketsAvailable));
+            if (fromTDBeanIndex < toTDBeanIndex) {
+                List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex + 1);
+                //4. Get the min "seats" number - that's the number of tickets available
+                int ticketsAvailable = ticketRelatedTDBeans.stream().min(Comparator.comparing(TripDataBean::getSeatsLeft)).get().getSeatsLeft();
+                if (ticketsAvailable > 0)
+                    availableTicketsData.add(new SearchTicketForm(fromTDBean, toTDBean, ticketsAvailable));
+            }
         }
 
         return availableTicketsData;
     }
+
+    public boolean buyTicket(PassengerBean passenger, int fromTripDataId, int toTripDataId) {
+        //1. Find data which satisfies the conditions
+        TripDataBean fromTD = tripDataDOToBean(tripDataDAO.find(fromTripDataId));
+
+        List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(fromTD.getRoute().getTrip().getId(),
+                dateMapper.asSqlDate(fromTD.getTripDeparture())));
+
+        TripDataBean fromTDBean = journeyTripData.stream().filter(i -> i.getId() == fromTripDataId).findFirst().orElse(null);
+        int fromTDBeanIndex = journeyTripData.indexOf(fromTDBean);
+
+        TripDataBean toTDBean = journeyTripData.stream().filter(i -> i.getId() == toTripDataId).findFirst().orElse(null);
+        int toTDBeanIndex = journeyTripData.indexOf(toTDBean);
+
+        List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex + 1);
+        //4. Get the min "seats" number - that's the number of tickets available
+        int ticketsAvailable = ticketRelatedTDBeans.stream().min(Comparator.comparing(TripDataBean::getSeatsLeft)).get().getSeatsLeft();
+
+        //TODO if ticketsAv >= tickets needed then ok else return false
+        if (ticketsAvailable < 1)
+            return false;
+        for (TripDataBean tdBean : ticketRelatedTDBeans) {
+            tdBean.setSeatsLeft(tdBean.getSeatsLeft() - 1);
+            tripDataDAO.update(tripDataBeanToDO(tdBean));
+        }
+        //TODO return ID passengerService.create(passenger);
+        //TODO create Ticket
+        return true;
+    }
+
     //Mappers
-    private TripDataDO tripDataBeanToDO (TripDataBean tdBean) {
+    private TripDataDO tripDataBeanToDO(TripDataBean tdBean) {
         return tripDataEntityMapper.tripDataToDO(tripDataBeanMapper.tripDataToSO(tdBean));
     }
 
-    private TripDataBean tripDataDOToBean (TripDataDO tdDO) {
+    private TripDataBean tripDataDOToBean(TripDataDO tdDO) {
         return tripDataBeanMapper.tripDataToBean(tripDataEntityMapper.tripDataToSO(tdDO));
     }
 
@@ -177,5 +214,9 @@ public class TripDataService {
     @Autowired
     public void setRouteService(RouteService routeService) {
         this.routeService = routeService;
+    }
+    @Autowired
+    public void setPassengerService(PassengerService passengerService) {
+        this.passengerService = passengerService;
     }
 }

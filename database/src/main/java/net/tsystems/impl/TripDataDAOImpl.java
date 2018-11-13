@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -30,7 +31,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     }
 
     @Override
-    public List<TripDataDO> findByTrainIdAndTripDepartureDay(int trainId, Date date) {
+    public List<TripDataDO> findByTrainIdAndTripDepartureDay(int trainId, LocalDate date) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery("from TripDataDO td where td.route.trip.train.id=" + trainId
                         + " and tripDeparture=\'" + date + "\'")
@@ -71,9 +72,9 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     //TODO time? (type)
     @Override
     //@SuppressWarnings("unchecked")
-    public List<TripDataDO> getDataForSection(Date fromDay,
+    public List<TripDataDO> getDataForSection(Timestamp fromDay,
                                               Time fromTime,
-                                              Date toDay,
+                                              Timestamp toDay,
                                               Time toTime,
                                               String fromStation,
                                               String toStation) {
@@ -105,10 +106,10 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                         "(td.date = \'" + fromDay + "\' and time(r.departure) >= \'" + fromTime + "\')" +
                         " or " +
                         //td.date in (fromDay, toDay)
-                        "(td.date > " + fromDay + " and td.date < " + toDay + ") " +
+                        "(td.date > \'" + fromDay + "\' and td.date < \'" + toDay + "\') " +
                         " or " +
                         //td.date == toDay
-                        "(td.date = " + toDay + " and time(r.departure) < \'" + toTime + "\')))" +
+                        "(td.date = \'" + toDay + "\' and time(r.departure) < \'" + toTime + "\')))" +
                         " and exists (select td2 from TripDataDO td2  " +
                         "join RouteDO r2 on td2.route = r2  " +
                         "join TripDO t2 on r2.trip = t2  " +

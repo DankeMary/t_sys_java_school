@@ -5,17 +5,19 @@ import net.tsystems.entities.TripDataDO;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TripDataDAO extends AbstractDao<TripDataDO, Integer> {
     List<TripDataDO> findFirstByTrain(int id);
     List<TripDataDO> findFirstAfterNowByTrain(int id);
-    List<TripDataDO> findByTrainIdAndTripDepartureDay (int trainId, Date date);
+    List<TripDataDO> findByTrainIdAndTripDepartureDay (int trainId, LocalDate date);
     List<TripDataDO> findByTripIdAndTripDepartureDay (int tripId, Date date);
     List<TripDataDO> getScheduleForStation(String stationName, int maxResults);
-    List<TripDataDO> getDataForSection (Date fromDay,
+    List<TripDataDO> getDataForSection (Timestamp fromDay,
                                         Time fromTime,
-                                        Date toDay,
+                                        Timestamp toDay,
                                         Time toTime,
                                         String fromStation,
                                         String toStation);

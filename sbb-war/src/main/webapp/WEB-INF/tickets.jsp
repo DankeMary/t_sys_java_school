@@ -64,7 +64,7 @@
                                             <td>
                                                 ${item.ticketsQty}
                                             </td>
-                                            <td><a href="#">Buy</a></td>
+                                            <td><a href="/buyTicket?fromJourney=${item.fromTDBean.id}&toJourney=${item.toTDBean.id}">Buy</a></td>
                                         </tr>
                                     </c:when>
                                 </c:choose>

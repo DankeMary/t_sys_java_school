@@ -20,58 +20,65 @@
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h3>Edit The Passenger Details</h3>
-                <form:form method="POST"
-                           action="/passengers/${passengerForm.id}"
-                           modelAttribute="passengerForm">
-                    <div class="formFragment">
-                        <form:label path="firstName">First Name</form:label>
-                        <spring:bind path="firstName">
-                            <input type="text" value="${status.value}"
-                                   name="${status.expression}">
-                            <span style="color: red">
+                <c:choose>
+                    <c:when test="${empty passengerForm}">
+                        <h5>No passenger with such data found</h5>
+                    </c:when>
+                    <c:otherwise>
+                        <form:form method="POST"
+                                   action="/passengers/${passengerForm.id}"
+                                   modelAttribute="passengerForm">
+                            <div class="formFragment">
+                                <form:label path="firstName">First Name</form:label>
+                                <spring:bind path="firstName">
+                                    <input type="text" value="${status.value}"
+                                           name="${status.expression}">
+                                    <span style="color: red">
                             <c:if test="${status.error}">
                                 <c:forEach items="${status.errorMessages}" var="error">
                                     <c:out value="${error}"/>
                                 </c:forEach>
                             </c:if>
                             </span>
-                            </input>
-                        </spring:bind>
-                    </div>
-                    <div class="formFragment">
-                        <form:label path="lastName">Last Name</form:label>
-                        <spring:bind path="lastName">
-                            <input type="text" value="${status.value}"
-                                   name="${status.expression}">
-                            <span style="color: red">
+                                    </input>
+                                </spring:bind>
+                            </div>
+                            <div class="formFragment">
+                                <form:label path="lastName">Last Name</form:label>
+                                <spring:bind path="lastName">
+                                    <input type="text" value="${status.value}"
+                                           name="${status.expression}">
+                                    <span style="color: red">
                             <c:if test="${status.error}">
                                 <c:forEach items="${status.errorMessages}" var="error">
                                     <c:out value="${error}"/>
                                 </c:forEach>
                             </c:if></span>
-                            </input>
-                        </spring:bind>
-                    </div>
-                    <div class="formFragment">
-                        <form:label path="birthday">Birthday</form:label>
-                        <spring:bind path="birthday">
-                            <input type="date" value="${status.value}"
-                                   name="${status.expression}">
-                            <span style="color: red">
-                            <c:if test="${status.error}">
-                                <c:forEach items="${status.errorMessages}" var="error">
-                                    <c:out value="${error}"/>
-                                </c:forEach>
-                            </c:if>
-                            <span style="color:red; display: block;"><c:out value="${birthdayError}"/></span>
-                            </span>
-                            </input>
-                        </spring:bind>
-                    </div>
-                    <div style="margin: auto;">
-                        <input type="submit" value="Submit" id="submit" class="submit-btn"/>
-                    </div>
-                </form:form>
+                                    </input>
+                                </spring:bind>
+                            </div>
+                            <div class="formFragment">
+                                <form:label path="birthday">Birthday</form:label>
+                                <spring:bind path="birthday">
+                                    <input type="date" value="${status.value}"
+                                           name="${status.expression}">
+                                        <span style="color: red">
+                                        <c:if test="${status.error}">
+                                            <c:forEach items="${status.errorMessages}" var="error">
+                                                <c:out value="${error}"/>
+                                            </c:forEach>
+                                        </c:if>
+                                        </span>
+                                        <span style="color:red; display: block;"><c:out value="${birthdayError}"/></span>
+                                    </input>
+                                </spring:bind>
+                            </div>
+                            <div style="margin: auto;">
+                                <input type="submit" value="Submit" id="submit" class="submit-btn"/>
+                            </div>
+                        </form:form>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <div class="col">

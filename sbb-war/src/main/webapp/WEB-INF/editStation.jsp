@@ -20,27 +20,34 @@
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h3>Edit The Station Details</h3>
-                <form:form method="POST"
-                           action="/stations/${stationForm.id}"
-                           modelAttribute="stationForm">
-                    <div class="formFragment">
-                        <form:label path="name">Name</form:label>
-                        <spring:bind path="name">
-                            <input value="${status.value}" name="${status.expression}">
-                            <span style="color: red">
+                <c:choose>
+                    <c:when test="${empty stationForm}">
+                        <h5>No station with such data found</h5>
+                    </c:when>
+                    <c:otherwise>
+                        <form:form method="POST"
+                                   action="/stations/${stationForm.id}"
+                                   modelAttribute="stationForm">
+                            <div class="formFragment">
+                                <form:label path="name">Name</form:label>
+                                <spring:bind path="name">
+                                    <input value="${status.value}" name="${status.expression}">
+                                    <span style="color: red">
                                 <c:if test="${status.error}">
                                     <c:forEach items="${status.errorMessages}" var="error">
                                         <c:out value="${error}"/>
                                     </c:forEach>
                                 </c:if>
                             </span>
-                            </input>
-                        </spring:bind>
-                    </div>
-                    <div style="margin: auto;">
-                        <input type="submit" value="Submit" class="submit-btn"/>
-                    </div>
-                </form:form>
+                                    </input>
+                                </spring:bind>
+                            </div>
+                            <div style="margin: auto;">
+                                <input type="submit" value="Submit" class="submit-btn"/>
+                            </div>
+                        </form:form>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <div class="col">

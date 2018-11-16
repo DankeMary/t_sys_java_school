@@ -36,12 +36,14 @@
                             </c:if></span>
                             </input>
                         </spring:bind>
+                        <span style="color:red; display: block;"><c:out value="${depDayError}"/></span>
+                        <span style="color:red; display: block;"><c:out value="${journeyExists}"/></span>
+                        <span style="color:red; display: block;"><c:out value="${invalidTrip}"/></span>
                     </div>
                     <div style="display: inline-block;">
                         <input type="submit" value="Add New" id="submit" class="submit-btn"/>
                     </div>
                 </form:form>
-                <span style="color:red; display: block;"><c:out value="${invalidTrip}"/></span>
                 <span style="color:red; display: block;"><c:out value="${ticketsSold}"/></span>
                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                     <thead class="thead-light">

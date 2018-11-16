@@ -53,6 +53,23 @@
                             </input>
                         </spring:bind>
                     </div>
+
+                    <div class="formFragment">
+                        <form:label path="train.price">Price</form:label>
+                        <spring:bind path="train.price">
+                            <input type="number" id="train-price" min="1" step="0.01" max="7000" value="${status.value}"
+                                   name="${status.expression}">
+                            <span id="js-price-error" style="color: red">
+                                <c:if test="${status.error}">
+                                    <c:forEach items="${status.errorMessages}" var="error">
+                                        <c:out value="${error}"/>
+                                    </c:forEach>
+                                </c:if>
+                            </span>
+                            </input>
+                        </spring:bind>
+                    </div>
+
                     <h5>Add Train Path</h5>
                     <span style="color:red; display: block;"><c:out value="${shortPath}"/></span>
                     <span style="color:red; display: block;"><c:out value="${wrongPath}"/></span>

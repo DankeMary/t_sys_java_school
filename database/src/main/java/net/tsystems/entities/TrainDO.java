@@ -1,6 +1,7 @@
 package net.tsystems.entities;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "train")
@@ -13,6 +14,8 @@ public class TrainDO {
     private int number;
     @Column(name = "capacity", nullable = false)
     private int capacity;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
     public int getId() {
         return id;
@@ -33,6 +36,14 @@ public class TrainDO {
     }
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     @Override

@@ -1,9 +1,8 @@
 package net.tsystems.bean;
 
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
+import java.math.BigDecimal;
 
 public class TrainBean {
     private int id;
@@ -17,6 +16,12 @@ public class TrainBean {
     @Min(value = 1, message = "Train capacity has to be positive")
     @Max(value = Integer.MAX_VALUE, message = "Max train capacity - " + Integer.MAX_VALUE)
     private Long capacity;
+
+    @NotNull(message = "Ticket price is mandatory")
+    @DecimalMin(value = "1.0", inclusive = true, message = "Ticket price has to be positive")
+    @DecimalMax(value = "7000.0", inclusive = true, message = "Max ticket price - " + 7000)
+    @Digits(integer = 4, fraction = 2, message = "Fraction has to consist of 2 digits")
+    private BigDecimal price;
 
     private TripBean trip;
 
@@ -39,6 +44,14 @@ public class TrainBean {
     }
     public void setCapacity(Long capacity) {
         this.capacity = capacity;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public TripBean getTrip() {

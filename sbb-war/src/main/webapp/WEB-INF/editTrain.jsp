@@ -19,43 +19,67 @@
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h3>Edit The Train Details</h3>
-                <form:form method="POST"
-                           action="/trains/${trainForm.id}"
-                           modelAttribute="trainForm">
-                    <div class="formFragment">
-                        <form:label path="number">Number</form:label>
-                        <spring:bind path="number">
-                            <input value="${status.value}" name="${status.expression}">
-                            <span style="color: red">
+                <c:choose>
+                    <c:when test="${empty trainForm}">
+                        <h5>No train with such data found</h5>
+                    </c:when>
+                    <c:otherwise>
+                        <form:form method="POST"
+                                   action="/trains/${trainForm.id}"
+                                   modelAttribute="trainForm">
+                            <div class="formFragment">
+                                <form:label path="number">Number</form:label>
+                                <spring:bind path="number">
+                                    <input value="${status.value}" name="${status.expression}">
+                                    <span style="color: red">
                                 <c:if test="${status.error}">
                                     <c:forEach items="${status.errorMessages}" var="error">
                                         <c:out value="${error}"/>
                                     </c:forEach>
                                 </c:if>
                             </span>
-                            </input>
-                        </spring:bind>
-                    </div>
+                                    </input>
+                                </spring:bind>
+                            </div>
 
-                    <div class="formFragment">
-                        <form:label path="capacity">Capacity</form:label>
-                        <spring:bind path="capacity">
-                            <input value="${status.value}" name="${status.expression}">
-                            <span style="color: red">
-                                <c:if test="${status.error}">
-                                    <c:forEach items="${status.errorMessages}" var="error">
-                                        <c:out value="${error}"/>
-                                    </c:forEach>
-                                </c:if>
-                            </span>
-                            </input>
-                        </spring:bind>
-                    </div>
+                            <div class="formFragment">
+                                <form:label path="capacity">Capacity</form:label>
+                                <spring:bind path="capacity">
+                                    <input value="${status.value}" name="${status.expression}">
+                                    <span style="color: red">
+                                        <c:if test="${status.error}">
+                                            <c:forEach items="${status.errorMessages}" var="error">
+                                                <c:out value="${error}"/>
+                                            </c:forEach>
+                                        </c:if>
+                                    </span>
+                                    </input>
+                                </spring:bind>
+                            </div>
 
-                    <div style="margin: auto;">
-                        <input type="submit" value="Submit" class="submit-btn"/>
-                    </div>
-                </form:form>
+                            <div class="formFragment">
+                                <form:label path="price">Price</form:label>
+                                <spring:bind path="price">
+                                    <input type="number" id="train-price" min="1" step="0.01" max="7000"
+                                           value="${status.value}"
+                                           name="${status.expression}">
+                                    <span id="js-price-error" style="color: red">
+                                        <c:if test="${status.error}">
+                                            <c:forEach items="${status.errorMessages}" var="error">
+                                                <c:out value="${error}"/>
+                                            </c:forEach>
+                                        </c:if>
+                                    </span>
+                                    </input>
+                                </spring:bind>
+                            </div>
+
+                            <div style="margin: auto;">
+                                <input type="submit" value="Submit" class="submit-btn"/>
+                            </div>
+                        </form:form>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <div class="col">

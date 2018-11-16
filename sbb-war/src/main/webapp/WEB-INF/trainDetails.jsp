@@ -19,8 +19,11 @@
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h5>Train Details</h5>
-                <div style="display:inline-block; margin-right: 15px;"><b>Train : </b>${trainData.trainBean.number}</div>
-                <div style="display:inline-block; margin-right: 15px;"><b>Capacity :</b> ${trainData.trainBean.capacity}</div>
+                <div style="display:inline-block; margin-right: 15px;"><b>Train : </b>${trainData.trainBean.number}
+                </div>
+                <div style="display:inline-block; margin-right: 15px;"><b>Capacity :</b> ${trainData.trainBean.capacity}
+                </div>
+                <div style="display:inline-block; margin-right: 15px;"><b>Price :</b> ${trainData.trainBean.price}</div>
                 <div style="display:inline-block">
                     <a href="/trains/${trainData.trainBean.id}/update">Edit</a> |
                     <a href="/trains/${trainData.trainBean.id}/delete"

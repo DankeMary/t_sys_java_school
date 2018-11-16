@@ -134,7 +134,12 @@ public class TrainController {
             model.addAttribute("invalidTrip", errors.get("invalidTrip"));
             model.addAttribute("depDayError", errors.get("depDayError"));
             model.addAttribute("journeyExists", errors.get("journeyExists"));
-            return "addJourney";
+
+            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, true);
+            model.addAttribute("journeys", journeys);
+            model.addAttribute("trainId", id);
+            model.addAttribute("journeyForm", journey);
+            return "journeys";
         } else {
             tripDataService.createAll(journey);
             //TODO !!!!

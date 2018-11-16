@@ -1,9 +1,12 @@
 package net.tsystems.serviceobject;
 
+import java.math.BigDecimal;
+
 public class TrainSO {
     private int id;
     private int number;
     private int capacity;
+    private BigDecimal price;
 
     public int getId() {
         return id;
@@ -24,6 +27,14 @@ public class TrainSO {
     }
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     @Override

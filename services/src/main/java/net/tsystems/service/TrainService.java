@@ -88,12 +88,14 @@ public class TrainService {
                 train.getNumber() > 0) {
             if ((isNew && getTrainByNumber(train.getNumber().intValue()) != null) ||
                     (!isNew && !isUniqueByNumber(train.getId(), train.getNumber().intValue())))
-                errors.rejectValue("train.number", "NonUnique", "Train with such number already exists");
+                errors.rejectValue("number", "NonUnique", "Train with such number already exists");
         }
         //TODO!!! (check no tickets)
         if (!isNew && tripDataService.getFirstJourneysByTrainNotCancelled(train.getId(), true).size() != 0)
             //TODO in general or only if no tickets were sold yet?
-            errors.rejectValue("train.capacity", "CannotUpdate", "There are journeys planned already");
+            errors.rejectValue("capacity", "CannotUpdate", "There are journeys planned already");
+
+        //TODO check that can update the price when no tickets were sold yet
     }
 
     public boolean isUniqueByNumber(int id, int number) {

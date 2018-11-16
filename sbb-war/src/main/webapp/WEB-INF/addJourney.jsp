@@ -18,28 +18,38 @@
         <div class="col-8" style="border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
-                <h3>Enter The Journey Details</h3>
-                <form:form method="POST"
-                           action="/trains/${trainId}/journeys"
-                           modelAttribute="journey">
-                    <div class="formFragment">
-                        <form:label path="departureDay">Departure Day</form:label>
-                        <spring:bind path="departureDay">
-                            <input type="date" value="${status.value}"
-                                   name="${status.expression}">
-                            <span style="color: red">
+                <c:choose>
+                    <c:when test="${not empty invalidPath}">
+                    <span style="color:red; display: block;"><c:out value="${invalidTrip}"/></span>
+                    </c:when>
+                    <c:otherwise>
+                        <h3>Enter The Journey Details</h3>
+                        <form:form method="POST"
+                                   action="/trains/${trainId}/journeys"
+                                   modelAttribute="journey">
+                            <div class="formFragment">
+                                <form:label path="departureDay">Departure Day</form:label>
+                                <spring:bind path="departureDay">
+                                    <input type="date" value="${status.value}"
+                                           name="${status.expression}">
+                                    <span style="color: red">
                             <c:if test="${status.error}">
                                 <c:forEach items="${status.errorMessages}" var="error">
                                     <c:out value="${error}"/>
                                 </c:forEach>
                             </c:if></span>
-                            </input>
-                        </spring:bind>
-                    </div>
-                    <div style="margin: auto;">
-                        <input type="submit" value="Submit" id="submit" class="submit-btn"/>
-                    </div>
-                </form:form>
+
+                                    <span style="color:red; display: block;"><c:out value="${depDayError}"/></span>
+                                    <span style="color:red; display: block;"><c:out value="${journeyExists}"/></span>
+                                    </input>
+                                </spring:bind>
+                            </div>
+                            <div style="margin: auto;">
+                                <input type="submit" value="Submit" id="submit" class="submit-btn"/>
+                            </div>
+                        </form:form>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <div class="col">

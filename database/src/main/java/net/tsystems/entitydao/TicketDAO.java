@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface TicketDAO extends AbstractDao<TicketDO, Integer> {
     List<TicketDO> getTicketsByTrainIdAndDate(int trainId, LocalDate date);
+    boolean ticketsOnTrainSold(int trainId, LocalDate date);
 }

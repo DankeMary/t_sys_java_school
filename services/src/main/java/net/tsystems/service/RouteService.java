@@ -9,10 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -91,34 +87,45 @@ public class RouteService {
     }
 
     //Validation Utils
-    public void validatePrimitive(List<PrimitiveRouteBean> primitiveData, List<String> errorsList) {
+    public void validatePrimitive(List<PrimitiveRouteBean> primitiveData, Map<String, String> errorsList) {
         //TODO check that all stations exist
         if (primitiveData == null || primitiveData.size() < 2) {
-            errorsList.add("Train path hast to have at least 2 stations)");
+            errorsList.put("shortPath", "Train path hast to have at least 2 stations)");
         } else {
-            if (!isValidPath(primitiveData)) {
-                errorsList.add("Path has to have unique stations");
-            }
+            //not everything is empty
+            if (primitiveData
+                    .stream()
+                    .filter(i -> !i.getStation().trim().equals(""))
+                    .findFirst()
+                    .orElse(null) != null) {
+                //all stations exist
+                if (!stationService.allStationsExist(primitiveData))
+                    errorsList.put("invalidStations", "Not all of the given stations exist");
+                else
+                    if (!areUniqueStations(primitiveData)) {
+                        errorsList.put("wrongPath", "Path has to have unique stations");
+                    }
 
-            for (PrimitiveRouteBean prBean : primitiveData) {
-                if (prBean.getStation().equals("") ||
-                        prBean.getArrival().equals("") ||
-                        prBean.getDeparture().equals("")) {
-                    errorsList.add("Some path data is missing (station name or timing)");
-                    break;
+                for (PrimitiveRouteBean prBean : primitiveData) {
+                    if (prBean.getStation().equals("") ||
+                            prBean.getArrival().equals("") ||
+                            prBean.getDeparture().equals("")) {
+                        errorsList.put("dataMissing", "Some path data is missing (station name or timing)");
+                        break;
+                    }
                 }
             }
         }
     }
 
-    public boolean isValidPath(List<PrimitiveRouteBean> primitivePath) {
+    public boolean areUniqueStations(List<PrimitiveRouteBean> primitivePath) {
         Set<String> stations = new HashSet<>();
         primitivePath.forEach(station -> stations.add(station.getStation().trim()));
         return primitivePath.size() == stations.size();
     }
 
+
     //Help Functions
-    //TODO  REPLACE DATE CLASS EVERYWHERE AND CREATE DATE CAST METHOD
     public Map<Integer, StationBeanExpanded> generatePathMapFromPrimitiveData(List<PrimitiveRouteBean> primitivePath) {
         Map<Integer, StationBeanExpanded> result = new HashMap<>();
 

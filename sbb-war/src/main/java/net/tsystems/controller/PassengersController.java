@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
 GET  /passengers
@@ -61,8 +63,10 @@ public class PassengersController {
     public String addPassenger(@ModelAttribute("passengerForm") @Validated PassengerBean passenger,
                                BindingResult result, Model model,
                                final RedirectAttributes redirectAttributes) {
-
-        if (result.hasErrors()) {
+        Map<String, String> errors = new HashMap<>();
+        passengerService.validate(passenger, errors);
+        if (result.hasErrors() || !errors.isEmpty()) {
+            model.addAttribute("birthdayError", errors.get("birthdayError"));
             return "addPassenger";
         } else {
             passengerService.create(passenger);
@@ -82,8 +86,10 @@ public class PassengersController {
                                   @ModelAttribute("passengerForm") @Validated PassengerBean passenger,
                                    BindingResult result, Model model,
                                    final RedirectAttributes redirectAttributes) {
-
-        if (result.hasErrors()) {
+        Map<String, String> errors = new HashMap<>();
+        passengerService.validate(passenger, errors);
+        if (result.hasErrors() || !errors.isEmpty()) {
+            model.addAttribute("birthdayError", errors.get("birthdayError"));
             return "editPassenger";
         } else {
             passengerService.update(passenger);

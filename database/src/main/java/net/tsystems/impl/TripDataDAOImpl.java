@@ -15,7 +15,8 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     public List<TripDataDO> findFirstByTrain(int id) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery("from TripDataDO where route.trip.train=" + id
-                        + " and route.station = route.trip.from")
+                        + " and route.station = route.trip.from " +
+                        " and isCancelled = 0 ")
                 .list();
         return list.size() == 0 ? null : list;
     }
@@ -25,7 +26,8 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery("from TripDataDO where route.trip.train=" + id
                         + " and route.station = route.trip.from"
-                        + " and date >= now()")
+                        + " and date >= now() " +
+                        " and isCancelled = 0 ")
                 .list();
         return list.size() == 0 ? null : list;
     }
@@ -40,12 +42,20 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     }
 
     @Override
-    public List<TripDataDO> findByTripIdAndTripDepartureDay(int tripId, Date date) {
+    public List<TripDataDO> findByTripIdAndTripDepartureDay(int tripId, LocalDate date) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery("from TripDataDO td where td.route.trip.id=" + tripId
                         + " and tripDeparture=\'" + date + "\'")
                 .list();
         return list.size() == 0 ? null : list;
+    }
+
+    @Override
+    public boolean journeyOfTripOnDateExists(int tripId, LocalDate date) {
+        Long qty = (Long) getEntityManager()
+                .createQuery("select count(*) as n from TripDataDO td where td.route.trip.id=" + tripId
+                        + " and tripDeparture=\'" + date + "\'").uniqueResult();
+        return qty != 0;
     }
 
     @Override
@@ -83,38 +93,38 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery(
                         "select td1 from TripDataDO td1 " +
-                        "where exists (" +
-                        "select td from TripDataDO td " +
-                        " join RouteDO r on td.route = r  " +
-                        "join TripDO t on r.trip = t  " +
-                        "join TrainDO tr on t.train = tr  " +
-                        "where td.id = td1.id and " +
-                        "r.station.name = \'" + fromStation + "\' and  " +
-                        "td.date between \'" + fromDay + "\' and \'" + toDay + "\' and " +
-                        //td.date == today == fromDay == toDay
-                        "((td.date = \'" + fromDay + "\' and \'" + fromDay + "\' = \'" + toDay + "\' and " +
-                        "\'" + fromDay + "\' = current_date() and " +
-                        "(time(r.departure) between \'" + fromTime + "\' and \'" + toTime + "\'" +
-                        " or time(r.departure) between time(now()) and \'" + toTime + "\')) " +
-                        "or " +
-                        //TODO Remove repetitive part?
-                        //td.date == today == fromDay
-                        "(\'" + fromDay + "\' = current_date() and td.date = \'" + fromDay + "\' and " +
-                        "time(r.departure) >= time(now()) and time(r.departure) >= \'" + fromTime + "\') " +
-                        " or " +
-                        //td.date == fromDay
-                        "(td.date = \'" + fromDay + "\' and time(r.departure) >= \'" + fromTime + "\')" +
-                        " or " +
-                        //td.date in (fromDay, toDay)
-                        "(td.date > \'" + fromDay + "\' and td.date < \'" + toDay + "\') " +
-                        " or " +
-                        //td.date == toDay
-                        "(td.date = \'" + toDay + "\' and time(r.departure) < \'" + toTime + "\')))" +
-                        " and exists (select td2 from TripDataDO td2  " +
-                        "join RouteDO r2 on td2.route = r2  " +
-                        "join TripDO t2 on r2.trip = t2  " +
-                        "join TrainDO tr2 on t2.train = tr2  " +
-                        "where td1.tripDeparture = td2.tripDeparture and r2.station.name = \'" + toStation + "\' )"
+                                "where exists (" +
+                                "select td from TripDataDO td " +
+                                " join RouteDO r on td.route = r  " +
+                                "join TripDO t on r.trip = t  " +
+                                "join TrainDO tr on t.train = tr  " +
+                                "where td.id = td1.id and " +
+                                "r.station.name = \'" + fromStation + "\' and  " +
+                                "td.date between \'" + fromDay + "\' and \'" + toDay + "\' and " +
+                                //td.date == today == fromDay == toDay
+                                "((td.date = \'" + fromDay + "\' and \'" + fromDay + "\' = \'" + toDay + "\' and " +
+                                "\'" + fromDay + "\' = current_date() and " +
+                                "(time(r.departure) between \'" + fromTime + "\' and \'" + toTime + "\'" +
+                                " or time(r.departure) between time(now()) and \'" + toTime + "\')) " +
+                                "or " +
+                                //TODO Remove repetitive part?
+                                //td.date == today == fromDay
+                                "(\'" + fromDay + "\' = current_date() and td.date = \'" + fromDay + "\' and " +
+                                "time(r.departure) >= time(now()) and time(r.departure) >= \'" + fromTime + "\') " +
+                                " or " +
+                                //td.date == fromDay
+                                "(td.date = \'" + fromDay + "\' and time(r.departure) >= \'" + fromTime + "\')" +
+                                " or " +
+                                //td.date in (fromDay, toDay)
+                                "(td.date > \'" + fromDay + "\' and td.date < \'" + toDay + "\') " +
+                                " or " +
+                                //td.date == toDay
+                                "(td.date = \'" + toDay + "\' and time(r.departure) < \'" + toTime + "\')))" +
+                                " and exists (select td2 from TripDataDO td2  " +
+                                "join RouteDO r2 on td2.route = r2  " +
+                                "join TripDO t2 on r2.trip = t2  " +
+                                "join TrainDO tr2 on t2.train = tr2  " +
+                                "where td1.tripDeparture = td2.tripDeparture and r2.station.name = \'" + toStation + "\' )"
                 )
                 .list();
         return list;

@@ -34,6 +34,10 @@ public class TicketService {
         return ticketDOListToBeanList(ticketDao.getTicketsByTrainIdAndDate(trainId, tdBean.getTripDeparture()));
     }
 
+    public boolean ticketsOnTrainSold(int trainId, LocalDate date) {
+        return ticketDao.ticketsOnTrainSold(trainId, date);
+    }
+
     //Mappers
     public TicketBean ticketDOtoBean(TicketDO ticketDO) {
         return beanMapper.ticketToBean(entityMapper.ticketToSO(ticketDO));

@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 @Service("journeyService")
@@ -37,6 +38,7 @@ public class TripDataService {
     private RouteService routeService;
     private PassengerService passengerService;
     private TicketService ticketService;
+    private TripService tripService;
 
     private LocalDateMapper dateMapper = new LocalDateMapperImpl();
     private LocalTimeMapper timeMapper = new LocalTimeMapperImpl();
@@ -74,11 +76,11 @@ public class TripDataService {
         }
     }
 
-    public TripDataBean getById (int journeyId) {
+    public TripDataBean getById(int journeyId) {
         return tripDataDOToBean(tripDataDAO.find(journeyId));
     }
 
-    public List<JourneyBean> getFirstJourneysByTrain(int id, boolean afterNow) {
+    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow) {
         List<TripDataBean> tripDataBeans;
 
         if (afterNow)
@@ -99,16 +101,17 @@ public class TripDataService {
     }
 
     //TODO doesn't work?
-    //public void removeJourney(int trainId, Date departureDay) {
-    public void removeJourney(int trainId, int journeyId) {
-        //TODO check that journey with such Id exists
-        //TODO how to pass the date?
+    //public void cancelJourney(int trainId, Date departureDay) {
+    public void cancelJourney(int trainId, int journeyId) {
         TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
-        List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getDate().toLocalDate()/*dateMapper.asSqlDate(first.getDate())*/));
+        //TODO: first.getDate().toLocalDate() - is it a better way?
+        List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getTripDeparture()/*first.getDate().toLocalDate()*//*dateMapper.asSqlDate(first.getDate())*/));
 
         if (journeyParts != null)
-            for (TripDataBean tdBean : journeyParts)
-                tripDataDAO.delete(tripDataBeanToDO(tdBean));
+            for (TripDataBean tdBean : journeyParts) {
+                tdBean.setIsCancelled(true);
+                tripDataDAO.update(tripDataBeanToDO(tdBean));
+            }
     }
 
     public List<ScheduleBean> getScheduleForStation(String stationName, int maxResults) {
@@ -154,7 +157,7 @@ public class TripDataService {
         for (TripDataBean tdBean : result) {
             //2. For each find all the related TripDatas (for now we've only found the 'from' ones)
             List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(tdBean.getRoute().getTrip().getId(),
-                    dateMapper.asSqlDate(tdBean.getTripDeparture())));
+                    tdBean.getTripDeparture()));
             //3. Extract only the ones between needed stations
             TripDataBean fromTDBean = journeyTripData
                     .stream()
@@ -191,7 +194,7 @@ public class TripDataService {
         TripDataBean fromTD = tripDataDOToBean(tripDataDAO.find(fromTripDataId));
 
         List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(fromTD.getRoute().getTrip().getId(),
-                dateMapper.asSqlDate(fromTD.getTripDeparture())));
+                fromTD.getTripDeparture()));
 
         TripDataBean fromTDBean = journeyTripData
                 .stream()
@@ -237,6 +240,27 @@ public class TripDataService {
         return true;
     }
 
+    //Validation Utils
+    public void validateJourney(JourneyBean journey, Map<String, String> errors) {
+        //check that such trip exists
+        if (tripService.getTripById(journey.getJourneyId()) == null)
+            errors.put("invalidTrip", "No such trip found");
+        //check that date is in future
+        if (journey.getDepartureDay().isBefore(LocalDate.now()))
+            errors.put("depDayError", "Departure day has to be in the future");
+            //check that no journey on that day yet
+        else if (journey.getTrip() != null && tripDataDAO.journeyOfTripOnDateExists(journey.getTrip().getId(), journey.getDepartureDay()))
+            errors.put("journeyExists", "There's already trip on that day created");
+    }
+
+    public void validateCancellation(int trainId, int journeyId, Map<String, String> errors) {
+        TripDataBean tdBean = getById(journeyId);
+        if (tdBean == null)
+            errors.put("invalidTrip", "No such trip found");
+        else if (ticketService.ticketsOnTrainSold(trainId, tdBean.getTripDeparture()))
+            errors.put("ticketsSold", "Can't cancel - tickets have been already sold");
+    }
+
     //Mappers
     private TripDataDO tripDataBeanToDO(TripDataBean tdBean) {
         return tripDataEntityMapper.tripDataToDO(tripDataBeanMapper.tripDataToSO(tdBean));
@@ -260,8 +284,14 @@ public class TripDataService {
     public void setPassengerService(PassengerService passengerService) {
         this.passengerService = passengerService;
     }
+
     @Autowired
     public void setTicketService(TicketService ticketService) {
         this.ticketService = ticketService;
+    }
+
+    @Autowired
+    public void setTripService(TripService tripService) {
+        this.tripService = tripService;
     }
 }

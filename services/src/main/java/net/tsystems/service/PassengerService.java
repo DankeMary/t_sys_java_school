@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service("passengerService")
 @Transactional
@@ -39,6 +41,12 @@ public class PassengerService {
     }
     public PassengerBean getPassenger(int id){
         return passengerDOToBean(psngrDao.find(id));
+    }
+
+    //Validation utils
+    public void validate(PassengerBean passenger, Map<String, String> errors) {
+        if (passenger.getBirthday().isAfter(LocalDate.now()))
+            errors.put("birthdayError", "The birthday has to be in the past");
     }
 
     //Mappers

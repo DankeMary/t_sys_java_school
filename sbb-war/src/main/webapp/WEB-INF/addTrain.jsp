@@ -53,14 +53,11 @@
                             </input>
                         </spring:bind>
                     </div>
-
                     <h5>Add Train Path</h5>
-                    <c:if test="${not empty pathErrors}">
-                        <c:forEach items="${pathErrors}" var="error">
-                            <span style="color:red; display: block;"><c:out value="${error}"/></span>
-                        </c:forEach>
-                    </c:if>
-
+                    <span style="color:red; display: block;"><c:out value="${shortPath}"/></span>
+                    <span style="color:red; display: block;"><c:out value="${wrongPath}"/></span>
+                    <span style="color:red; display: block;"><c:out value="${dataMissing}"/></span>
+                    <span style="color:red; display: block;"><c:out value="${invalidStations}"/></span>
                     <div class="formFragment">
                         <table id="pathRoutes">
                             <thead>

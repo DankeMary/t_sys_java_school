@@ -4,7 +4,6 @@ import javax.validation.Valid;
 import java.io.Serializable;
 
 public class BuyTicketForm implements Serializable {
-    //TODO: No person validation is done!
     @Valid
     private PassengerBean passenger;
     private int fromJourneyId;

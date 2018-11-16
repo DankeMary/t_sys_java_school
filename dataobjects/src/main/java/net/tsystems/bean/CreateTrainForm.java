@@ -1,8 +1,10 @@
 package net.tsystems.bean;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public class CreateTrainForm {
+    @Valid
     private TrainBean train;
     private List<PrimitiveRouteBean> primitivePath;
 

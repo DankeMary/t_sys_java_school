@@ -47,7 +47,8 @@
                                 <c:forEach items="${status.errorMessages}" var="error">
                                     <c:out value="${error}"/>
                                 </c:forEach>
-                            </c:if></span>
+                            </c:if>
+                            </span>
                             </input>
                         </spring:bind>
                     </div>
@@ -61,7 +62,9 @@
                                 <c:forEach items="${status.errorMessages}" var="error">
                                     <c:out value="${error}"/>
                                 </c:forEach>
-                            </c:if></span>
+                            </c:if>
+                            <span style="color:red; display: block;"><c:out value="${birthdayError}"/></span>
+                            </span>
                             </input>
                         </spring:bind>
                     </div>

@@ -51,13 +51,16 @@ public class TrainController {
                            BindingResult result, Model model,
                            final RedirectAttributes redirectAttributes) {
 
-        List<String> customErrors = new LinkedList<>();
+        Map<String, String> errors = new HashMap<>();
         trainService.validate(train.getTrain(), true, result);
-        routeService.validatePrimitive(train.getPrimitivePath(), customErrors);
+        routeService.validatePrimitive(train.getPrimitivePath(), errors);
         //todo customErrors list
-        if (result.hasErrors() || !customErrors.isEmpty()) {
-            model.addAttribute("pathErrors", customErrors);
-            //stationsData = new HashMap<>();
+        if (result.hasErrors() || !errors.isEmpty()) {
+            model.addAttribute("shortPath", errors.get("shortPath"));
+            model.addAttribute("wrongPath", errors.get("wrongPath"));
+            model.addAttribute("dataMissing", errors.get("dataMissing"));
+            model.addAttribute("invalidStations", errors.get("invalidStations"));
+
             return "addTrain";
         } else {
             trainService.create(train.getTrain(), routeService.generatePathMapFromPrimitiveData(train.getPrimitivePath()));
@@ -104,7 +107,7 @@ public class TrainController {
     @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.GET)
     public String journeys(@PathVariable("id") int id, Model model) {
         //TODO Order by date
-        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrain(id, true);
+        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, true);
         model.addAttribute("journeys", journeys);
         model.addAttribute("trainId", id);
         model.addAttribute("journeyForm", new JourneyBean());
@@ -124,36 +127,41 @@ public class TrainController {
                                 @ModelAttribute("journey") @Validated JourneyBean journey,
                                 BindingResult result, Model model,
                                 final RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
+        Map<String, String> errors = new HashMap<>();
+        journey.setTrip(tripService.getTripByTrainId(id));
+        tripDataService.validateJourney(journey, errors);
+        if (result.hasErrors() || !errors.isEmpty()) {
+            model.addAttribute("invalidTrip", errors.get("invalidTrip"));
+            model.addAttribute("depDayError", errors.get("depDayError"));
+            model.addAttribute("journeyExists", errors.get("journeyExists"));
             return "addJourney";
         } else {
-            journey.setTrip(tripService.getTripByTrainId(id));
             tripDataService.createAll(journey);
             //TODO !!!!
             return "redirect:/trains/{id}/journeys";
         }
     }
 
-    @RequestMapping(value = "/trains/{train_id}/journeys/{journey_id}/delete")
-    public String deleteJourney(@PathVariable("train_id") int trainId,
+    @RequestMapping(value = "/trains/{train_id}/journeys/{journey_id}/cancel", method = RequestMethod.GET)
+    public String cancelJourney(@PathVariable("train_id") int trainId,
                                 @PathVariable("journey_id") int journeyId,
+                                Model model,
                                 final RedirectAttributes redirectAttributes) {
-        //try {
+        Map<String, String> errors = new HashMap<>();
 
-            /*SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-            Date parsedDate = dateFormat.parse(departureDay);
-            Timestamp timestampDate = new java.sql.Timestamp(parsedDate.getTime());
-
-            tripDataService.removeJourney(trainId, timestampDate);*/
-        tripDataService.removeJourney(trainId, journeyId);
-        //} catch (Exception e) {
-        //javax.persistence.EntityExistsException: A different object with
-        // the same identifier value was already associated with the session
-        //return "redirect:/trains/" + trainId + "/journeys";
-        //}
-        //TODO check that no tickets were sold!
-
-        return "redirect:/trains/" + trainId + "/journeys";
+        tripDataService.validateCancellation(trainId, journeyId, errors);
+        if (!errors.isEmpty()) {
+            model.addAttribute("invalidTrip", errors.get("invalidTrip"));
+            model.addAttribute("ticketsSold", errors.get("ticketsSold"));
+        }
+        else tripDataService.cancelJourney(trainId, journeyId);
+        //return "redirect:/trains/{train_id}/journeys";
+        //TODO repetitive code from GET journeys - is that ok?
+        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(trainId, true);
+        model.addAttribute("journeys", journeys);
+        model.addAttribute("trainId", trainId);
+        model.addAttribute("journeyForm", new JourneyBean());
+        return "journeys";
     }
 
     @RequestMapping(value = "/trains/{train_id}/journeys/{journey_id}/passengers", method = RequestMethod.GET)

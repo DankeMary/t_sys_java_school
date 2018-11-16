@@ -41,6 +41,8 @@
                         <input type="submit" value="Add New" id="submit" class="submit-btn"/>
                     </div>
                 </form:form>
+                <span style="color:red; display: block;"><c:out value="${invalidTrip}"/></span>
+                <span style="color:red; display: block;"><c:out value="${ticketsSold}"/></span>
                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                     <thead class="thead-light">
                     <tr>
@@ -53,8 +55,8 @@
                             <td>${journey.departureDay}</td>
                             <td>
                                 <a href="/trains/${trainId}/journeys/${journey.journeyId}/passengers">Passengers</a> |
-                                <a href="/trains/${trainId}/journeys/${journey.journeyId}/delete"
-                                   onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${trainId}/journeys/${journey.journeyId}/delete')">Delete</a>
+                                <a href="/trains/${trainId}/journeys/${journey.journeyId}/cancel"
+                                   onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${trainId}/journeys/${journey.journeyId}/cancel')">Cancel</a>
                             </td>
                         </tr>
                     </c:forEach>

@@ -13,7 +13,8 @@ public interface TripDataDAO extends AbstractDao<TripDataDO, Integer> {
     List<TripDataDO> findFirstByTrain(int id);
     List<TripDataDO> findFirstAfterNowByTrain(int id);
     List<TripDataDO> findByTrainIdAndTripDepartureDay (int trainId, LocalDate date);
-    List<TripDataDO> findByTripIdAndTripDepartureDay (int tripId, Date date);
+    List<TripDataDO> findByTripIdAndTripDepartureDay (int tripId, LocalDate date);
+    boolean journeyOfTripOnDateExists (int tripId, LocalDate date);
     List<TripDataDO> getScheduleForStation(String stationName, int maxResults);
     List<TripDataDO> getDataForSection (Timestamp fromDay,
                                         Time fromTime,

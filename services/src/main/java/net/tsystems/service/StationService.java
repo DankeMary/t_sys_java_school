@@ -1,5 +1,6 @@
 package net.tsystems.service;
 
+import net.tsystems.bean.PrimitiveRouteBean;
 import net.tsystems.bean.StationBean;
 import net.tsystems.beanmapper.StationBeanMapper;
 import net.tsystems.beanmapper.StationBeanMapperImpl;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("stationService")
 @Transactional
@@ -49,6 +52,15 @@ public class StationService {
         if ((isNew && getStationByName(station.getName()) != null) ||
                 (!isNew && !isUniqueByName(station.getId(), station.getName())))
             errors.rejectValue("name", "NonUnique", "Station with such name already exists");
+    }
+
+    public boolean allStationsExist (List<PrimitiveRouteBean> primitivePath) {
+        List<String> stationNames = new LinkedList<>();
+        for (PrimitiveRouteBean p : primitivePath)
+            if (!p.getStation().isEmpty())
+                stationNames.add(p.getStation());
+
+        return stationDao.allStationsExist(stationNames);
     }
     //Mappers
     public StationBean stationDOToBean (StationDO station) {

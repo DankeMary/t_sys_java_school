@@ -13,8 +13,10 @@ import java.time.LocalDate;
 public class PassengerBean implements Serializable {
     private int id;
 
-    @Size(max = 45, message = "Max length - 45")
-    @Pattern(regexp = "^$|^[a-zA-Z \\-]+$", message = "Only latin letters, spaces and hyphens are allowed")
+    @Size(min = 3, max = 45, message = "Min length - 3, Max length - 45")
+    @NotEmpty(message = "Last name required")
+    //@Pattern(regexp = "^$|^[a-zA-Z \\-]+$", message = "Only latin letters, spaces and hyphens are allowed")
+    @Pattern(regexp = "^[a-zA-Z \\-]+$", message = "Only latin letters, spaces and hyphens are allowed")
     private String firstName;
 
     @NotEmpty(message = "Last name required")

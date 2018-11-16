@@ -18,4 +18,13 @@ public class TicketDAOImpl extends AbstractDaoImpl<TicketDO, Integer> implements
                 .list();
         return list.size() == 0 ? null : list;
     }
+
+    @Override
+    public boolean ticketsOnTrainSold(int trainId, LocalDate date) {
+        Long qty = (Long) getEntityManager()
+                .createQuery("select count(*) as n from TicketDO ti " +
+                        "where ti.from.route.trip.train.id=" + trainId
+                        + " and ti.from.tripDeparture=\'" + date + "\'").uniqueResult();
+        return qty != 0;
+    }
 }

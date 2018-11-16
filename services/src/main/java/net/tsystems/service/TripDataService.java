@@ -74,6 +74,10 @@ public class TripDataService {
         }
     }
 
+    public TripDataBean getById (int journeyId) {
+        return tripDataDOToBean(tripDataDAO.find(journeyId));
+    }
+
     public List<JourneyBean> getFirstJourneysByTrain(int id, boolean afterNow) {
         List<TripDataBean> tripDataBeans;
 

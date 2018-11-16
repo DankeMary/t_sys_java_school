@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -27,6 +28,7 @@ public class TrainController {
     private TripDataService tripDataService;
     private TrainService trainService;
     private StationService stationService;
+    private TicketService ticketService;
 
 
     @RequestMapping(value = "/trains", method = RequestMethod.GET)
@@ -101,6 +103,7 @@ public class TrainController {
 
     @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.GET)
     public String journeys(@PathVariable("id") int id, Model model) {
+        //TODO Order by date
         List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrain(id, true);
         model.addAttribute("journeys", journeys);
         model.addAttribute("trainId", id);
@@ -134,46 +137,39 @@ public class TrainController {
     @RequestMapping(value = "/trains/{train_id}/journeys/{journey_id}/delete")
     public String deleteJourney(@PathVariable("train_id") int trainId,
                                 @PathVariable("journey_id") int journeyId,
-                                Model model) {
-        try {
-            //TODO!
+                                final RedirectAttributes redirectAttributes) {
+        //try {
+
             /*SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             Date parsedDate = dateFormat.parse(departureDay);
             Timestamp timestampDate = new java.sql.Timestamp(parsedDate.getTime());
 
             tripDataService.removeJourney(trainId, timestampDate);*/
-            tripDataService.removeJourney(trainId, journeyId);
-        } catch (Exception e) {
-            return "/trains/{train_id}/journeys";
-        }
+        tripDataService.removeJourney(trainId, journeyId);
+        //} catch (Exception e) {
+        //javax.persistence.EntityExistsException: A different object with
+        // the same identifier value was already associated with the session
+        //return "redirect:/trains/" + trainId + "/journeys";
+        //}
         //TODO check that no tickets were sold!
 
-        return "/trains/{train_id}/journeys";
+        return "redirect:/trains/" + trainId + "/journeys";
     }
 
-    @RequestMapping(value = "/trains/find", method = RequestMethod.GET)
-    public String journeys(@RequestParam(required = false, defaultValue = "") String fromDay,
-                           @RequestParam(required = false, defaultValue = "") String fromTime,
-                           @RequestParam(required = false, defaultValue = "") String toDay,
-                           @RequestParam(required = false, defaultValue = "") String toTime,
-                           @RequestParam(required = false, defaultValue = "") String fromStation,
-                           @RequestParam(required = false, defaultValue = "") String toStation,
-                           Model model) {
-        //TODO !!!!
-        model.addAttribute("fromDay", fromDay); //tripData
-        model.addAttribute("fromTime", fromTime); //route
-        model.addAttribute("toDay", toDay);  //tripData
-        model.addAttribute("toTime", toTime);  //route
-        model.addAttribute("fromStation", fromStation); //
-        model.addAttribute("toStation", toStation);
+    @RequestMapping(value = "/trains/{train_id}/journeys/{journey_id}/passengers", method = RequestMethod.GET)
+    public String getRegisteredPassengers(@PathVariable("train_id") int trainId,
+                                          @PathVariable("journey_id") int journeyId,
+                                          Model model) {
 
+        List<TicketBean> tickets = ticketService.getTicketsForTrain(trainId, journeyId);
+        model.addAttribute("tickets", tickets);
+        model.addAttribute("localDateFormat", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        //TODO What if there are no with such IDs
+        model.addAttribute("departureDay", tripDataService.getById(journeyId).getTripDeparture());
+        model.addAttribute("trainNumber", trainService.getTrainById(trainId).getNumber());
 
-
-        /*List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrain(id);
-        model.addAttribute("journeys", journeys);
-        model.addAttribute("trainId", id);
-        model.addAttribute("journeyForm", new JourneyBean());*/
-        return "journeys";
+        return "showPassengers";
     }
 
     //Ajax related
@@ -215,5 +211,10 @@ public class TrainController {
     @Autowired
     public void setTripDataService(TripDataService tripDataService) {
         this.tripDataService = tripDataService;
+    }
+
+    @Autowired
+    public void setTicketService(TicketService ticketService) {
+        this.ticketService = ticketService;
     }
 }

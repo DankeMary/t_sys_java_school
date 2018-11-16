@@ -48,8 +48,8 @@
                                                 </span>
                                                 <br>
                                                 <span style="font-size: 9px; color: grey;">
-                                                    ${item.fromTDBean.date}
-                                                    </span>
+                                                    ${localDateTimeFormat.format(item.fromTDBean.date)}
+                                                </span>
                                             </td>
 
                                             <td>${item.toTDBean.route.station.name} <br>
@@ -58,13 +58,15 @@
                                                 </span>
                                                 <br>
                                                 <span style="font-size: 9px; color: grey;">
-                                                        ${item.toTDBean.date}
+                                                    ${localDateTimeFormat.format(item.toTDBean.date)}
                                                 </span>
                                             </td>
                                             <td>
                                                 ${item.ticketsQty}
                                             </td>
-                                            <td><a href="/buyTicket?fromJourney=${item.fromTDBean.id}&toJourney=${item.toTDBean.id}">Buy</a></td>
+                                            <td>
+                                                <a href="/buyTicket?fromJourney=${item.fromTDBean.id}&toJourney=${item.toTDBean.id}">Buy</a>
+                                            </td>
                                         </tr>
                                     </c:when>
                                 </c:choose>

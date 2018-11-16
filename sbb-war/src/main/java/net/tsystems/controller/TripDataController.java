@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.format.DateTimeFormatter;
+
 
 @Controller
 public class TripDataController {
@@ -56,6 +58,7 @@ public class TripDataController {
         model.addAttribute("toTime", toTime);  //route
         model.addAttribute("fromStation", fromStation); //
         model.addAttribute("toStation", toStation);
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return "tickets";
     }
 
@@ -74,7 +77,7 @@ public class TripDataController {
     }
 
     @RequestMapping(value = "/buyTicket", method = RequestMethod.POST)
-    public String buyTicket(@ModelAttribute("trainForm") @Validated BuyTicketForm ticketForm,
+    public String buyTicket(@ModelAttribute("ticketForm") @Validated BuyTicketForm ticketForm,
                             BindingResult result, Model model,
                             final RedirectAttributes redirectAttributes) {
         if (result.hasErrors())

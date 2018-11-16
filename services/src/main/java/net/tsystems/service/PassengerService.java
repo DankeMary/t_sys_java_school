@@ -25,6 +25,9 @@ public class PassengerService {
     public void create(PassengerBean psngr){
         psngrDao.create(passengerBeanToDO(psngr));
     }
+    public PassengerBean createReturnObject(PassengerBean psngr){
+        return passengerDOToBean(psngrDao.createReturnObject(passengerBeanToDO(psngr)));
+    }
     public void update(PassengerBean psngr){
         psngrDao.update(passengerBeanToDO(psngr));
     }

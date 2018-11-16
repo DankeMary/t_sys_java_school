@@ -5,6 +5,7 @@ public class TicketSO {
     private PassengerSO passenger;
     private TripDataSO from;
     private TripDataSO to;
+    //private UserSO boughtBy;
 
     public PassengerSO getPassenger() {return passenger;    }
     public void setPassenger(PassengerSO passenger) {
@@ -31,6 +32,14 @@ public class TicketSO {
     public void setId(int id) {
         this.id = id;
     }
+
+    /*public UserSO getBoughtBy() {
+        return boughtBy;
+    }
+
+    public void setBoughtBy(UserSO boughtBy) {
+        this.boughtBy = boughtBy;
+    }*/
 
     @Override
     public boolean equals(Object o) {

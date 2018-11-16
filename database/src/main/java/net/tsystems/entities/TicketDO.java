@@ -19,6 +19,10 @@ public class TicketDO {
     @ManyToOne
     @JoinColumn(name = "arr_station", nullable = false)
     private TripDataDO to;
+    //TODO !!!
+    /*@ManyToOne
+    @JoinColumn(name = "bought_by", nullable = false)
+    private UserDO boughtBy;*/
 
     public PassengerDO getPassenger() {return passenger;    }
     public void setPassenger(PassengerDO passenger) {
@@ -45,6 +49,14 @@ public class TicketDO {
     public void setId(int id) {
         this.id = id;
     }
+
+    /*public UserDO getBoughtBy() {
+        return boughtBy;
+    }
+
+    public void setBoughtBy(UserDO boughtBy) {
+        this.boughtBy = boughtBy;
+    }*/
 
     @Override
     public boolean equals(Object o) {

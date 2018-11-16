@@ -13,6 +13,7 @@ import net.tsystems.utilmapper.LocalTimeMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.security.krb5.internal.Ticket;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ public class TripDataService {
 
     private RouteService routeService;
     private PassengerService passengerService;
+    private TicketService ticketService;
 
     private LocalDateMapper dateMapper = new LocalDateMapperImpl();
     private LocalTimeMapper timeMapper = new LocalTimeMapperImpl();
@@ -150,16 +152,28 @@ public class TripDataService {
             List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(tdBean.getRoute().getTrip().getId(),
                     dateMapper.asSqlDate(tdBean.getTripDeparture())));
             //3. Extract only the ones between needed stations
-            TripDataBean fromTDBean = journeyTripData.stream().filter(i -> i.getRoute().getStation().getName().equals(fromStation.trim())).findFirst().orElse(null);
+            TripDataBean fromTDBean = journeyTripData
+                    .stream()
+                    .filter(i -> i.getRoute().getStation().getName().equals(fromStation.trim()))
+                    .findFirst()
+                    .orElse(null);
             int fromTDBeanIndex = journeyTripData.indexOf(fromTDBean);
 
-            TripDataBean toTDBean = journeyTripData.stream().filter(i -> i.getRoute().getStation().getName().equals(toStation.trim())).findFirst().orElse(null);
+            TripDataBean toTDBean = journeyTripData
+                    .stream()
+                    .filter(i -> i.getRoute().getStation().getName().equals(toStation.trim()))
+                    .findFirst()
+                    .orElse(null);
             int toTDBeanIndex = journeyTripData.indexOf(toTDBean);
 
             if (fromTDBeanIndex < toTDBeanIndex) {
                 List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex + 1);
                 //4. Get the min "seats" number - that's the number of tickets available
-                int ticketsAvailable = ticketRelatedTDBeans.stream().min(Comparator.comparing(TripDataBean::getSeatsLeft)).get().getSeatsLeft();
+                int ticketsAvailable = ticketRelatedTDBeans
+                        .stream()
+                        .min(Comparator.comparing(TripDataBean::getSeatsLeft))
+                        .get()
+                        .getSeatsLeft();
                 if (ticketsAvailable > 0)
                     availableTicketsData.add(new SearchTicketForm(fromTDBean, toTDBean, ticketsAvailable));
             }
@@ -175,23 +189,45 @@ public class TripDataService {
         List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(fromTD.getRoute().getTrip().getId(),
                 dateMapper.asSqlDate(fromTD.getTripDeparture())));
 
-        TripDataBean fromTDBean = journeyTripData.stream().filter(i -> i.getId() == fromTripDataId).findFirst().orElse(null);
+        TripDataBean fromTDBean = journeyTripData
+                .stream()
+                .filter(i -> i.getId() == fromTripDataId)
+                .findFirst()
+                .orElse(null);
         int fromTDBeanIndex = journeyTripData.indexOf(fromTDBean);
 
-        TripDataBean toTDBean = journeyTripData.stream().filter(i -> i.getId() == toTripDataId).findFirst().orElse(null);
+        TripDataBean toTDBean = journeyTripData
+                .stream()
+                .filter(i -> i.getId() == toTripDataId)
+                .findFirst()
+                .orElse(null);
         int toTDBeanIndex = journeyTripData.indexOf(toTDBean);
 
         List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex + 1);
         //4. Get the min "seats" number - that's the number of tickets available
-        int ticketsAvailable = ticketRelatedTDBeans.stream().min(Comparator.comparing(TripDataBean::getSeatsLeft)).get().getSeatsLeft();
+        int ticketsAvailable = ticketRelatedTDBeans
+                .stream()
+                .min(Comparator.comparing(TripDataBean::getSeatsLeft))
+                .get()
+                .getSeatsLeft();
 
         //TODO if ticketsAv >= tickets needed then ok else return false
         if (ticketsAvailable < 1)
             return false;
+
         for (TripDataBean tdBean : ticketRelatedTDBeans) {
             tdBean.setSeatsLeft(tdBean.getSeatsLeft() - 1);
             tripDataDAO.update(tripDataBeanToDO(tdBean));
         }
+
+        //create passenger
+        PassengerBean newPassenger = passengerService.createReturnObject(passenger);
+        //create ticket
+        TicketBean ticket = new TicketBean();
+        ticket.setPassenger(newPassenger);
+        ticket.setFrom(fromTDBean);
+        ticket.setTo(toTDBean);
+        ticketService.create(ticket);
         //TODO return ID passengerService.create(passenger);
         //TODO create Ticket
         return true;
@@ -215,8 +251,13 @@ public class TripDataService {
     public void setRouteService(RouteService routeService) {
         this.routeService = routeService;
     }
+
     @Autowired
     public void setPassengerService(PassengerService passengerService) {
         this.passengerService = passengerService;
+    }
+    @Autowired
+    public void setTicketService(TicketService ticketService) {
+        this.ticketService = ticketService;
     }
 }

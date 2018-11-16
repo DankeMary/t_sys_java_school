@@ -38,3 +38,7 @@
         <input type="submit" value="Submit" id="submit" class="submit-btn"/>
     </div>
 </form>
+
+<script src="<c:url value="/resources/jquery-3.3.1.min.js" />"></script>
+<script src="<c:url value="/resources/jquery-ui.js" />"></script>
+<script src="<c:url value="/resources/utils.js" />"></script>

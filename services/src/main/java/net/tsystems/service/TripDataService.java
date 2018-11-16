@@ -243,7 +243,7 @@ public class TripDataService {
     //Validation Utils
     public void validateJourney(JourneyBean journey, Map<String, String> errors) {
         //check that such trip exists
-        if (tripService.getTripById(journey.getJourneyId()) == null)
+        if (tripService.getTripById(journey.getTrip().getId()) == null)
             errors.put("invalidTrip", "No such trip found");
         //check that date is in future
         if (journey.getDepartureDay().isBefore(LocalDate.now()))

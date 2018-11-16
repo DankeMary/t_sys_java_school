@@ -26,7 +26,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery("from TripDataDO where route.trip.train=" + id
                         + " and route.station = route.trip.from"
-                        + " and date >= now() " +
+                        + " and date >= date(now()) " +
                         " and isCancelled = 0 ")
                 .list();
         return list.size() == 0 ? null : list;

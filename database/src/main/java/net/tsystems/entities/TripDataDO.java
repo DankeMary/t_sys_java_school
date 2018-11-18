@@ -25,7 +25,7 @@ public class TripDataDO {
     @Column(name = "departure_day_time", nullable = false)
     private LocalDateTime date;
     @Column(name = "trip_departure", nullable = false)
-    private LocalDate tripDeparture;
+    private LocalDateTime tripDeparture;
 
     public int getId() {
         return id;
@@ -69,10 +69,10 @@ public class TripDataDO {
         this.date = date;
     }
 
-    public LocalDate getTripDeparture() {
+    public LocalDateTime getTripDeparture() {
         return tripDeparture;
     }
-    public void setTripDeparture(LocalDate tripDeparture) {
+    public void setTripDeparture(LocalDateTime tripDeparture) {
         this.tripDeparture = tripDeparture;
     }
 

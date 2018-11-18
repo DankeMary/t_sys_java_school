@@ -3,6 +3,7 @@ package net.tsystems.entities;
 import javax.persistence.*;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -18,7 +19,8 @@ public class PassengerDO {
     @Column(name = "last_name", nullable = false, length = 45)
     private String lastName;
     @Column(name = "birthday")
-    private LocalDate birthday;
+    private LocalDateTime birthday;
+    //TODO !!! UserDO !!!
 
     public int getId() {
         return id;
@@ -44,11 +46,11 @@ public class PassengerDO {
         this.lastName = lastName;
     }
 
-    public LocalDate getBirthday() {
+    public LocalDateTime getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(LocalDate birthday) {
+    public void setBirthday(LocalDateTime birthday) {
         this.birthday = birthday;
     }
 

@@ -33,4 +33,8 @@ public class LocalTimeMapper {
     public LocalDateTime asLocalDateTime (LocalDate date) {
         return LocalDateTime.of(date, LocalTime.ofSecondOfDay(0));
     }
+
+    public LocalDate asLocalDate (LocalDateTime dateTime) {
+        return dateTime.toLocalDate();
+    }
 }

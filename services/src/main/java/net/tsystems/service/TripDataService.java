@@ -146,17 +146,17 @@ public class TripDataService {
 
         //1. Find data which satisfies the conditions
         List<TripDataBean> result = tripDataDOListToBeanList(tripDataDAO.getDataForSection(
-                timeMapper.asTimestamp(fromDate),
-                timeMapper.asTime(fromLocalTime),
-                timeMapper.asTimestamp(toDate),
-                timeMapper.asTime(toLocalTime),
+                fromDate,
+                fromLocalTime,
+                toDate,
+                toLocalTime,
                 fromStation,
                 toStation));
         List<SearchTicketForm> availableTicketsData = new LinkedList<>();
 
         for (TripDataBean tdBean : result) {
             //2. For each find all the related TripDatas (for now we've only found the 'from' ones)
-            List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(tdBean.getRoute().getTrip().getId(),
+            List<TripDataBean> journeyTripData =  tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(tdBean.getRoute().getTrip().getId(),
                     tdBean.getTripDeparture()));
             //3. Extract only the ones between needed stations
             TripDataBean fromTDBean = journeyTripData

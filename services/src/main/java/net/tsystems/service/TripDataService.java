@@ -189,23 +189,25 @@ public class TripDataService {
         return availableTicketsData;
     }
 
-    public boolean buyTicket(PassengerBean passenger, int fromTripDataId, int toTripDataId) {
+    public boolean buyTickets(BuyTicketsForm ticketsData) {
         //1. Find data which satisfies the conditions
-        TripDataBean fromTD = tripDataDOToBean(tripDataDAO.find(fromTripDataId));
+        int fromJourneyId = ticketsData.getFromJourneyId();
+        int toJourneyId = ticketsData.getToJourneyId();
+        TripDataBean fromTD = tripDataDOToBean(tripDataDAO.find(fromJourneyId));
 
-        List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(fromTD.getRoute().getTrip().getId(),
-                fromTD.getTripDeparture()));
+        List<TripDataBean> journeyTripData = tripDataDOListToBeanList(
+                tripDataDAO.findByTripIdAndTripDepartureDay(fromTD.getRoute().getTrip().getId(), fromTD.getTripDeparture()));
 
         TripDataBean fromTDBean = journeyTripData
                 .stream()
-                .filter(i -> i.getId() == fromTripDataId)
+                .filter(i -> i.getId() == fromJourneyId)
                 .findFirst()
                 .orElse(null);
         int fromTDBeanIndex = journeyTripData.indexOf(fromTDBean);
 
         TripDataBean toTDBean = journeyTripData
                 .stream()
-                .filter(i -> i.getId() == toTripDataId)
+                .filter(i -> i.getId() == toJourneyId)
                 .findFirst()
                 .orElse(null);
         int toTDBeanIndex = journeyTripData.indexOf(toTDBean);
@@ -227,16 +229,16 @@ public class TripDataService {
             tripDataDAO.update(tripDataBeanToDO(tdBean));
         }
 
-        //create passenger
-        PassengerBean newPassenger = passengerService.createReturnObject(passenger);
-        //create ticket
-        TicketBean ticket = new TicketBean();
-        ticket.setPassenger(newPassenger);
-        ticket.setFrom(fromTDBean);
-        ticket.setTo(toTDBean);
-        ticketService.create(ticket);
-        //TODO return ID passengerService.create(passenger);
-        //TODO create Ticket
+        for (PassengerBean p : ticketsData.getPassengers()) {
+            //create passenger
+            PassengerBean newPassenger = passengerService.createReturnObject(p);
+            //create ticket
+            TicketBean ticket = new TicketBean();
+            ticket.setPassenger(newPassenger);
+            ticket.setFrom(fromTDBean);
+            ticket.setTo(toTDBean);
+            ticketService.create(ticket);
+        }
         return true;
     }
 

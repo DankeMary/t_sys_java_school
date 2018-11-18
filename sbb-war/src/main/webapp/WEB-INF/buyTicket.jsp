@@ -6,6 +6,7 @@
     <title>Buy Ticket</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" type="text/css" href="/resources/style.css">
+    <link rel="stylesheet" type="text/css" href="/resources/jquery-ui.min.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -22,48 +23,42 @@
                 <form:form method="POST"
                            action="/buyTicket"
                            modelAttribute="ticketForm">
+
                     <div class="formFragment">
-                        <form:label path="passenger.firstName">First Name</form:label>
-                        <spring:bind path="passenger.firstName">
-                            <input type="text" value="${status.value}"
-                                   name="${status.expression}">
-                            <span style="color: red">
-                            <c:if test="${status.error}">
-                                <c:forEach items="${status.errorMessages}" var="error">
-                                    <c:out value="${error}"/>
-                                </c:forEach>
-                            </c:if>
-                            </span>
-                            </input>
-                        </spring:bind>
-                    </div>
-                    <div class="formFragment">
-                        <form:label path="passenger.lastName">Last Name</form:label>
-                        <spring:bind path="passenger.lastName">
-                            <input type="text" value="${status.value}"
-                                   name="${status.expression}">
-                            <span style="color: red">
-                            <c:if test="${status.error}">
-                                <c:forEach items="${status.errorMessages}" var="error">
-                                    <c:out value="${error}"/>
-                                </c:forEach>
-                            </c:if></span>
-                            </input>
-                        </spring:bind>
-                    </div>
-                    <div class="formFragment">
-                        <form:label path="passenger.birthday">Birthday</form:label>
-                        <spring:bind path="passenger.birthday">
-                            <input type="date" value="${status.value}"
-                                   name="${status.expression}">
-                            <span style="color: red">
-                            <c:if test="${status.error}">
-                                <c:forEach items="${status.errorMessages}" var="error">
-                                    <c:out value="${error}"/>
-                                </c:forEach>
-                            </c:if></span>
-                            </input>
-                        </spring:bind>
+                        <table id="journeyPassengers">
+                            <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Birthday</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach items="${passengers}" var="passenger" varStatus="status">
+                                <tr>
+                                    <td>
+                                        <spring:bind path="passenger.firstName">
+                                            <input value="${status.value}"
+                                                   name="${status.expression}"/>
+                                        </spring:bind>
+                                    </td>
+                                    <td>
+                                        <spring:bind path="passenger.lastName">
+                                            <input value="${status.value}" name="${status.expression}"/>
+                                        </spring:bind>
+                                    </td>
+                                    <td>
+                                        <spring:bind path="passenger.birthday">
+                                            <input type='date' value="${status.value}" name="${status.expression}"/>
+                                        </spring:bind>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            <tr id="addPassengerRow">
+                                <td align="right"><input type="button" id="addPassengerButton" value="Add"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <spring:bind path='fromJourneyId'>
                         <input type='hidden'
@@ -83,9 +78,9 @@
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+<script src="<c:url value="/resources/jquery-3.3.1.min.js" />"></script>
+<script src="<c:url value="/resources/jquery-ui.js" />"></script>
+<script src="<c:url value="/resources/utils.js" />"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
         integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>

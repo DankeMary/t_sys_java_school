@@ -1,9 +1,6 @@
 package net.tsystems.controller;
 
-import net.tsystems.bean.BuyTicketForm;
-import net.tsystems.bean.CreateTrainForm;
-import net.tsystems.bean.PassengerBean;
-import net.tsystems.bean.SearchTicketForm;
+import net.tsystems.bean.*;
 import net.tsystems.service.TripDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,7 +66,7 @@ public class TripDataController {
         if (fromJourney.trim().isEmpty() || toJourney.trim().isEmpty())
             return "redirect:/trains/find";
 
-        model.addAttribute("ticketForm", new BuyTicketForm());
+        model.addAttribute("ticketForm", new BuyTicketsForm());
         model.addAttribute("fromJourneyId", fromJourney);
         model.addAttribute("toJourneyId", toJourney);
 
@@ -77,13 +74,18 @@ public class TripDataController {
     }
 
     @RequestMapping(value = "/buyTicket", method = RequestMethod.POST)
-    public String buyTicket(@ModelAttribute("ticketForm") @Validated BuyTicketForm ticketForm,
+    public String buyTicket(@ModelAttribute("ticketForm") @Validated BuyTicketsForm ticketsData,
                             BindingResult result, Model model,
                             final RedirectAttributes redirectAttributes) {
         if (result.hasErrors())
-            return "buyTicket";
+            return "buyTickets";
 
-        tripDataService.buyTicket(ticketForm.getPassenger(), ticketForm.getFromJourneyId(), ticketForm.getToJourneyId());
+        if (!tripDataService.buyTickets(ticketsData))
+        {
+            //TODO add attribute to the JSP
+            model.addAttribute("notTickets", "No enough tickets available");
+            return "reditect:/trains/find";
+        }
 
         return "redirect:/trains";
     }

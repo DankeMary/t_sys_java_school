@@ -2,20 +2,13 @@ package net.tsystems.bean;
 
 import javax.validation.Valid;
 import java.io.Serializable;
+import java.util.List;
 
-public class BuyTicketForm implements Serializable {
-    @Valid
-    private PassengerBean passenger;
+public class BuyTicketsForm implements Serializable {
     private int fromJourneyId;
     private int toJourneyId;
-
-    public PassengerBean getPassenger() {
-        return passenger;
-    }
-
-    public void setPassenger(PassengerBean passenger) {
-        this.passenger = passenger;
-    }
+    @Valid
+    List<PassengerBean> passengers;
 
     public int getFromJourneyId() {
         return fromJourneyId;
@@ -31,5 +24,13 @@ public class BuyTicketForm implements Serializable {
 
     public void setToJourneyId(int toJourneyId) {
         this.toJourneyId = toJourneyId;
+    }
+
+    public List<PassengerBean> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(List<PassengerBean> passengers) {
+        this.passengers = passengers;
     }
 }

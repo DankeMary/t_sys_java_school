@@ -28,7 +28,6 @@ import java.util.stream.IntStream;
 @Service("journeyService")
 @Transactional
 public class TripDataService {
-    //TODO: Use calendar
 
     @Autowired
     private TripDataDAO tripDataDAO;
@@ -43,14 +42,11 @@ public class TripDataService {
     private LocalDateMapper dateMapper = new LocalDateMapperImpl();
     private LocalTimeMapper timeMapper = new LocalTimeMapperImpl();
 
-    //TODO create, update, delete
     public void create(TripDataBean tripDataBean) {
         tripDataDAO.create(tripDataBeanToDO(tripDataBean));
     }
 
     public void createAll(JourneyBean journey) {
-        //TODO check that no journey on that day already
-
         TripBean trip = journey.getTrip();
 
         List<RouteBean> trainPath = routeService.getTrainPathByTrainId(trip.getTrain().getId());
@@ -89,14 +85,14 @@ public class TripDataService {
             tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));
 
         List<JourneyBean> journeys = new LinkedList<JourneyBean>();
-        if (tripDataBeans != null)
-            for (TripDataBean tdb : tripDataBeans) {
-                JourneyBean jb = new JourneyBean();
-                jb.setJourneyId(tdb.getId());
-                jb.setTrip(tdb.getRoute().getTrip());
-                jb.setDepartureDay(tdb.getDate().toLocalDate());
-                journeys.add(jb);
-            }
+
+        for (TripDataBean tdb : tripDataBeans) {
+            JourneyBean jb = new JourneyBean();
+            jb.setJourneyId(tdb.getId());
+            jb.setTrip(tdb.getRoute().getTrip());
+            jb.setDepartureDay(tdb.getDate().toLocalDate());
+            journeys.add(jb);
+        }
         return journeys;
     }
 
@@ -105,29 +101,26 @@ public class TripDataService {
     public void cancelJourney(int trainId, int journeyId) {
         TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
         //TODO: first.getDate().toLocalDate() - is it a better way?
-        List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getTripDeparture()/*first.getDate().toLocalDate()*//*dateMapper.asSqlDate(first.getDate())*/));
+        List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getTripDeparture()));
 
-        if (journeyParts != null)
-            for (TripDataBean tdBean : journeyParts) {
-                tdBean.setIsCancelled(true);
-                tripDataDAO.update(tripDataBeanToDO(tdBean));
-            }
+        for (TripDataBean tdBean : journeyParts) {
+            tdBean.setIsCancelled(true);
+            tripDataDAO.update(tripDataBeanToDO(tdBean));
+        }
     }
 
     public List<ScheduleBean> getScheduleForStation(String stationName, int maxResults) {
         List<TripDataBean> tripData = tripDataDOListToBeanList(tripDataDAO.getScheduleForStation(stationName.trim(), maxResults));
 
         List<ScheduleBean> schedule = new LinkedList<>();
-        if (tripData != null) {
 
-            for (TripDataBean tdBean : tripData) {
-                ScheduleBean item = new ScheduleBean();
-                item.setTripData(tdBean);
-                item.setRoute(tdBean.getRoute());
-                item.setTrip(tdBean.getRoute().getTrip());
-                item.setTrain(item.getTrip().getTrain());
-                schedule.add(item);
-            }
+        for (TripDataBean tdBean : tripData) {
+            ScheduleBean item = new ScheduleBean();
+            item.setTripData(tdBean);
+            item.setRoute(tdBean.getRoute());
+            item.setTrip(tdBean.getRoute().getTrip());
+            item.setTrain(item.getTrip().getTrain());
+            schedule.add(item);
         }
 
         return schedule;
@@ -181,8 +174,13 @@ public class TripDataService {
                         .min(Comparator.comparing(TripDataBean::getSeatsLeft))
                         .get()
                         .getSeatsLeft();
-                if (ticketsAvailable > 0)
-                    availableTicketsData.add(new SearchTicketForm(fromTDBean, toTDBean, ticketsAvailable));
+                if (ticketsAvailable > 0) {
+                    SearchTicketForm ticketForm = new SearchTicketForm();
+                    ticketForm.setFromTDBean(fromTDBean);
+                    ticketForm.setToTDBean(toTDBean);
+                    ticketForm.setTicketsQty(ticketsAvailable);
+                    availableTicketsData.add(ticketForm);
+                }
             }
         }
 
@@ -245,7 +243,7 @@ public class TripDataService {
     //Validation Utils
     public void validateJourney(JourneyBean journey, Map<String, String> errors) {
         //check that such trip exists
-        if (tripService.getTripById(journey.getTrip().getId()) == null)
+        if (journey.getTrip() == null || tripService.getTripById(journey.getTrip().getId()) == null)
             errors.put("invalidTrip", "No such trip found");
         //check that date is in future
         if (journey.getDepartureDay().isBefore(LocalDate.now()))

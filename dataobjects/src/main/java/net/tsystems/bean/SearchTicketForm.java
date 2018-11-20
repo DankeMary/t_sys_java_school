@@ -3,17 +3,7 @@ package net.tsystems.bean;
 public class SearchTicketForm {
     private TripDataBean fromTDBean;
     private TripDataBean toTDBean;
-    //private List<TripDataBean> ticketPath;
     private int ticketsQty;
-
-    public SearchTicketForm() {
-    }
-
-    public SearchTicketForm(TripDataBean fromTDBean, TripDataBean toTDBean, int ticketsQty) {
-        this.fromTDBean = fromTDBean;
-        this.toTDBean = toTDBean;
-        this.ticketsQty = ticketsQty;
-    }
 
     public TripDataBean getFromTDBean() {
         return fromTDBean;

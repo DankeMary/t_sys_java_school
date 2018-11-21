@@ -29,16 +29,22 @@
                                    action="/stations/${stationForm.id}"
                                    modelAttribute="stationForm">
                             <div class="formFragment">
-                                <form:label path="name">Name</form:label>
+                                <form:label path="name"
+                                            cssClass="fm-with-valid">Name</form:label>
                                 <spring:bind path="name">
-                                    <input value="${status.value}" name="${status.expression}">
-                                    <span style="color: red">
-                                <c:if test="${status.error}">
-                                    <c:forEach items="${status.errorMessages}" var="error">
-                                        <c:out value="${error}"/>
-                                    </c:forEach>
-                                </c:if>
-                            </span>
+                                    <input value="${status.value}"
+                                           name="${status.expression}"
+                                           class="fm-with-valid"
+                                    required>
+                                    <div class="form-group col-md-6" style="color: red; display: inline-block;">
+                                        <div class="error-list">
+                                            <c:if test="${status.error}">
+                                                <c:forEach items="${status.errorMessages}" var="error">
+                                                    <span style="display: block;">${error}</span>
+                                                </c:forEach>
+                                            </c:if>
+                                        </div>
+                                    </div>
                                     </input>
                                 </spring:bind>
                             </div>

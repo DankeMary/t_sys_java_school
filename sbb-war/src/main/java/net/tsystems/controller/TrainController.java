@@ -52,18 +52,21 @@ public class TrainController {
                            final RedirectAttributes redirectAttributes) {
 
         Map<String, String> errors = new HashMap<>();
-        trainService.validate(train.getTrain(), true, result);
+        trainService.validate(train.getTrain(), true, errors);
         routeService.validatePrimitive(train.getPrimitivePath(), errors);
+        //routeService.validatePrimitive(null, errors);
         //todo customErrors list
         if (result.hasErrors() || !errors.isEmpty()) {
             model.addAttribute("shortPath", errors.get("shortPath"));
             model.addAttribute("wrongPath", errors.get("wrongPath"));
             model.addAttribute("dataMissing", errors.get("dataMissing"));
             model.addAttribute("invalidStations", errors.get("invalidStations"));
+            model.addAttribute("numberNonUnique", errors.get("numberNonUnique"));
+            model.addAttribute("capacityCannotUpdate", errors.get("capacityCannotUpdate"));
 
             return "addTrain";
         } else {
-            trainService.create(train.getTrain(), routeService.generatePathMapFromPrimitiveData(train.getPrimitivePath()));
+            trainService.create(train.getTrain(), routeService.generatePathMap(train.getPrimitivePath()));
             return "redirect:/trains";
         }
     }
@@ -81,7 +84,8 @@ public class TrainController {
                               BindingResult result, Model model,
                               final RedirectAttributes redirectAttributes) {
 
-        trainService.validate(train, false, result);
+        Map<String, String> errors = new HashMap<>();
+        trainService.validate(train, false, errors);
         if (result.hasErrors()) {
             return "editTrain";
         } else {

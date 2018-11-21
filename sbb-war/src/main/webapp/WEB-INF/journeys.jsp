@@ -16,16 +16,16 @@
     <div class="row">
         <div class="col">
         </div>
-        <div class="col-8" style="border: 3px outset steelblue">
+        <div class="col-sm-12 col-md-10 col-lg-8" style="padding:0;border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h5>Train Journeys</h5>
+                <div class="formFragment">
                 <form:form method="POST"
                            action="/trains/${trainId}/journeys"
                            modelAttribute="journeyForm">
-                    <div class="formFragment">
-                        <form:label path="departureDay">Departure Day</form:label>
                         <spring:bind path="departureDay">
+                            <label>Departure Day</label>
                             <input type="date" value="${status.value}"
                                    name="${status.expression}">
                             <span style="color: red">
@@ -36,14 +36,15 @@
                             </c:if></span>
                             </input>
                         </spring:bind>
-                        <span style="color:red; display: block;"><c:out value="${depDayError}"/></span>
-                        <span style="color:red; display: block;"><c:out value="${journeyExists}"/></span>
-                        <span style="color:red; display: block;"><c:out value="${invalidTrip}"/></span>
-                    </div>
+
                     <div style="display: inline-block;">
                         <input type="submit" value="Add New" id="submit" class="submit-btn"/>
                     </div>
+                    <span style="color:red; display: block;"><c:out value="${depDayError}"/></span>
+                    <span style="color:red; display: block;"><c:out value="${journeyExists}"/></span>
+                    <span style="color:red; display: block;"><c:out value="${invalidTrip}"/></span>
                 </form:form>
+                </div>
                 <span style="color:red; display: block;"><c:out value="${ticketsSold}"/></span>
                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                     <thead class="thead-light">

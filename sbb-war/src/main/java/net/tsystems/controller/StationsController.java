@@ -102,12 +102,11 @@ public class StationsController {
             } else {
                 model.addAttribute("noStationMessage", "No station with such name found");
             }
-        //TODO Say no such station
         else {
             model.addAttribute("noStationMessage", "");
             model.addAttribute("schedule", new LinkedList<>());
         }
-        model.addAttribute("stationName", stationName);
+        model.addAttribute("stationName", trimmedStationName);
         return "schedule";
     }
 

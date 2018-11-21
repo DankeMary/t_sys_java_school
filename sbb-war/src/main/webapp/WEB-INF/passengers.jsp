@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col">
         </div>
-        <div class="col-8" style="border: 3px outset steelblue">
+        <div class="col-sm-12 col-md-10 col-lg-8" style="padding:0;border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <c:choose>

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <head>
@@ -19,14 +19,18 @@
         <div class="col-8" style="border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
-                <h3>Enter The Passenger Details</h3>
+                <h5>Buy Tickets</h5>
+                <p><b>From:</b> ${fromMetaInfo}</p>
+                <p><b>To:</b> ${toMetaInfo}</p>
+                <p><b>Price:</b> ${ticketPrice}</p>
+                <h5><span style="color: red; display: block;">${noTickets}</span></h5>
+                <h6>Enter The Passengers Details</h6>
                 <form:form method="POST"
                            action="/buyTicket"
                            modelAttribute="ticketForm">
-
                     <div class="formFragment">
-                        <table id="journeyPassengers">
-                            <thead>
+                        <table id="journeyPassengers" class="table table-striped" style="width: 100%; min-width: 500px">
+                            <thead class="thead-light">
                             <tr>
                                 <th>First Name</th>
                                 <th>Last Name</th>

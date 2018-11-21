@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 
 @Controller
@@ -29,8 +33,8 @@ public class TripDataController {
                               @RequestParam(required = false, defaultValue = "") String fromStation,
                               @RequestParam(required = false, defaultValue = "") String toStation,
                               Model model) {
-        //TODO !!!!
-        //TODO check that all are empty
+
+        //TODO check that if some fields are empty and some are not then still not valid
         if (!fromDay.trim().isEmpty() &&
                 !fromTime.trim().isEmpty() &&
                 !toDay.trim().isEmpty() &&
@@ -49,11 +53,11 @@ public class TripDataController {
                 toStation.trim().isEmpty())) {
             model.addAttribute("dataError", "All fields are mandatory");
         }
-        model.addAttribute("fromDay", fromDay); //tripData
-        model.addAttribute("fromTime", fromTime); //route
-        model.addAttribute("toDay", toDay);  //tripData
-        model.addAttribute("toTime", toTime);  //route
-        model.addAttribute("fromStation", fromStation); //
+        model.addAttribute("fromDay", fromDay);
+        model.addAttribute("fromTime", fromTime);
+        model.addAttribute("toDay", toDay);
+        model.addAttribute("toTime", toTime);
+        model.addAttribute("fromStation", fromStation);
         model.addAttribute("toStation", toStation);
         model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return "tickets";
@@ -66,7 +70,20 @@ public class TripDataController {
         if (fromJourney.trim().isEmpty() || toJourney.trim().isEmpty())
             return "redirect:/trains/find";
 
-        model.addAttribute("ticketForm", new BuyTicketsForm());
+        Map<String, String> metaData = new HashMap<>();
+        tripDataService.makeMetaDataForBuyingTickets(fromJourney, toJourney, metaData);
+        model.addAttribute("fromMetaInfo", metaData.get("fromMetaInfo"));
+        model.addAttribute("toMetaInfo", metaData.get("toMetaInfo"));
+        model.addAttribute("ticketPrice", metaData.get("ticketPrice"));
+
+        BuyTicketsForm ticketForm = new BuyTicketsForm();
+        ticketForm.setPassengers(new LinkedList<>());
+        PassengerBean p = new PassengerBean();
+        p.setFirstName("LALALALLA");
+        p.setLastName("BUBUBU");
+        p.setBirthday(LocalDate.now());
+        ticketForm.getPassengers().add(p);
+        model.addAttribute("ticketForm", ticketForm);
         model.addAttribute("fromJourneyId", fromJourney);
         model.addAttribute("toJourneyId", toJourney);
 
@@ -77,14 +94,17 @@ public class TripDataController {
     public String buyTicket(@ModelAttribute("ticketForm") @Validated BuyTicketsForm ticketsData,
                             BindingResult result, Model model,
                             final RedirectAttributes redirectAttributes) {
-        if (result.hasErrors())
-            return "buyTickets";
+        if (result.hasErrors()) {
+            model.addAttribute("ticketForm", ticketsData);
+            return "buyTicket";
+        }
 
         if (!tripDataService.buyTickets(ticketsData))
         {
             //TODO add attribute to the JSP
-            model.addAttribute("notTickets", "No enough tickets available");
-            return "reditect:/trains/find";
+            //TODO will the attribute stay if we do redirect?
+            model.addAttribute("noTickets", "No enough tickets available");
+            return "buyTicket";
         }
 
         return "redirect:/trains";

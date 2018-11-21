@@ -1,14 +1,16 @@
 package net.tsystems.bean;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
 public class BuyTicketsForm implements Serializable {
     private int fromJourneyId;
     private int toJourneyId;
+    @NotNull
     @Valid
-    List<PassengerBean> passengers;
+    private List<PassengerBean> passengers;
 
     public int getFromJourneyId() {
         return fromJourneyId;

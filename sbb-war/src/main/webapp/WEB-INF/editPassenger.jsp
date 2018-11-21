@@ -29,47 +29,68 @@
                                    action="/passengers/${passengerForm.id}"
                                    modelAttribute="passengerForm">
                             <div class="formFragment">
-                                <form:label path="firstName">First Name</form:label>
+                                <form:label path="firstName"
+                                            cssClass="fm-with-valid">First Name</form:label>
                                 <spring:bind path="firstName">
                                     <input type="text" value="${status.value}"
-                                           name="${status.expression}">
-                                    <span style="color: red">
-                            <c:if test="${status.error}">
-                                <c:forEach items="${status.errorMessages}" var="error">
-                                    <c:out value="${error}"/>
-                                </c:forEach>
-                            </c:if>
-                            </span>
+                                           name="${status.expression}"
+                                           class="fm-with-valid"
+                                           required>
+                                    <div class="form-group col-md-6" style="color: red; display: inline-block;">
+                                        <div class="error-list">
+                                            <c:if test="${status.error}">
+                                                <c:forEach items="${status.errorMessages}" var="error">
+                                                    <span style="display: block;">${error}</span>
+                                                </c:forEach>
+                                            </c:if>
+                                        </div>
+                                    </div>
                                     </input>
                                 </spring:bind>
                             </div>
                             <div class="formFragment">
-                                <form:label path="lastName">Last Name</form:label>
+                                <form:label path="lastName"
+                                            cssClass="fm-with-valid">Last Name</form:label>
                                 <spring:bind path="lastName">
                                     <input type="text" value="${status.value}"
-                                           name="${status.expression}">
-                                    <span style="color: red">
-                            <c:if test="${status.error}">
-                                <c:forEach items="${status.errorMessages}" var="error">
-                                    <c:out value="${error}"/>
-                                </c:forEach>
-                            </c:if></span>
+                                           name="${status.expression}"
+                                           class="fm-with-valid"
+                                           required>
+                                    <div class="form-group col-md-6" style="color: red; display: inline-block;">
+                                        <div class="error-list">
+                                            <c:if test="${status.error}">
+                                                <c:forEach items="${status.errorMessages}" var="error">
+                                                    <span style="display: block;">${error}</span>
+                                                </c:forEach>
+                                            </c:if>
+                                        </div>
+                                    </div>
                                     </input>
                                 </spring:bind>
                             </div>
                             <div class="formFragment">
-                                <form:label path="birthday">Birthday</form:label>
+                                <form:label path="birthday"
+                                            cssClass="fm-with-valid">Birthday</form:label>
                                 <spring:bind path="birthday">
                                     <input type="date" value="${status.value}"
-                                           name="${status.expression}">
-                                        <span style="color: red">
-                                        <c:if test="${status.error}">
-                                            <c:forEach items="${status.errorMessages}" var="error">
-                                                <c:out value="${error}"/>
-                                            </c:forEach>
-                                        </c:if>
-                                        </span>
-                                        <span style="color:red; display: block;"><c:out value="${birthdayError}"/></span>
+                                           name="${status.expression}"
+                                           class="fm-with-valid"
+                                           required>
+                                    <div class="form-group col-md-6" style="color: red; display: inline-block;">
+                                        <div class="error-list">
+                                            <span style="display: block;">${birthdayError}</span>
+
+                                            <c:if test="${status.error}">
+                                                <div class="form-group col-md-6" style="display: inline-block;">
+                                                    <c:if test="${status.error}">
+                                                        <c:forEach items="${status.errorMessages}" var="error">
+                                                            <span style="display: block;">${error}</span>
+                                                        </c:forEach>
+                                                    </c:if>
+                                                </div>
+                                            </c:if>
+                                        </div>
+                                    </div>
                                     </input>
                                 </spring:bind>
                             </div>

@@ -17,61 +17,63 @@
     <div class="row">
         <div class="col">
         </div>
-        <div class="col-8" style="border: 3px outset steelblue">
+        <div class="col-sm-12 col-md-10 col-lg-8" style="padding:0;border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h5>Find Tickets</h5>
                 <jsp:include page="findTicketsForm.jsp"/>
                 <c:choose>
-                    <c:when test="${empty ticketsAvailable}">
-                        No trains found
+                    <c:when test="${not empty fromStation and empty ticketsAvailable}">
+                        <h6>No trains found</h6>
                     </c:when>
                     <c:otherwise>
-                        <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
-                            <thead class="thead-light">
-                            <tr>
-                                <th>Train</th>
-                                <th>From</th>
-                                <th>To</th>
-                                <th>Tickets</th>
-                                <th>Buy</th>
-                            </tr>
-                            </thead>
-                            <c:forEach items="${ticketsAvailable}" var="item">
-                                <c:choose>
-                                    <c:when test="${not item.fromTDBean.isCancelled}">
-                                        <tr>
-                                            <td>${item.fromTDBean.route.trip.train.number}</td>
-                                            <td>${item.fromTDBean.route.station.name} <br>
-                                                <span style="font-size: 11px; color: green;">
-                                                        ${item.fromTDBean.route.departure}
-                                                </span>
-                                                <br>
-                                                <span style="font-size: 9px; color: grey;">
-                                                    ${localDateTimeFormat.format(item.fromTDBean.date)}
-                                                </span>
-                                            </td>
+                        <c:choose>
+                            <c:when test="${not empty ticketsAvailable}">
+                                <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>Train</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Tickets</th>
+                                        <th>Buy</th>
+                                    </tr>
+                                    </thead>
+                                    <c:forEach items="${ticketsAvailable}" var="item">
+                                        <c:choose>
+                                            <c:when test="${not item.fromTDBean.isCancelled}">
+                                                <tr>
+                                                    <td>${item.fromTDBean.route.trip.train.number}</td>
+                                                    <td>${item.fromTDBean.route.station.name} <br>
+                                                        <span style="font-size: 11px; color: green; display: block;">
+                                                                ${item.fromTDBean.route.departure}
+                                                        </span>
+                                                        <span style="font-size: 9px; color: grey; display: block;">
+                                                                ${localDateTimeFormat.format(item.fromTDBean.date)}
+                                                        </span>
+                                                    </td>
 
-                                            <td>${item.toTDBean.route.station.name} <br>
-                                                <span style="font-size: 11px; color: green;">
-                                                        ${item.toTDBean.route.departure}
-                                                </span>
-                                                <br>
-                                                <span style="font-size: 9px; color: grey;">
-                                                    ${localDateTimeFormat.format(item.toTDBean.date)}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                ${item.ticketsQty}
-                                            </td>
-                                            <td>
-                                                <a href="/buyTicket?fromJourney=${item.fromTDBean.id}&toJourney=${item.toTDBean.id}">Buy</a>
-                                            </td>
-                                        </tr>
-                                    </c:when>
-                                </c:choose>
-                            </c:forEach>
-                        </table>
+                                                    <td>${item.toTDBean.route.station.name} <br>
+                                                        <span style="font-size: 11px; color: green; display: block;">
+                                                                ${item.toTDBean.route.departure}
+                                                        </span>
+                                                        <span style="font-size: 9px; color: grey; display: block;">
+                                                                ${localDateTimeFormat.format(item.toTDBean.date)}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                            ${item.ticketsQty}
+                                                    </td>
+                                                    <td>
+                                                        <a href="/buyTicket?fromJourney=${item.fromTDBean.id}&toJourney=${item.toTDBean.id}">Buy</a>
+                                                    </td>
+                                                </tr>
+                                            </c:when>
+                                        </c:choose>
+                                    </c:forEach>
+                                </table>
+                            </c:when>
+                        </c:choose>
                     </c:otherwise>
                 </c:choose>
             </div>

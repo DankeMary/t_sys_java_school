@@ -1,12 +1,16 @@
 package net.tsystems.bean;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class CreateTrainForm {
+    @NotNull
     @Valid
     private TrainBean train;
-    private List<PrimitiveRouteBean> primitivePath;
+    @NotNull
+    @Valid
+    private List<StationBeanExpanded> primitivePath;
 
     public TrainBean getTrain() {
         return train;
@@ -16,11 +20,11 @@ public class CreateTrainForm {
         this.train = train;
     }
 
-    public List<PrimitiveRouteBean> getPrimitivePath() {
+    public List<StationBeanExpanded> getPrimitivePath() {
         return primitivePath;
     }
 
-    public void setPrimitivePath(List<PrimitiveRouteBean> primitivePath) {
+    public void setPrimitivePath(List<StationBeanExpanded> primitivePath) {
         this.primitivePath = primitivePath;
     }
 }

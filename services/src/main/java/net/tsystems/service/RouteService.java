@@ -87,59 +87,55 @@ public class RouteService {
     }
 
     //Validation Utils
-    public void validatePrimitive(List<PrimitiveRouteBean> primitiveData, Map<String, String> errorsList) {
+    public void validatePrimitive(List<StationBeanExpanded> trainPathData, Map<String, String> errorsList) {
         //TODO check that all stations exist
-        if (primitiveData == null || primitiveData.size() < 2) {
-            errorsList.put("shortPath", "Train path hast to have at least 2 stations)");
+        //TODO How does it act if I add a bunch of empty inputs?
+        int cnt = 0;
+        if (trainPathData != null)
+        for (StationBeanExpanded stExpBean : trainPathData) {
+            if ((stExpBean.getStation() != null &&
+                    !stExpBean.getStation().getName().isEmpty()) ||
+                    stExpBean.getArrTime() != null ||
+                    stExpBean.getDepTime() != null
+            )
+                cnt++;
+        }
+        if (cnt < 2) {
+            errorsList.put("shortPath", "Train path hast to have at least 2 stations with data");
         } else {
-            //not everything is empty
-            if (primitiveData
-                    .stream()
-                    .filter(i -> !i.getStation().trim().equals(""))
-                    .findFirst()
-                    .orElse(null) != null) {
-                //all stations exist
-                if (!stationService.allStationsExist(primitiveData))
-                    errorsList.put("invalidStations", "Not all of the given stations exist");
-                else
-                    if (!areUniqueStations(primitiveData)) {
-                        errorsList.put("wrongPath", "Path has to have unique stations");
-                    }
+            //all stations exist
+            if (!stationService.allStationsExist(trainPathData))
+                errorsList.put("invalidStations", "Not all of the given stations exist");
+            else if (!areUniqueStations(trainPathData)) {
+                errorsList.put("wrongPath", "Path has to have unique stations");
+            }
 
-                for (PrimitiveRouteBean prBean : primitiveData) {
-                    if (prBean.getStation().equals("") ||
-                            prBean.getArrival().equals("") ||
-                            prBean.getDeparture().equals("")) {
-                        errorsList.put("dataMissing", "Some path data is missing (station name or timing)");
-                        break;
-                    }
+            for (StationBeanExpanded stExpBean : trainPathData) {
+                if (stExpBean.getStation().getName().equals("") ||
+                        stExpBean.getArrTime() == null ||
+                        stExpBean.getDepTime() == null) {
+                    errorsList.put("dataMissing", "Some path data is missing (station name or timing)");
+                    break;
                 }
             }
         }
     }
 
-    public boolean areUniqueStations(List<PrimitiveRouteBean> primitivePath) {
+    public boolean areUniqueStations(List<StationBeanExpanded> trainPath) {
         Set<String> stations = new HashSet<>();
-        primitivePath.forEach(station -> stations.add(station.getStation().trim()));
-        return primitivePath.size() == stations.size();
+        trainPath.forEach(station -> stations.add(station.getStation().getName().trim()));
+        return trainPath.size() == stations.size();
     }
 
 
     //Help Functions
-    public Map<Integer, StationBeanExpanded> generatePathMapFromPrimitiveData(List<PrimitiveRouteBean> primitivePath) {
+    //TODO Is using orderIndex actually better? Ont he other hand we cannot guarantee the ordered list
+    public Map<Integer, StationBeanExpanded> generatePathMap(List<StationBeanExpanded> trainPathData) {
         Map<Integer, StationBeanExpanded> result = new HashMap<>();
 
-        for (PrimitiveRouteBean prBean : primitivePath) {
-            LocalTime timeArr = LocalTime.parse(prBean.getArrival());
-            LocalTime timeDep = LocalTime.parse(prBean.getDeparture());
-
-            StationBeanExpanded b = new StationBeanExpanded();
-            b.setStation(new StationBean());
-            b.getStation().setName(prBean.getStation());
-            b.setArrTime(timeArr);
-            b.setDepTime(timeDep);
-
-            result.put(result.size() + 1, b);
+        for (StationBeanExpanded stExpBean : trainPathData) {
+            //result.put(result.size() + 1, b);
+            result.put(stExpBean.getOrderIndex() + 1, stExpBean);
         }
 
         return result;

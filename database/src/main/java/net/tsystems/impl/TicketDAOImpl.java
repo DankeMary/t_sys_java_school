@@ -16,7 +16,7 @@ public class TicketDAOImpl extends AbstractDaoImpl<TicketDO, Integer> implements
                         "ti.from.route.trip.train.id=" + trainId
                         + " and ti.from.tripDeparture=\'" + date + "\'")
                 .list();
-        return list.size() == 0 ? null : list;
+        return list;
     }
 
     @Override

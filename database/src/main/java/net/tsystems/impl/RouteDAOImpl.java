@@ -13,16 +13,16 @@ public class RouteDAOImpl extends AbstractDaoImpl<RouteDO, Integer> implements R
         List<RouteDO> list = (List<RouteDO>) getEntityManager()
                 .createQuery("from RouteDO where trip.train.id=" + trainId)
                 .list();
-        return list.size() == 0 ? null : list;
+        return list;
     }
 
-    @Override
+    /*@Override
     public RouteDO getLastRouteByTrainId(int trainId) {
         List<RouteDO> list = (List<RouteDO>) getEntityManager()
                 .createQuery("from RouteDO r where trip.train.id=" + trainId + " and r.nextStation=null")
                 .list();
         return list.size() == 0 ? null : list.get(0);
-    }
+    }*/
 
     /*@Override
     public List<RouteDO> getRoutesByTripId(int tripId) {

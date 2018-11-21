@@ -19,7 +19,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                         + " and route.station = route.trip.from " +
                         " and isCancelled = 0 ")
                 .list();
-        return list.size() == 0 ? null : list;
+        return list;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                         + " and date >= date(now()) " +
                         " and isCancelled = 0 ")
                 .list();
-        return list.size() == 0 ? null : list;
+        return list;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                         + " and tripDeparture=\'" + date + "\'" +
                         "order by td.date")
                 .list();
-        return list.size() == 0 ? null : list;
+        return list;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                         + " and tripDeparture=\'" + date + "\'" +
                         "order by td.date")
                 .list();
-        return list.size() == 0 ? null : list;
+        return list;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                 .setMaxResults(maxResults)
                 .list();
 
-        return list.size() == 0 ? null : list;
+        return list;
     }
 
     //TODO time? (type)
@@ -93,10 +93,6 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                                               String toStation) {
         //TODO check that dates and times are after right now?
         //TODO !!! Check that there're more than 10 minutes before the departure
-       /* List<Integer> lala = (List<Integer>) getEntityManager()
-                .createQuery("select ((now() - td.date)) * 24 * 60 as ttt from TripDataDO td1")
-                .list();*/
-
 
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery(

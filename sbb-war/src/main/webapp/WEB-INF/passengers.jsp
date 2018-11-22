@@ -23,6 +23,84 @@
                     </c:when>
                     <c:when test="${not empty passengers}">
                         <h5>Passengers</h5>
+                        <div class="pagination">
+                            <c:choose>
+                                <c:when test="${currentPage != 1}">
+                                    <a href="/passengers?page=${currentPage - 1}">&laquo;</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a class="invisible-link">&laquo;</a>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:choose>
+                                <c:when test="${navPagesQty gt 7}">
+                                    <c:choose>
+                                        <c:when test="${currentPage - 3 gt 1}">
+                                            <c:choose>
+                                                <c:when test="${currentPage + 3 lt navPagesQty}">
+                                                    <c:forEach begin="${currentPage - 3}" end="${currentPage + 3}" var="i">
+                                                        <c:choose>
+                                                            <c:when test="${currentPage eq i}">
+                                                                <a href="#" class="active">${i}</a>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <a href="/passengers?page=${i}">${i}</a>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:forEach>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:forEach begin="${navPagesQty - 7 + 1}" end="${navPagesQty}"
+                                                               var="i">
+                                                        <c:choose>
+                                                            <c:when test="${currentPage eq i}">
+                                                                <a href="#" class="active">${i}</a>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <a href="/passengers?page=${i}">${i}</a>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:forEach>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:forEach begin="1" end="7" var="i">
+                                                <c:choose>
+                                                    <c:when test="${currentPage eq i}">
+                                                        <a href="#" class="active">${i}</a>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <a href="/passengers?page=${i}">${i}</a>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach begin="1" end="${navPagesQty}" var="i">
+                                        <c:choose>
+                                            <c:when test="${currentPage eq i}">
+                                                <a href="#" class="active">${i}</a>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <a href="/passengers?page=${i}">${i}</a>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <c:choose>
+                                <c:when test="${currentPage lt navPagesQty}">
+                                    <a href="/passengers?page=${currentPage + 1}">&raquo;</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a class="invisible-link">&raquo;</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
                         <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                             <thead class="thead-light">
                             <tr>

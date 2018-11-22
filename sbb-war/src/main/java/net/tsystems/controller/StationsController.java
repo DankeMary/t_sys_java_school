@@ -1,6 +1,7 @@
 package net.tsystems.controller;
 
 
+import net.tsystems.UtilsClass;
 import net.tsystems.bean.StationBean;
 import net.tsystems.beanmapper.StationBeanMapper;
 import net.tsystems.beanmapper.StationBeanMapperImpl;
@@ -28,9 +29,8 @@ import java.util.List;
  */
 @Controller
 public class StationsController {
-    private StationService stationService;
-    private StationValidator validator = new StationValidator();
 
+    private StationService stationService;
     private TripDataService tripDataService;
 
 
@@ -97,7 +97,7 @@ public class StationsController {
 
         if (!trimmedStationName.equals(""))
             if (stationService.getStationByName(trimmedStationName) != null) {
-                model.addAttribute("schedule", tripDataService.getScheduleForStation(trimmedStationName, 10));
+                model.addAttribute("schedule", tripDataService.getScheduleForStation(trimmedStationName, UtilsClass.MAX_PAGE_RESULT));
 
             } else {
                 model.addAttribute("noStationMessage", "No station with such name found");

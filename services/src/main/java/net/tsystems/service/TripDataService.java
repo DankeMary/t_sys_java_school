@@ -13,21 +13,21 @@ import net.tsystems.utilmapper.LocalTimeMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.security.krb5.internal.Ticket;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 @Service("journeyService")
 @Transactional
 public class TripDataService {
+
+    private final String DEFAULT_CURRENCY = "Fr.";
 
     @Autowired
     private TripDataDAO tripDataDAO;
@@ -38,9 +38,6 @@ public class TripDataService {
     private PassengerService passengerService;
     private TicketService ticketService;
     private TripService tripService;
-
-    private LocalDateMapper dateMapper = new LocalDateMapperImpl();
-    private LocalTimeMapper timeMapper = new LocalTimeMapperImpl();
 
     public void create(TripDataBean tripDataBean) {
         tripDataDAO.create(tripDataBeanToDO(tripDataBean));
@@ -76,13 +73,14 @@ public class TripDataService {
         return tripDataDOToBean(tripDataDAO.find(journeyId));
     }
 
-    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow) {
-        List<TripDataBean> tripDataBeans;
+    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow, int page, int maxResult) {
+        //TODO For now only afterNow
+        List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id, page, maxResult));
 
-        if (afterNow)
+        /*if (afterNow)
             tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
         else
-            tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));
+            tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));*/
 
         List<JourneyBean> journeys = new LinkedList<JourneyBean>();
 
@@ -128,7 +126,8 @@ public class TripDataService {
 
     public List<SearchTicketForm> getDataForSection(String fromDay, String fromTime,
                                                     String toDay, String toTime,
-                                                    String fromStation, String toStation) {
+                                                    String fromStation, String toStation,
+                                                    int page, int maxResult) {
         LocalDate fromDate = LocalDate.parse(fromDay.trim());
         LocalDate toDate = LocalDate.parse(toDay.trim());
 
@@ -144,7 +143,8 @@ public class TripDataService {
                 toDate,
                 toLocalTime,
                 fromStation,
-                toStation));
+                toStation,
+                page, maxResult));
         List<SearchTicketForm> availableTicketsData = new LinkedList<>();
 
         for (TripDataBean tdBean : result) {
@@ -223,7 +223,7 @@ public class TripDataService {
             return false;
 
         for (TripDataBean tdBean : ticketRelatedTDBeans) {
-            tdBean.setSeatsLeft(tdBean.getSeatsLeft() - 1);
+            tdBean.setSeatsLeft(tdBean.getSeatsLeft() - ticketsData.getPassengers().size());
             tripDataDAO.update(tripDataBeanToDO(tdBean));
         }
 
@@ -261,6 +261,33 @@ public class TripDataService {
             errors.put("ticketsSold", "Can't cancel - tickets have been already sold");
     }
 
+    //Help Functions
+    public void makeMetaDataForBuyingTickets(String fromJourneyId, String toJourneyId, Map<String, String> data) {
+        TripDataBean fromTdBean = tripDataDOToBean(tripDataDAO.find(Integer.parseInt(fromJourneyId)));
+        TripDataBean toTdBean = tripDataDOToBean(tripDataDAO.find(Integer.parseInt(toJourneyId)));
+        StringBuilder result = new StringBuilder();
+
+        data.put("fromMetaInfo", fromTdBean.getRoute().getStation().getName() +
+                " (" + fromTdBean.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + ")");
+
+        data.put("toMetaInfo", toTdBean.getRoute().getStation().getName() +
+                " (" + toTdBean.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + ")");
+
+        data.put("ticketPrice", fromTdBean.getRoute().getTrip().getTrain().getPrice() + " " + DEFAULT_CURRENCY);
+    }
+    public int countDataForSectionPages(String fromDay, String fromTime, String toDay, String toTime, String fromStation, String toStation, int maxResult) {
+        LocalDate fromDate = LocalDate.parse(fromDay.trim());
+        LocalDate toDate = LocalDate.parse(toDay.trim());
+
+        LocalTime fromLocalTime = LocalTime.parse(fromTime);
+        LocalTime toLocalTime = LocalTime.parse(toTime);
+
+        return tripDataDAO.countDataForSectionPages(fromDate, fromLocalTime, toDate, toLocalTime, fromStation, toStation, maxResult);
+    }
+
+    public int countFirstAfterNowByTrainPages(int id, int maxResult) {
+        return tripDataDAO.countFirstAfterNowByTrainPages(id, maxResult);
+    }
     //Mappers
     private TripDataDO tripDataBeanToDO(TripDataBean tdBean) {
         return tripDataEntityMapper.tripDataToDO(tripDataBeanMapper.tripDataToSO(tdBean));

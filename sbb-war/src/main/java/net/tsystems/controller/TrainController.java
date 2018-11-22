@@ -1,5 +1,6 @@
 package net.tsystems.controller;
 
+import net.tsystems.UtilsClass;
 import net.tsystems.bean.*;
 import net.tsystems.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.*;
  */
 @Controller
 public class TrainController {
+
     private TripService tripService;
     private RouteService routeService;
     private TripDataService tripDataService;
@@ -32,9 +34,17 @@ public class TrainController {
 
 
     @RequestMapping(value = "/trains", method = RequestMethod.GET)
-    public String trains(Model model) {
-        List<TrainBean> trains = trainService.getAll();
+    public String trains(@RequestParam(required = false, defaultValue = "") String page,
+                         Model model) {
+
+        int navPagesQty = trainService.countPages(UtilsClass.MAX_PAGE_RESULT);
+        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+
+        List<TrainBean> trains = trainService.getAll(pageInt, UtilsClass.MAX_PAGE_RESULT);
+
         model.addAttribute("trains", trains);
+        model.addAttribute("navPagesQty", navPagesQty);
+        model.addAttribute("currentPage", pageInt);
         return "trains";
     }
 
@@ -109,12 +119,20 @@ public class TrainController {
     }
 
     @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.GET)
-    public String journeys(@PathVariable("id") int id, Model model) {
+    public String journeys(@PathVariable("id") int id,
+                           @RequestParam(required = false, defaultValue = "") String page,
+                           Model model) {
         //TODO Order by date
-        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, true);
+        int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(id, UtilsClass.MAX_PAGE_RESULT);
+        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+
+        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, true, pageInt, UtilsClass.MAX_PAGE_RESULT);
+
         model.addAttribute("journeys", journeys);
         model.addAttribute("trainId", id);
         model.addAttribute("journeyForm", new JourneyBean());
+        model.addAttribute("navPagesQty", navPagesQty);
+        model.addAttribute("currentPage", pageInt);
         return "journeys";
     }
 
@@ -139,10 +157,16 @@ public class TrainController {
             model.addAttribute("depDayError", errors.get("depDayError"));
             model.addAttribute("journeyExists", errors.get("journeyExists"));
 
-            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, true);
+            int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(id, UtilsClass.MAX_PAGE_RESULT);
+            int pageInt = 1;
+
+            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, true, pageInt, UtilsClass.MAX_PAGE_RESULT);
+
             model.addAttribute("journeys", journeys);
             model.addAttribute("trainId", id);
             model.addAttribute("journeyForm", journey);
+            model.addAttribute("navPagesQty", navPagesQty);
+            model.addAttribute("currentPage", pageInt);
             return "journeys";
         } else {
             tripDataService.createAll(journey);
@@ -166,26 +190,43 @@ public class TrainController {
         else tripDataService.cancelJourney(trainId, journeyId);
         //return "redirect:/trains/{train_id}/journeys";
         //TODO repetitive code from GET journeys - is that ok?
-        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(trainId, true);
+        int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(trainId, UtilsClass.MAX_PAGE_RESULT);
+        int pageInt = 1;
+
+        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(trainId, true, pageInt, UtilsClass.MAX_PAGE_RESULT);
+
         model.addAttribute("journeys", journeys);
         model.addAttribute("trainId", trainId);
         model.addAttribute("journeyForm", new JourneyBean());
+        model.addAttribute("navPagesQty", navPagesQty);
+        model.addAttribute("currentPage", pageInt);
         return "journeys";
     }
 
     @RequestMapping(value = "/trains/{train_id}/journeys/{journey_id}/passengers", method = RequestMethod.GET)
     public String getRegisteredPassengers(@PathVariable("train_id") int trainId,
                                           @PathVariable("journey_id") int journeyId,
+                                          @RequestParam(required = false, defaultValue = "") String page,
                                           Model model) {
 
-        List<TicketBean> tickets = ticketService.getTicketsForTrain(trainId, journeyId);
+        int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(trainId, UtilsClass.MAX_PAGE_RESULT);
+        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+
+        List<TicketBean> tickets = ticketService.getTicketsForTrain(trainId, journeyId, pageInt, UtilsClass.MAX_PAGE_RESULT);
+
         model.addAttribute("tickets", tickets);
+        //TODO dd-MM-yyy
         model.addAttribute("localDateFormat", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         //TODO What if there are no with such IDs
         model.addAttribute("departureDay", tripDataService.getById(journeyId).getTripDeparture());
         model.addAttribute("trainNumber", trainService.getTrainById(trainId).getNumber());
 
+        model.addAttribute("trainId", trainId);
+        model.addAttribute("journeyId", journeyId);
+
+        model.addAttribute("navPagesQty", navPagesQty);
+        model.addAttribute("currentPage", pageInt);
         return "showPassengers";
     }
 

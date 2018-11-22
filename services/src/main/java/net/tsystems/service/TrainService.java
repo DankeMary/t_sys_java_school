@@ -58,7 +58,14 @@ public class TrainService {
             train.setTrip(tripService.getTripByTrainId(train.getId()));
         return trains;
     }
+    public List<TrainBean> getAll(int page, int maxResult) {
+        List<TrainBean> trains = trainDOListToBeanList(trainDao.findAll(page, maxResult));
 
+        for (TrainBean train : trains)
+            train.setTrip(tripService.getTripByTrainId(train.getId()));
+
+        return trains;
+    }
     public TrainBean getTrainById(int id) {
         TrainBean train = trainDOToBean(trainDao.find(id));
         if (train != null)
@@ -82,19 +89,20 @@ public class TrainService {
     }
 
     //Validation Utils
-    public void validate(TrainBean train, boolean isNew, Errors errors) {
+    public void validate(TrainBean train, boolean isNew, Map<String, String> errors) {//Errors errors) {
         if (train.getNumber() != null &&
                 train.getNumber() < Integer.MAX_VALUE &&
                 train.getNumber() > 0) {
             if ((isNew && getTrainByNumber(train.getNumber().intValue()) != null) ||
                     (!isNew && !isUniqueByNumber(train.getId(), train.getNumber().intValue())))
-                errors.rejectValue("number", "NonUnique", "Train with such number already exists");
+                errors.put("numberNonUnique", "Train with such number already exists");
         }
         //TODO!!! (check no tickets)
-        if (!isNew && tripDataService.getFirstJourneysByTrainNotCancelled(train.getId(), true).size() != 0)
+        if (!isNew && tripDataService.getFirstJourneysByTrainNotCancelled(train.getId(), true, 1, 10).size() != 0)
             //TODO in general or only if no tickets were sold yet?
-            errors.rejectValue("capacity", "CannotUpdate", "There are journeys planned already");
+            errors.put("capacityCannotUpdate", "There are journeys planned already");
 
+        //TODO check price
         //TODO check that can update the price when no tickets were sold yet
     }
 
@@ -103,7 +111,9 @@ public class TrainService {
     }
 
     //Help Functions
-
+    public int countPages(int maxResult){
+        return trainDao.countPages(maxResult);
+    }
 
     //Mappers
     private TrainBean trainDOToBean(TrainDO train) {

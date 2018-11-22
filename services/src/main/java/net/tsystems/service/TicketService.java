@@ -28,10 +28,11 @@ public class TicketService {
         ticketDao.create(ticketBeanToDO(ticket));
     }
 
-    public List<TicketBean> getTicketsForTrain(int trainId, int journeyID) {
+    public List<TicketBean> getTicketsForTrain(int trainId, int journeyID, int page, int maxResult) {
         TripDataBean tdBean = tripDataService.getById(journeyID);
+        //TODO check that not null
 
-        return ticketDOListToBeanList(ticketDao.getTicketsByTrainIdAndDate(trainId, tdBean.getTripDeparture()));
+        return ticketDOListToBeanList(ticketDao.getTicketsByTrainIdAndDate(trainId, tdBean.getTripDeparture(), page, maxResult));
     }
 
     public boolean ticketsOnTrainSold(int trainId, LocalDate date) {

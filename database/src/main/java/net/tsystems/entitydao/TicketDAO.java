@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface TicketDAO extends AbstractDao<TicketDO, Integer> {
-    List<TicketDO> getTicketsByTrainIdAndDate(int trainId, LocalDate date);
+    List<TicketDO> getTicketsByTrainIdAndDate(int trainId, LocalDate date, int page, int maxResult);
+    int countTicketsByTrainIdAndPages(int trainId, LocalDate date, int maxResult);
     boolean ticketsOnTrainSold(int trainId, LocalDate date);
 }

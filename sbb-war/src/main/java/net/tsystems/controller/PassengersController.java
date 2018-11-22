@@ -1,19 +1,14 @@
 package net.tsystems.controller;
 
+import net.tsystems.UtilsClass;
 import net.tsystems.bean.PassengerBean;
-import net.tsystems.beanmapper.PassengerBeanMapper;
-import net.tsystems.beanmapper.PassengerBeanMapperImpl;
 import net.tsystems.service.PassengerService;
-import net.tsystems.validator.PassengerValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
@@ -39,9 +34,16 @@ public class PassengersController {
     }
 
     @RequestMapping(value = "/passengers", method = RequestMethod.GET)
-    public String passengers(Model model) {
-        List<PassengerBean> psngrs = passengerService.getAll();
+    public String passengers(@RequestParam(required = false, defaultValue = "") String page,
+                             Model model) {
+        int navPagesQty = passengerService.countPages(UtilsClass.MAX_PAGE_RESULT);
+        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+
+        List<PassengerBean> psngrs = passengerService.getAll(pageInt, UtilsClass.MAX_PAGE_RESULT);
+
         model.addAttribute("passengers", psngrs);
+        model.addAttribute("navPagesQty", navPagesQty);
+        model.addAttribute("currentPage", pageInt);
         return "passengers";
     }
 

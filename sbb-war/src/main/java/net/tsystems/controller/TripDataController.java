@@ -1,5 +1,6 @@
 package net.tsystems.controller;
 
+import net.tsystems.UtilsClass;
 import net.tsystems.bean.*;
 import net.tsystems.service.TripDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class TripDataController {
                               @RequestParam(required = false, defaultValue = "") String toTime,
                               @RequestParam(required = false, defaultValue = "") String fromStation,
                               @RequestParam(required = false, defaultValue = "") String toStation,
+                              @RequestParam(required = false, defaultValue = "") String page,
                               Model model) {
 
         //TODO check that if some fields are empty and some are not then still not valid
@@ -42,9 +44,20 @@ public class TripDataController {
                 !fromStation.trim().isEmpty() &&
                 !toStation.trim().isEmpty()) {
             //search tickets
+            int navPagesQty = tripDataService.countDataForSectionPages(fromDay, fromTime,
+                    toDay, toTime,
+                    fromStation, toStation,
+                    UtilsClass.MAX_PAGE_RESULT);
+            int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+
             model.addAttribute("ticketsAvailable", tripDataService.getDataForSection(fromDay, fromTime,
                     toDay, toTime,
-                    fromStation, toStation));
+                    fromStation, toStation,
+                    pageInt, UtilsClass.MAX_PAGE_RESULT));
+
+            model.addAttribute("navPagesQty", navPagesQty);
+            model.addAttribute("currentPage", pageInt);
+
         } else if (!(fromDay.trim().isEmpty() &&
                 fromTime.trim().isEmpty() &&
                 toDay.trim().isEmpty() &&

@@ -1,7 +1,7 @@
 package net.tsystems.service;
 
-import net.tsystems.bean.PrimitiveRouteBean;
 import net.tsystems.bean.StationBean;
+import net.tsystems.bean.StationBeanExpanded;
 import net.tsystems.beanmapper.StationBeanMapper;
 import net.tsystems.beanmapper.StationBeanMapperImpl;
 import net.tsystems.entities.StationDO;
@@ -54,11 +54,11 @@ public class StationService {
             errors.rejectValue("name", "NonUnique", "Station with such name already exists");
     }
 
-    public boolean allStationsExist (List<PrimitiveRouteBean> primitivePath) {
+    public boolean allStationsExist (List<StationBeanExpanded> trainPath) {
         List<String> stationNames = new LinkedList<>();
-        for (PrimitiveRouteBean p : primitivePath)
-            if (!p.getStation().isEmpty())
-                stationNames.add(p.getStation());
+        for (StationBeanExpanded p : trainPath)
+            if (!p.getStation().getName().isEmpty())
+                stationNames.add(p.getStation().getName());
 
         return stationDao.allStationsExist(stationNames);
     }

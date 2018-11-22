@@ -1,3 +1,12 @@
+html {
+    overflow-y: scroll;
+}
+
+body{
+    height: 100vh;
+    max-height: 100vh;
+}
+
 .container, .col-8 {
     padding: 15px;
 }
@@ -8,7 +17,7 @@ table {
 
 tbody {
     display: block;
-    height: 64vh;
+    max-height: 50vh;
     overflow: auto;
 }
 
@@ -19,6 +28,14 @@ thead, tbody tr {
     word-wrap: break-word;
 }
 
+th, td {
+    vertical-align: middle !important;
+}
+
+.col-sm-12 > div{
+    padding:20px;
+}
+
 .formFragment {
     display: block;
     margin: 10px;
@@ -27,6 +44,7 @@ thead, tbody tr {
 .formFragment label {
     display: inline-block;
     width: 80px;
+    max-width: 150px;
     text-align: right;
 }
 
@@ -35,6 +53,9 @@ thead, tbody tr {
     display: inherit;
 }
 
+.fm-with-valid {
+    vertical-align: top;
+}
 /*
 thead {
     width: calc( 100% - 1em )
@@ -60,4 +81,33 @@ thead {
 .autocomplete-suggestions strong {
     font-weight: bold;
     color: #3399FF;
+}
+
+.ui-autocomplete {
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 20px;
+}
+/*Pagination*/
+.pagination {
+    display: table;
+    margin: 10px auto;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+.pagination a.active {
+    background-color: skyblue;
+    color: black;
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+.pagination a.invisible-link, .pagination a.invisible-link:hover {
+    visibility:hidden;
 }

@@ -1,10 +1,12 @@
 const JAVA_INTEGER_MAX = 2147483647;
 
+
 function validateTrain(addForm, addUrl) {
     let trainNumber = document.getElementById("train-number");
     let trainCapcity = document.getElementById("train-capacity");
     let valid = true;
 
+    $(".error-list").empty();
     document.getElementById("js-number-error").innerHTML = "";
     document.getElementById("js-capacity-error").innerHTML = "";
 

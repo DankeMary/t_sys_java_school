@@ -133,7 +133,7 @@
                     </thead>
                     <c:forEach items="${journeys}" var="journey">
                         <tr>
-                            <td>${journey.departureDay}</td>
+                            <td>${localDateTimeFormat.format(journey.departureDay)}</td>
                             <td>
                                 <a href="/trains/${trainId}/journeys/${journey.journeyId}/passengers">Passengers</a> |
                                 <a href="/trains/${trainId}/journeys/${journey.journeyId}/cancel"

@@ -24,6 +24,7 @@
         <input type='time' name="toTime" value="${toTime}" required/>
     </div>
     <div class="formFragment">
+        <label path="fromStation">Stations</label>
         <input type="text" placeholder="From" id="station-input-search1" value="${fromStation}"
                name="fromStation" onchange='findTicketsAutoCompl(this);' required>
 

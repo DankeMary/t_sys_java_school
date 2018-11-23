@@ -27,9 +27,9 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     public int countFirstAfterNowByTrainPages(int id, int maxResult) {
         return countPages(getEntityManager()
                 .createQuery( "select count(*) from TripDataDO " +
-                        " where route.trip.train=" + id
+                        " where route.trip.train.id=" + id
                         + " and route.station = route.trip.from"
-                        + " and date >= date(now()) " +
+                        + " and date >= now() " +
                         " and isCancelled = 0"),
                 maxResult);
     }
@@ -37,9 +37,10 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     @Override
     public List<TripDataDO> findFirstAfterNowByTrain(int id, int page, int maxResult) {
         Query q = getEntityManager()
-                .createQuery("from TripDataDO where route.trip.train=" + id
+                .createQuery("from TripDataDO " +
+                        " where route.trip.train.id=" + id
                         + " and route.station = route.trip.from"
-                        + " and date >= date(now()) " +
+                        + " and date >= now() " +
                         " and isCancelled = 0 ");
         q.setFirstResult((page - 1) * maxResult);
         q.setMaxResults(maxResult);

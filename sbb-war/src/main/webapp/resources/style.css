@@ -8,7 +8,7 @@ body{
 }
 
 .container, .col-8 {
-    padding: 15px;
+    padding: 25px 15px;
 }
 
 table {
@@ -56,10 +56,6 @@ th, td {
 .fm-with-valid {
     vertical-align: top;
 }
-/*
-thead {
-    width: calc( 100% - 1em )
-}*/
 
 .autocomplete-suggestions {
     border: 1px solid #999;

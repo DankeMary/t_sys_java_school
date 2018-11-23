@@ -17,28 +17,13 @@
     <div class="row">
         <div class="col">
         </div>
-        <div class="col-8" style="border: 3px outset steelblue">
+        <div class="col-sm-12 col-md-10 col-lg-8" style="padding:0;border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h3>Enter The Train Details</h3>
                 <form:form method="post"
                            modelAttribute="trainForm"
                            onsubmit="return validateTrain(this, '${pageContext.request.contextPath}/trains')">
-                    <%--<div class="formFragment">
-                        <form:label path="train.number">Number</form:label>
-                        <spring:bind path="train.number">
-                            <input id="train-number" value="${status.value}" name="${status.expression}">
-                            <span id="js-number-error" style="color: red">
-                                <c:if test="${status.error}">
-                                    <c:forEach items="${status.errorMessages}" var="error">
-                                        <c:out value="${error}"/>
-                                    </c:forEach>
-                                </c:if>
-                            </span>
-                            </input>
-                        </spring:bind>
-                    </div>--%>
-
                     <div class="formFragment">
                         <form:label path="train.number"
                                     cssClass="fm-with-valid">Number</form:label>

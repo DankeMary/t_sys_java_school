@@ -20,7 +20,7 @@
                 <h5>Data for train #${trainNumber} on ${localDateFormat.format(departureDay)}</h5>
                 <c:choose>
                     <c:when test="${empty tickets}">
-                        <h5>No passengers yet</h5>
+                        <h4>No passengers yet</h4>
                     </c:when>
                     <c:when test="${not empty tickets}">
                         <div class="pagination">
@@ -117,7 +117,7 @@
                                     <td>${ticket.id}</td>
                                     <td>${ticket.passenger.firstName}</td>
                                     <td>${ticket.passenger.lastName}</td>
-                                    <td>${ticket.passenger.birthday}</td>
+                                    <td>${localDateTimeFormat.format(ticket.passenger.birthday)}</td>
                                     <td>${ticket.from.route.station.name} <br>
                                         <span style="font-size: 10px;">
                                                 ${localDateTimeFormat.format(ticket.from.date)}

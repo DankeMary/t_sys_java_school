@@ -131,6 +131,7 @@ public class TrainController {
         model.addAttribute("journeys", journeys);
         model.addAttribute("trainId", id);
         model.addAttribute("journeyForm", new JourneyBean());
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
         return "journeys";
@@ -141,6 +142,7 @@ public class TrainController {
 
         model.addAttribute("journey", new JourneyBean());
         model.addAttribute("trainId", id);
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         return "addJourney";
     }
 
@@ -167,6 +169,7 @@ public class TrainController {
             model.addAttribute("journeyForm", journey);
             model.addAttribute("navPagesQty", navPagesQty);
             model.addAttribute("currentPage", pageInt);
+            model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
             return "journeys";
         } else {
             tripDataService.createAll(journey);
@@ -216,8 +219,8 @@ public class TrainController {
 
         model.addAttribute("tickets", tickets);
         //TODO dd-MM-yyy
-        model.addAttribute("localDateFormat", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        model.addAttribute("localDateFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy HH:mm"));
         //TODO What if there are no with such IDs
         model.addAttribute("departureDay", tripDataService.getById(journeyId).getTripDeparture());
         model.addAttribute("trainNumber", trainService.getTrainById(trainId).getNumber());
@@ -225,6 +228,7 @@ public class TrainController {
         model.addAttribute("trainId", trainId);
         model.addAttribute("journeyId", journeyId);
 
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
         return "showPassengers";

@@ -271,10 +271,10 @@ public class TripDataService {
         data.put("trainNumber", Long.toString(fromTdBean.getRoute().getTrip().getTrain().getNumber()));
 
         data.put("fromMetaInfo", fromTdBean.getRoute().getStation().getName() +
-                " (" + fromTdBean.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + ")");
+                " (" + fromTdBean.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy HH:mm")) + ")");
 
         data.put("toMetaInfo", toTdBean.getRoute().getStation().getName() +
-                " (" + toTdBean.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + ")");
+                " (" + toTdBean.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy HH:mm")) + ")");
 
         data.put("ticketPrice", fromTdBean.getRoute().getTrip().getTrain().getPrice() + " " + DEFAULT_CURRENCY);
     }

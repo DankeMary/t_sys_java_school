@@ -114,7 +114,7 @@
                                 <tr>
                                     <td>${passenger.firstName}</td>
                                     <td>${passenger.lastName}</td>
-                                    <td>${passenger.birthday}</td>
+                                    <td>${localDateTimeFormat.format(passenger.birthday)}</td>
                                     <td><a href="/passengers/${passenger.id}">Profile</a> |
                                         <a href="/passengers/${passenger.id}/update">Edit</a> |
                                         <a href="/passengers/${passenger.id}/delete"

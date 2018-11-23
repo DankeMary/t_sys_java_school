@@ -77,7 +77,7 @@ public class TripDataController {
         model.addAttribute("toTime", toTime);
         model.addAttribute("fromStation", fromStation);
         model.addAttribute("toStation", toStation);
-        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         return "tickets";
     }
 

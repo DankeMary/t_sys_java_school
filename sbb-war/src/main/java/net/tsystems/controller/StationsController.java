@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class StationsController {
         if (!trimmedStationName.equals(""))
             if (stationService.getStationByName(trimmedStationName) != null) {
                 model.addAttribute("schedule", tripDataService.getScheduleForStation(trimmedStationName, UtilsClass.MAX_PAGE_RESULT));
-
+                model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
             } else {
                 model.addAttribute("noStationMessage", "No station with such name found");
             }

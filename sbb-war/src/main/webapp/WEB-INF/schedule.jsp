@@ -54,7 +54,7 @@
                                                     <td>${item.train.number}</td>
                                                     <td>${item.trip.from.name}</td>
                                                     <td>${item.trip.to.name}</td>
-                                                    <td>${item.tripData.date}</td>
+                                                    <td>${localDateTimeFormat.format(item.tripData.date)}</td>
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${not item.tripData.isLate}">

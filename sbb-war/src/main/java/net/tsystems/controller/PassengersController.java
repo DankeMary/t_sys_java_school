@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class PassengersController {
         List<PassengerBean> psngrs = passengerService.getAll(pageInt, UtilsClass.MAX_PAGE_RESULT);
 
         model.addAttribute("passengers", psngrs);
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
         return "passengers";

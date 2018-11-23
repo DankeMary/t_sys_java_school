@@ -88,8 +88,10 @@ public class TripDataController {
         if (fromJourney.trim().isEmpty() || toJourney.trim().isEmpty())
             return "redirect:/trains/find";
 
+        //TODO Add Train Number
         Map<String, String> metaData = new HashMap<>();
         tripDataService.makeMetaDataForBuyingTickets(fromJourney, toJourney, metaData);
+        model.addAttribute("trainNumber", metaData.get("trainNumber"));
         model.addAttribute("fromMetaInfo", metaData.get("fromMetaInfo"));
         model.addAttribute("toMetaInfo", metaData.get("toMetaInfo"));
         model.addAttribute("ticketPrice", metaData.get("ticketPrice"));
@@ -106,15 +108,18 @@ public class TripDataController {
     public String buyTicket(@ModelAttribute("ticketForm") @Valid BuyTicketsForm ticketsData,
                             BindingResult result, Model model,
                             final RedirectAttributes redirectAttributes) {
+
+        int psngrsQty = passengerService.countCompleteInfo(ticketsData.getPassengers());
         if (result.hasErrors() &&
                 !passengerService.passengersHaveCompleteInfo(ticketsData.getPassengers()) ||
-                passengerService.countCompleteInfo(ticketsData.getPassengers()) > MAX_TICKETS_QTY) {
+                (psngrsQty < 1) || (psngrsQty > MAX_TICKETS_QTY)) {
             model.addAttribute("ticketForm", ticketsData);
 
             Map<String, String> metaData = new HashMap<>();
             tripDataService.makeMetaDataForBuyingTickets(Integer.toString(ticketsData.getFromJourneyId()),
                     Integer.toString(ticketsData.getToJourneyId()),
                     metaData);
+            model.addAttribute("trainNumber", metaData.get("trainNumber"));
             model.addAttribute("fromMetaInfo", metaData.get("fromMetaInfo"));
             model.addAttribute("toMetaInfo", metaData.get("toMetaInfo"));
             model.addAttribute("ticketPrice", metaData.get("ticketPrice"));
@@ -122,8 +127,10 @@ public class TripDataController {
             model.addAttribute("ticketsQty", ticketsData.getPassengers().size());
             model.addAttribute("fromJourneyId", ticketsData.getFromJourneyId());
             model.addAttribute("toJourneyId", ticketsData.getToJourneyId());
-
-            model.addAttribute("possibleErrors", passengerService.possibleValidationErrors());
+            if (psngrsQty < 1)
+                model.addAttribute("psngrInfo", "Enter info about at least 1 passenger");
+            else if (result.hasErrors() && psngrsQty <= MAX_TICKETS_QTY)
+                model.addAttribute("possibleErrors", passengerService.possibleValidationErrors());
             return "buyTicket";
         }
 

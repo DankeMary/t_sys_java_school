@@ -268,6 +268,8 @@ public class TripDataService {
         TripDataBean toTdBean = tripDataDOToBean(tripDataDAO.find(Integer.parseInt(toJourneyId)));
         StringBuilder result = new StringBuilder();
 
+        data.put("trainNumber", Long.toString(fromTdBean.getRoute().getTrip().getTrain().getNumber()));
+
         data.put("fromMetaInfo", fromTdBean.getRoute().getStation().getName() +
                 " (" + fromTdBean.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + ")");
 

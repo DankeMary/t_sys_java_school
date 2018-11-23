@@ -20,20 +20,24 @@
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h5>Buy Tickets <span style="color: red;">(Max tickets quantity is 10!)</span></h5>
+                <p><b>Train:</b> #${trainNumber}</p>
                 <p><b>From:</b> ${fromMetaInfo}</p>
                 <p><b>To:</b> ${toMetaInfo}</p>
                 <p><b>Price:</b> ${ticketPrice}</p>
                 <c:choose>
                     <c:when test="${empty noTickets}">
+                        <span style="color: red; display: block;">${psngrInfo}</span>
                         <h6>Enter The Passengers Details</h6>
-                        <spring:hasBindErrors name="ticketForm">
-                            <span style="color: red; display: block;">Some of the given data is invalid or missing. Check:</span>
-                            <ul style="color: red; padding-left: 15px;">
-                                <c:forEach items="${possibleErrors}" var="error">
-                                    <li>${error}</li>
-                                </c:forEach>
-                            </ul>
-                        </spring:hasBindErrors>
+                        <c:if test="${not empty possibleErrors}">
+                            <spring:hasBindErrors name="ticketForm">
+                                <span style="color: red; display: block;">Some of the given data is invalid or missing. Check:</span>
+                                <ul style="color: red; padding-left: 15px;">
+                                    <c:forEach items="${possibleErrors}" var="error">
+                                        <li>${error}</li>
+                                    </c:forEach>
+                                </ul>
+                            </spring:hasBindErrors>
+                        </c:if>
                         <form:form method="POST"
                                    action="/buyTicket"
                                    modelAttribute="ticketForm">

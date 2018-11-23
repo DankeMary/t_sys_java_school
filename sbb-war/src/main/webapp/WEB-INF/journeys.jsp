@@ -25,7 +25,7 @@
                            action="/trains/${trainId}/journeys"
                            modelAttribute="journeyForm">
                         <spring:bind path="departureDay">
-                            <label>Departure Day</label>
+                            <label style="width: 110px;">Departure Day</label>
                             <input type="date" value="${status.value}"
                                    name="${status.expression}">
                             <span style="color: red">

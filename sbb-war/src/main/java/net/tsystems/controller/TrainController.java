@@ -209,10 +209,10 @@ public class TrainController {
                                           @RequestParam(required = false, defaultValue = "") String page,
                                           Model model) {
 
-        int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(trainId, UtilsClass.MAX_PAGE_RESULT);
+        int navPagesQty = ticketService.countTicketsForTrainSold(trainId, journeyId, UtilsClass.MAX_PAGE_RESULT);
         int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
 
-        List<TicketBean> tickets = ticketService.getTicketsForTrain(trainId, journeyId, pageInt, UtilsClass.MAX_PAGE_RESULT);
+        List<TicketBean> tickets = ticketService.getTicketsForTrainSold(trainId, journeyId, pageInt, UtilsClass.MAX_PAGE_RESULT);
 
         model.addAttribute("tickets", tickets);
         //TODO dd-MM-yyy

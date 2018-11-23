@@ -22,7 +22,7 @@ public class TicketDAOImpl extends AbstractDaoImpl<TicketDO, Integer> implements
     }
 
     @Override
-    public int countTicketsByTrainIdAndPages(int trainId, LocalDate date, int maxResult) {
+    public int countTicketsByTrainIdAndDatePages(int trainId, LocalDate date, int maxResult) {
         return countPages(
                 getEntityManager()
                         .createQuery("select count(*) from TicketDO ti " +

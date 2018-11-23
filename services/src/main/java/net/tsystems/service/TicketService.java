@@ -28,7 +28,7 @@ public class TicketService {
         ticketDao.create(ticketBeanToDO(ticket));
     }
 
-    public List<TicketBean> getTicketsForTrain(int trainId, int journeyID, int page, int maxResult) {
+    public List<TicketBean> getTicketsForTrainSold(int trainId, int journeyID, int page, int maxResult) {
         TripDataBean tdBean = tripDataService.getById(journeyID);
         //TODO check that not null
 
@@ -37,6 +37,12 @@ public class TicketService {
 
     public boolean ticketsOnTrainSold(int trainId, LocalDate date) {
         return ticketDao.ticketsOnTrainSold(trainId, date);
+    }
+
+    //Help Functions
+    public int countTicketsForTrainSold (int trainId, int journeyID, int maxResult) {
+        TripDataBean tdBean = tripDataService.getById(journeyID);
+        return ticketDao.countTicketsByTrainIdAndDatePages(trainId, tdBean.getTripDeparture(), maxResult);
     }
 
     //Mappers

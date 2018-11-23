@@ -98,7 +98,7 @@ public class TripDataService {
     //public void cancelJourney(int trainId, Date departureDay) {
     public void cancelJourney(int trainId, int journeyId) {
         TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
-        //TODO: first.getDate().toLocalDate() - is it a better way?
+
         List<TripDataBean> journeyParts = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getTripDeparture()));
 
         for (TripDataBean tdBean : journeyParts) {
@@ -149,7 +149,7 @@ public class TripDataService {
 
         for (TripDataBean tdBean : result) {
             //2. For each find all the related TripDatas (for now we've only found the 'from' ones)
-            List<TripDataBean> journeyTripData =  tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(tdBean.getRoute().getTrip().getId(),
+            List<TripDataBean> journeyTripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(tdBean.getRoute().getTrip().getId(),
                     tdBean.getTripDeparture()));
             //3. Extract only the ones between needed stations
             TripDataBean fromTDBean = journeyTripData
@@ -218,16 +218,17 @@ public class TripDataService {
                 .get()
                 .getSeatsLeft();
 
-        //TODO if ticketsAv >= tickets needed then ok else return false
-        if (ticketsAvailable < 1)
+        List<PassengerBean> passengersWithCompleteInfo = passengerService.filterCompleteInfo(ticketsData.getPassengers());
+
+        if (ticketsAvailable < passengersWithCompleteInfo.size())
             return false;
 
         for (TripDataBean tdBean : ticketRelatedTDBeans) {
-            tdBean.setSeatsLeft(tdBean.getSeatsLeft() - ticketsData.getPassengers().size());
+            tdBean.setSeatsLeft(tdBean.getSeatsLeft() - passengersWithCompleteInfo.size());
             tripDataDAO.update(tripDataBeanToDO(tdBean));
         }
 
-        for (PassengerBean p : ticketsData.getPassengers()) {
+        for (PassengerBean p : passengersWithCompleteInfo) {
             //create passenger
             PassengerBean newPassenger = passengerService.createReturnObject(p);
             //create ticket
@@ -275,19 +276,26 @@ public class TripDataService {
 
         data.put("ticketPrice", fromTdBean.getRoute().getTrip().getTrain().getPrice() + " " + DEFAULT_CURRENCY);
     }
-    public int countDataForSectionPages(String fromDay, String fromTime, String toDay, String toTime, String fromStation, String toStation, int maxResult) {
+
+    public int countDataForSectionPages(String fromDay, String fromTime,
+                                        String toDay, String toTime,
+                                        String fromStation, String toStation,
+                                        int maxResult) {
         LocalDate fromDate = LocalDate.parse(fromDay.trim());
         LocalDate toDate = LocalDate.parse(toDay.trim());
 
         LocalTime fromLocalTime = LocalTime.parse(fromTime);
         LocalTime toLocalTime = LocalTime.parse(toTime);
 
-        return tripDataDAO.countDataForSectionPages(fromDate, fromLocalTime, toDate, toLocalTime, fromStation, toStation, maxResult);
+        return tripDataDAO.countDataForSectionPages(fromDate, fromLocalTime,
+                toDate, toLocalTime,
+                fromStation, toStation, maxResult);
     }
 
     public int countFirstAfterNowByTrainPages(int id, int maxResult) {
         return tripDataDAO.countFirstAfterNowByTrainPages(id, maxResult);
     }
+
     //Mappers
     private TripDataDO tripDataBeanToDO(TripDataBean tdBean) {
         return tripDataEntityMapper.tripDataToDO(tripDataBeanMapper.tripDataToSO(tdBean));

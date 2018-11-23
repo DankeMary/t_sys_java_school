@@ -19,63 +19,79 @@
         <div class="col-8" style="border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
-                <h5>Buy Tickets</h5>
+                <h5>Buy Tickets <span style="color: red;">(Max tickets quantity is 10!)</span></h5>
                 <p><b>From:</b> ${fromMetaInfo}</p>
                 <p><b>To:</b> ${toMetaInfo}</p>
                 <p><b>Price:</b> ${ticketPrice}</p>
-                <h5><span style="color: red; display: block;">${noTickets}</span></h5>
-                <h6>Enter The Passengers Details</h6>
-                <form:form method="POST"
-                           action="/buyTicket"
-                           modelAttribute="ticketForm">
-                    <div class="formFragment">
-                        <table id="journeyPassengers" class="table table-striped" style="width: 100%; min-width: 500px">
-                            <thead class="thead-light">
-                            <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Birthday</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach items="${passengers}" var="passenger" varStatus="status">
-                                <tr>
-                                    <td>
-                                        <spring:bind path="passenger.firstName">
-                                            <input value="${status.value}"
-                                                   name="${status.expression}"/>
-                                        </spring:bind>
-                                    </td>
-                                    <td>
-                                        <spring:bind path="passenger.lastName">
-                                            <input value="${status.value}" name="${status.expression}"/>
-                                        </spring:bind>
-                                    </td>
-                                    <td>
-                                        <spring:bind path="passenger.birthday">
-                                            <input type='date' value="${status.value}" name="${status.expression}"/>
-                                        </spring:bind>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                            <tr id="addPassengerRow">
-                                <td align="right"><input type="button" id="addPassengerButton" value="Add"/></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <spring:bind path='fromJourneyId'>
-                        <input type='hidden'
-                               value='${fromJourneyId}' name="${status.expression}"/>
-                    </spring:bind>
-                    <spring:bind path='toJourneyId'>
-                        <input type='hidden'
-                               value='${toJourneyId}' name="${status.expression}"/>
-                    </spring:bind>
-                    <div style="margin: auto;">
-                        <input type="submit" value="Submit" id="submit" class="submit-btn"/>
-                    </div>
-                </form:form>
+                <c:choose>
+                    <c:when test="${empty noTickets}">
+                        <h6>Enter The Passengers Details</h6>
+                        <spring:hasBindErrors name="ticketForm">
+                            <span style="color: red; display: block;">Some of the given data is invalid or missing. Check:</span>
+                            <ul style="color: red; padding-left: 15px;">
+                                <c:forEach items="${possibleErrors}" var="error">
+                                    <li>${error}</li>
+                                </c:forEach>
+                            </ul>
+                        </spring:hasBindErrors>
+                        <form:form method="POST"
+                                   action="/buyTicket"
+                                   modelAttribute="ticketForm">
+                            <div class="formFragment">
+                                <table id="journeyPassengers" class="table" style="width: 100%; min-width: 500px">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Birthday</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach begin="0" end="${ticketsQty - 1}" var="i" varStatus="status">
+                                        <tr>
+                                            <td>
+                                                <spring:bind path="ticketForm.passengers[${status.index}].firstName">
+                                                    <input value="${status.value}"
+                                                           name="${status.expression}"/>
+                                                </spring:bind>
+                                            </td>
+                                            <td>
+                                                <spring:bind path="ticketForm.passengers[${status.index}].lastName">
+                                                    <input value="${status.value}" name="${status.expression}"/>
+                                                </spring:bind>
+                                            </td>
+                                            <td>
+                                                <spring:bind path="ticketForm.passengers[${status.index}].birthday">
+                                                    <input type='date' value="${status.value}"
+                                                           name="${status.expression}"/>
+                                                </spring:bind>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    <tr id="addPassengerRow"></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <spring:bind path='fromJourneyId'>
+                                <input type='hidden'
+                                       value='${fromJourneyId}' name="${status.expression}"/>
+                            </spring:bind>
+                            <spring:bind path='toJourneyId'>
+                                <input type='hidden'
+                                       value='${toJourneyId}' name="${status.expression}"/>
+                            </spring:bind>
+                            <div style="text-align: right">
+                                <input type="button" id="addPassengerButton" value="Add Passenger"/>
+                            </div>
+                            <div style="margin: auto;">
+                                <input type="submit" value="Submit" id="submit" class="submit-btn"/>
+                            </div>
+                        </form:form>
+                    </c:when>
+                    <c:otherwise>
+                        <h5><span style="color: red; display: block;">${noTickets}</span></h5>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <div class="col">

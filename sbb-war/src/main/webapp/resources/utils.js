@@ -33,6 +33,10 @@ function confirmDelete(delObj, delUrl) {
 }
 
 $(document).ready(function () {
+    let psngrIndex = $('#journeyPassengers tbody').children().length - 1;
+    if (psngrIndex >= 10) {
+        $('#addPassengerButton').attr("disabled", true);
+    }
 });
 $(document).ready(function () {
     $("#addPassengerButton").click(function () {
@@ -45,6 +49,9 @@ $(document).ready(function () {
 
             "<td><input name='passengers[" + psngrIndex + "].birthday' type='date' /></td>" +
             "</tr>");
+        if (psngrIndex >= 10) {
+            $('#addPassengerButton').attr("disabled", true);
+        }
     });
 });
 

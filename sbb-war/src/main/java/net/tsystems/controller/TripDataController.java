@@ -2,6 +2,7 @@ package net.tsystems.controller;
 
 import net.tsystems.UtilsClass;
 import net.tsystems.bean.*;
+import net.tsystems.service.PassengerService;
 import net.tsystems.service.TripDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -24,7 +26,10 @@ import java.util.Map;
 @Controller
 public class TripDataController {
 
+    private static final int MAX_TICKETS_QTY = 10;
+
     private TripDataService tripDataService;
+    private PassengerService passengerService;
 
     @RequestMapping(value = "/trains/find", method = RequestMethod.GET)
     public String findTickets(@RequestParam(required = false, defaultValue = "") String fromDay,
@@ -89,14 +94,8 @@ public class TripDataController {
         model.addAttribute("toMetaInfo", metaData.get("toMetaInfo"));
         model.addAttribute("ticketPrice", metaData.get("ticketPrice"));
 
-        BuyTicketsForm ticketForm = new BuyTicketsForm();
-        ticketForm.setPassengers(new LinkedList<>());
-        PassengerBean p = new PassengerBean();
-        p.setFirstName("LALALALLA");
-        p.setLastName("BUBUBU");
-        p.setBirthday(LocalDate.now());
-        ticketForm.getPassengers().add(p);
-        model.addAttribute("ticketForm", ticketForm);
+        model.addAttribute("ticketForm", new BuyTicketsForm());
+        model.addAttribute("ticketsQty", 1);
         model.addAttribute("fromJourneyId", fromJourney);
         model.addAttribute("toJourneyId", toJourney);
 
@@ -104,27 +103,46 @@ public class TripDataController {
     }
 
     @RequestMapping(value = "/buyTicket", method = RequestMethod.POST)
-    public String buyTicket(@ModelAttribute("ticketForm") @Validated BuyTicketsForm ticketsData,
+    public String buyTicket(@ModelAttribute("ticketForm") @Valid BuyTicketsForm ticketsData,
                             BindingResult result, Model model,
                             final RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() &&
+                !passengerService.passengersHaveCompleteInfo(ticketsData.getPassengers()) ||
+                passengerService.countCompleteInfo(ticketsData.getPassengers()) > MAX_TICKETS_QTY) {
             model.addAttribute("ticketForm", ticketsData);
+
+            Map<String, String> metaData = new HashMap<>();
+            tripDataService.makeMetaDataForBuyingTickets(Integer.toString(ticketsData.getFromJourneyId()),
+                    Integer.toString(ticketsData.getToJourneyId()),
+                    metaData);
+            model.addAttribute("fromMetaInfo", metaData.get("fromMetaInfo"));
+            model.addAttribute("toMetaInfo", metaData.get("toMetaInfo"));
+            model.addAttribute("ticketPrice", metaData.get("ticketPrice"));
+
+            model.addAttribute("ticketsQty", ticketsData.getPassengers().size());
+            model.addAttribute("fromJourneyId", ticketsData.getFromJourneyId());
+            model.addAttribute("toJourneyId", ticketsData.getToJourneyId());
+
+            model.addAttribute("possibleErrors", passengerService.possibleValidationErrors());
             return "buyTicket";
         }
 
-        if (!tripDataService.buyTickets(ticketsData))
-        {
-            //TODO add attribute to the JSP
-            //TODO will the attribute stay if we do redirect?
-            model.addAttribute("noTickets", "No enough tickets available");
+        if (!tripDataService.buyTickets(ticketsData)) {
+            model.addAttribute("noTickets", "No enough tickets available for this trip");
             return "buyTicket";
         }
 
         return "redirect:/trains";
     }
+
     //@Autowired
     @Autowired
     public void setTripDataService(TripDataService tripDataService) {
         this.tripDataService = tripDataService;
+    }
+
+    @Autowired
+    public void setPassengerService(PassengerService passengerService) {
+        this.passengerService = passengerService;
     }
 }

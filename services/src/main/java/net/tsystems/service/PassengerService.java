@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,13 +61,63 @@ public class PassengerService {
     //Validation utils
     public void validate(PassengerBean passenger, Map<String, String> errors) {
         if (passenger.getBirthday() != null && passenger.getBirthday().isAfter(LocalDate.now()))
-            errors.put("birthdayError", "The birthday has to be in the past");
+            errors.put("birthdayError", "Birthday has to be in the past");
+    }
+
+    //Check that only empty lines are invalid (no incomplete information is provided)
+    public boolean passengersHaveCompleteInfo(List<PassengerBean> passengers) {
+        for (PassengerBean p : passengers) {
+            if ((!p.getFirstName().trim().isEmpty() &&
+                    !p.getLastName().trim().isEmpty() &&
+                    (p.getBirthday() != null)) || (p.getFirstName().trim().isEmpty() &&
+                    p.getLastName().trim().isEmpty() &&
+                    (p.getBirthday() == null)))
+                continue;
+            else return false;
+        }
+        return true;
+    }
+
+    public List<PassengerBean> filterCompleteInfo(List<PassengerBean> passengers) {
+        List<PassengerBean> completeInfo = new LinkedList<>();
+
+        for (PassengerBean p : passengers) {
+            if (!p.getFirstName().trim().isEmpty() &&
+                    !p.getLastName().trim().isEmpty() &&
+                    (p.getBirthday() != null))
+                completeInfo.add(p);
+        }
+        return completeInfo;
+    }
+
+    public int countCompleteInfo(List<PassengerBean> passengers) {
+        int count = 0;
+
+        for (PassengerBean p : passengers) {
+            if (!p.getFirstName().trim().isEmpty() &&
+                    !p.getLastName().trim().isEmpty() &&
+                    (p.getBirthday() != null))
+                count++;
+        }
+        return count;
     }
 
     //Help Functions
     public void validateList(List<PassengerBean> passengers, Map<String, String> errors) {
         for (PassengerBean p : passengers)
             validate(p, errors);
+    }
+
+    public List<String> possibleValidationErrors(){
+        List<String> errors = new LinkedList<>();
+        //first & last names
+        errors.add("First and Last names are required");
+        errors.add("Min length - 3, Max length - 45");
+        errors.add("Only latin letters, spaces and hyphens are allowed");
+        //birthday
+        errors.add("Birthday is required");
+        errors.add("Birthday has to be in the past");
+        return errors;
     }
 
     public int countPages(int maxResult){

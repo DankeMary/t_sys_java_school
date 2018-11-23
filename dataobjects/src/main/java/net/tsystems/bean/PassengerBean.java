@@ -14,8 +14,7 @@ public class PassengerBean implements Serializable {
     private int id;
 
     @Size(min = 3, max = 45, message = "Min length - 3, Max length - 45")
-    @NotEmpty(message = "Last name required")
-    //@Pattern(regexp = "^$|^[a-zA-Z \\-]+$", message = "Only latin letters, spaces and hyphens are allowed")
+    @NotEmpty(message = "First name required")
     @Pattern(regexp = "^[a-zA-Z \\-]+$", message = "Only latin letters, spaces and hyphens are allowed")
     private String firstName;
 

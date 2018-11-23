@@ -1,8 +1,6 @@
 package net.tsystems.bean;
 
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 

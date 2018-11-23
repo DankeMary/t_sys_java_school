@@ -7,11 +7,8 @@ import java.time.LocalDate;
 public class JourneyBean {
     private int journeyId;
     private TripBean trip;
-    //private int routeId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate departureDay;
-    //TODO seats left, canceleld, late
-
 
     public int getJourneyId() {
         return journeyId;

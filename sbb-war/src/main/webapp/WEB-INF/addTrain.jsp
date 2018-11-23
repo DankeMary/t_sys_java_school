@@ -23,7 +23,7 @@
                 <h3>Enter The Train Details</h3>
                 <form:form method="post"
                            modelAttribute="trainForm"
-                           onsubmit="return validateTrain(this, '${pageContext.request.contextPath}/trains')">
+                           onsubmit="return validateTrain(this, '${pageContext.request.contextPath}/worker/trains')">
                     <div class="formFragment">
                         <form:label path="train.number"
                                     cssClass="fm-with-valid">Number</form:label>

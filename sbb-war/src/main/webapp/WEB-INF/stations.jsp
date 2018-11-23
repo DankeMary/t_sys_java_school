@@ -34,9 +34,9 @@
                             <c:forEach items="${stations}" var="station">
                                 <tr>
                                     <td>${station.name}</td>
-                                    <td><a href="/stations/${station.id}/update">Edit</a> |
-                                        <a href="/stations/${station.id}/delete"
-                                           onclick="return confirmDelete(this, '${pageContext.request.contextPath}/station/${station.id}/delete')">Delete</a>
+                                    <td><a href="/worker/stations/${station.id}/update">Edit</a> |
+                                        <a href="/worker/stations/${station.id}/delete"
+                                           onclick="return confirmDelete(this, '${pageContext.request.contextPath}/worker/station/${station.id}/delete')">Delete</a>
                                     </td>
                                 </tr>
                             </c:forEach>

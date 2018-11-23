@@ -25,7 +25,7 @@
                     </c:when>
                     <c:otherwise>
                         <form:form method="POST"
-                                   action="/trains/${trainForm.id}"
+                                   action="/worker/trains/${trainForm.id}"
                                    modelAttribute="trainForm">
                             <div class="formFragment">
                                 <form:label path="number">Number</form:label>

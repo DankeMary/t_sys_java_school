@@ -22,7 +22,7 @@
                 <h5>Train Journeys</h5>
                 <div class="formFragment">
                 <form:form method="POST"
-                           action="/trains/${trainId}/journeys"
+                           action="/worker/trains/${trainId}/journeys"
                            modelAttribute="journeyForm">
                         <spring:bind path="departureDay">
                             <label style="width: 110px;">Departure Day</label>
@@ -135,9 +135,9 @@
                         <tr>
                             <td>${localDateTimeFormat.format(journey.departureDay)}</td>
                             <td>
-                                <a href="/trains/${trainId}/journeys/${journey.journeyId}/passengers">Passengers</a> |
-                                <a href="/trains/${trainId}/journeys/${journey.journeyId}/cancel"
-                                   onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${trainId}/journeys/${journey.journeyId}/cancel')">Cancel</a>
+                                <a href="/worker/trains/${trainId}/journeys/${journey.journeyId}/passengers">Passengers</a> |
+                                <a href="/worker/trains/${trainId}/journeys/${journey.journeyId}/cancel"
+                                   onclick="return confirmDelete(this, '${pageContext.request.contextPath}/worker/trains/${trainId}/journeys/${journey.journeyId}/cancel')">Cancel</a>
                             </td>
                         </tr>
                     </c:forEach>

@@ -1,14 +1,13 @@
 package net.tsystems.controller;
 
 import net.tsystems.UtilsClass;
-import net.tsystems.bean.*;
+import net.tsystems.bean.BuyTicketsForm;
 import net.tsystems.service.PassengerService;
 import net.tsystems.service.TripDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 
@@ -81,7 +78,7 @@ public class TripDataController {
         return "tickets";
     }
 
-    @RequestMapping(value = "/buyTicket", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/buyTicket", method = RequestMethod.GET)
     public String showBuyTicketForm(@RequestParam(required = false, defaultValue = "") String fromJourney,
                                     @RequestParam(required = false, defaultValue = "") String toJourney,
                                     Model model) {
@@ -104,7 +101,7 @@ public class TripDataController {
         return "buyTicket";
     }
 
-    @RequestMapping(value = "/buyTicket", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/buyTicket", method = RequestMethod.POST)
     public String buyTicket(@ModelAttribute("ticketForm") @Valid BuyTicketsForm ticketsData,
                             BindingResult result, Model model,
                             final RedirectAttributes redirectAttributes) {

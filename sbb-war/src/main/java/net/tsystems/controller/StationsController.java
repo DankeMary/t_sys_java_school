@@ -6,6 +6,8 @@ import net.tsystems.bean.StationBean;
 import net.tsystems.service.StationService;
 import net.tsystems.service.TripDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,21 +34,22 @@ public class StationsController {
     private TripDataService tripDataService;
 
 
-    @RequestMapping(value = "/stations", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/stations", method = RequestMethod.GET)
     public String stations(Model model) {
         List<StationBean> stations = stationService.getAll();
         model.addAttribute("stations", stations);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "stations";
     }
 
-    @RequestMapping(value = "/stations/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/stations/add", method = RequestMethod.GET)
     public String showAddStationForm(Model model) {
         StationBean station = new StationBean();
         model.addAttribute("stationForm", station);
         return "addStation";
     }
 
-    @RequestMapping(value = "/stations", method = RequestMethod.POST)
+    @RequestMapping(value = "/worker/stations", method = RequestMethod.POST)
     public String addStation(@ModelAttribute("stationForm") @Validated StationBean station,
                              BindingResult result, Model model,
                              final RedirectAttributes redirectAttributes) {
@@ -56,18 +59,18 @@ public class StationsController {
             return "addStation";
         } else {
             stationService.create(station);
-            return "redirect:/stations";
+            return "redirect:/worker/stations";
         }
     }
 
-    @RequestMapping(value = "/stations/{id}/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/stations/{id}/update", method = RequestMethod.GET)
     public String showUpdateStationForm(@PathVariable("id") int id, Model model) {
         StationBean station = stationService.getStationById(id);
         model.addAttribute("stationForm", station);
         return "editStation";
     }
 
-    @RequestMapping(value = "/stations/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/worker/stations/{id}", method = RequestMethod.POST)
     public String updateStation(@PathVariable("id") int id,
                                 @ModelAttribute("stationForm") @Validated StationBean station,
                                 BindingResult result, Model model,
@@ -78,15 +81,15 @@ public class StationsController {
             return "editStation";
         } else {
             stationService.update(station);
-            return "redirect:/stations";
+            return "redirect:/worker/stations";
         }
     }
 
-    @RequestMapping(value = "/stations/{id}/delete")
+    @RequestMapping(value = "/worker/stations/{id}/delete")
     public String deleteStation(@PathVariable("id") int id,
                                 final RedirectAttributes redirectAttributes) {
         stationService.delete(id);
-        return "redirect:/stations";
+        return "redirect:/worker/stations";
     }
 
     @RequestMapping(value = "/schedule", method = RequestMethod.GET)
@@ -116,5 +119,17 @@ public class StationsController {
     @Autowired
     public void setTripDataService(TripDataService tripDataService) {
         this.tripDataService = tripDataService;
+    }
+
+    private String getPrincipal() {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        } else {
+            userName = principal.toString();
+        }
+        return userName;
     }
 }

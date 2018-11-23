@@ -145,7 +145,7 @@
                                                             ${item.ticketsQty}
                                                     </td>
                                                     <td>
-                                                        <a href="/buyTicket?fromJourney=${item.fromTDBean.id}&toJourney=${item.toTDBean.id}">Buy</a>
+                                                        <a href="/user/buyTicket?fromJourney=${item.fromTDBean.id}&toJourney=${item.toTDBean.id}">Buy</a>
                                                     </td>
                                                 </tr>
                                             </c:when>

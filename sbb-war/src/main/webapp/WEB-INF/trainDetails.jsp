@@ -25,8 +25,8 @@
                 </div>
                 <div style="display:inline-block; margin-right: 15px;"><b>Price :</b> ${trainData.trainBean.price}</div>
                 <div style="display:inline-block">
-                    <a href="/trains/${trainData.trainBean.id}/update">Edit</a> |
-                    <a href="/trains/${trainData.trainBean.id}/delete"
+                    <a href="/worker/trains/${trainData.trainBean.id}/update">Edit</a> |
+                    <a href="/worker/trains/${trainData.trainBean.id}/delete"
                        onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${trainData.trainBean.id}/delete')">Delete</a>
                 </div>
                 <p><b>Journeys : </b> <a href="/trains/${trainData.trainBean.id}/journeys">See More...</a></p>

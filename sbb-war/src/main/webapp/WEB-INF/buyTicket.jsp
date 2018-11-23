@@ -39,7 +39,7 @@
                             </spring:hasBindErrors>
                         </c:if>
                         <form:form method="POST"
-                                   action="/buyTicket"
+                                   action="/user/buyTicket"
                                    modelAttribute="ticketForm">
                             <div class="formFragment">
                                 <table id="journeyPassengers" class="table" style="width: 100%; min-width: 500px">

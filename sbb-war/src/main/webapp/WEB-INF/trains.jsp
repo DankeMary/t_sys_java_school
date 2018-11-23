@@ -27,7 +27,7 @@
                         <div class="pagination">
                             <c:choose>
                                 <c:when test="${currentPage != 1}">
-                                    <a href="/trains?page=${currentPage - 1}">&laquo;</a>
+                                    <a href="/worker/trains?page=${currentPage - 1}">&laquo;</a>
                                 </c:when>
                                 <c:otherwise>
                                     <a class="invisible-link">&laquo;</a>
@@ -45,7 +45,7 @@
                                                                 <a href="#" class="active">${i}</a>
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <a href="/trains?page=${i}">${i}</a>
+                                                                <a href="/worker/trains?page=${i}">${i}</a>
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </c:forEach>
@@ -58,7 +58,7 @@
                                                                 <a href="#" class="active">${i}</a>
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <a href="/trains?page=${i}">${i}</a>
+                                                                <a href="/worker/trains?page=${i}">${i}</a>
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </c:forEach>
@@ -72,7 +72,7 @@
                                                         <a href="#" class="active">${i}</a>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <a href="/trains?page=${i}">${i}</a>
+                                                        <a href="/worker/trains?page=${i}">${i}</a>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </c:forEach>
@@ -86,7 +86,7 @@
                                                 <a href="#" class="active">${i}</a>
                                             </c:when>
                                             <c:otherwise>
-                                                <a href="/trains?page=${i}">${i}</a>
+                                                <a href="/worker/trains?page=${i}">${i}</a>
                                             </c:otherwise>
                                         </c:choose>
                                     </c:forEach>
@@ -95,7 +95,7 @@
 
                             <c:choose>
                                 <c:when test="${currentPage lt navPagesQty}">
-                                    <a href="/trains?page=${currentPage + 1}">&raquo;</a>
+                                    <a href="/worker/trains?page=${currentPage + 1}">&raquo;</a>
                                 </c:when>
                                 <c:otherwise>
                                     <a class="invisible-link">&raquo;</a>

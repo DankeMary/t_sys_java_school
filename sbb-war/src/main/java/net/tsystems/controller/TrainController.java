@@ -33,7 +33,7 @@ public class TrainController {
     private TicketService ticketService;
 
 
-    @RequestMapping(value = "/trains", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/trains", method = RequestMethod.GET)
     public String trains(@RequestParam(required = false, defaultValue = "") String page,
                          Model model) {
 
@@ -48,7 +48,7 @@ public class TrainController {
         return "trains";
     }
 
-    @RequestMapping(value = "/trains/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/trains/add", method = RequestMethod.GET)
     public String showAddTrainForm(Model model) {
         CreateTrainForm train = new CreateTrainForm();
         model.addAttribute("trainForm", train);
@@ -56,7 +56,7 @@ public class TrainController {
         return "addTrain";
     }
 
-    @RequestMapping(value = "/trains", method = RequestMethod.POST)
+    @RequestMapping(value = "/worker/trains", method = RequestMethod.POST)
     public String addTrain(@ModelAttribute("trainForm") @Validated CreateTrainForm train,
                            BindingResult result, Model model,
                            final RedirectAttributes redirectAttributes) {
@@ -77,11 +77,11 @@ public class TrainController {
             return "addTrain";
         } else {
             trainService.create(train.getTrain(), routeService.generatePathMap(train.getPrimitivePath()));
-            return "redirect:/trains";
+            return "redirect:/worker/trains";
         }
     }
 
-    @RequestMapping(value = "/trains/{id}/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/trains/{id}/update", method = RequestMethod.GET)
     public String showUpdateTrainForm(@PathVariable("id") int id, Model model) {
         TrainBean train = trainService.getTrainById(id);
         model.addAttribute("trainForm", train);
@@ -100,17 +100,18 @@ public class TrainController {
             return "editTrain";
         } else {
             trainService.update(train);
-            return "redirect:/trains";
+            return "redirect:/worker/trains";
         }
     }
 
-    @RequestMapping(value = "/trains/{id}/delete")
+    @RequestMapping(value = "/worker/trains/{id}/delete")
     public String deleteTrain(@PathVariable("id") int id,
                               final RedirectAttributes redirectAttributes) {
         trainService.delete(id);
-        return "redirect:/trains";
+        return "redirect:/worker/trains";
     }
 
+    //TODO Don't show capacity to usual user and don't let them edit or delete train!
     @RequestMapping(value = "/trains/{id}", method = RequestMethod.GET)
     public String showTrainDetails(@PathVariable("id") int id, Model model) {
         TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
@@ -118,6 +119,7 @@ public class TrainController {
         return "trainDetails";
     }
 
+    //Don't show ADD NEW JOURNEY form to usual user!
     @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.GET)
     public String journeys(@PathVariable("id") int id,
                            @RequestParam(required = false, defaultValue = "") String page,
@@ -137,16 +139,16 @@ public class TrainController {
         return "journeys";
     }
 
-    @RequestMapping(value = "/trains/{id}/journeys/newJourney", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/worker/trains/{id}/journeys/newJourney", method = RequestMethod.GET)
     public String newJourney(@PathVariable("id") int id, Model model) {
 
         model.addAttribute("journey", new JourneyBean());
         model.addAttribute("trainId", id);
         model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         return "addJourney";
-    }
+    }*/
 
-    @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.POST)
+    @RequestMapping(value = "/worker/trains/{id}/journeys", method = RequestMethod.POST)
     public String addNewJourney(@PathVariable("id") int id,
                                 @ModelAttribute("journey") @Validated JourneyBean journey,
                                 BindingResult result, Model model,
@@ -178,7 +180,7 @@ public class TrainController {
         }
     }
 
-    @RequestMapping(value = "/trains/{train_id}/journeys/{journey_id}/cancel", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/trains/{train_id}/journeys/{journey_id}/cancel", method = RequestMethod.GET)
     public String cancelJourney(@PathVariable("train_id") int trainId,
                                 @PathVariable("journey_id") int journeyId,
                                 Model model,
@@ -206,7 +208,7 @@ public class TrainController {
         return "journeys";
     }
 
-    @RequestMapping(value = "/trains/{train_id}/journeys/{journey_id}/passengers", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/trains/{train_id}/journeys/{journey_id}/passengers", method = RequestMethod.GET)
     public String getRegisteredPassengers(@PathVariable("train_id") int trainId,
                                           @PathVariable("journey_id") int journeyId,
                                           @RequestParam(required = false, defaultValue = "") String page,
@@ -235,6 +237,7 @@ public class TrainController {
     }
 
     //Ajax related
+    //TODO DOes AJAX need user check?
     @RequestMapping(value = "/getStationsForTrain", method = RequestMethod.GET)
     public @ResponseBody
     List<StationBean> getStations(@RequestParam String stationName) {

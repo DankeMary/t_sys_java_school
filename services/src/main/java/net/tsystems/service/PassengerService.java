@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,32 +29,75 @@ public class PassengerService {
     private PassengerEntityMapper entityMapper = new PassengerEntityMapperImpl();
     private PassengerBeanMapper beanMapper = new PassengerBeanMapperImpl();
 
-    public void create(PassengerBean psngr){
+    public void create(PassengerBean psngr) {
         try {
             psngrDao.create(passengerBeanToDO(psngr));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             LOG.error("Failed to create passenger");
+            e.printStackTrace();
         }
     }
-    public PassengerBean createReturnObject(PassengerBean psngr){
-        return passengerDOToBean(psngrDao.createReturnObject(passengerBeanToDO(psngr)));
+
+    public PassengerBean createReturnObject(PassengerBean psngr) {
+        PassengerBean passengerBean = null;
+        try {
+            passengerBean = passengerDOToBean(psngrDao.createReturnObject(passengerBeanToDO(psngr)));
+        } catch (Exception e) {
+            LOG.error("Failed to create passenger");
+            e.printStackTrace();
+        }
+        return passengerBean;
     }
-    public void update(PassengerBean psngr){
-        psngrDao.update(passengerBeanToDO(psngr));
+
+    public void update(PassengerBean psngr) {
+        try {
+            psngrDao.update(passengerBeanToDO(psngr));
+        } catch (Exception e) {
+            LOG.error("Failed to update passenger");
+            e.printStackTrace();
+        }
     }
-    public void delete(int id){
-        psngrDao.delete(psngrDao.find(id));
+
+    public void delete(int id) {
+        try {
+            psngrDao.delete(psngrDao.find(id));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to delete passenger by id=%s", id));
+            e.printStackTrace();
+        }
     }
+
     public List<PassengerBean> getAll() {
-        return passengerDOListToBeanList(psngrDao.findAll());
+        List<PassengerBean> passengers = new LinkedList<>();
+        try {
+            passengers = passengerDOListToBeanList(psngrDao.findAll());
+        } catch (Exception e) {
+            LOG.error("Failed to get all passengers");
+            e.printStackTrace();
+        }
+        return passengers;
     }
+
     public List<PassengerBean> getAll(int page, int maxResult) {
-        return passengerDOListToBeanList(psngrDao.findAll(page, maxResult));
+        List<PassengerBean> passengers = new LinkedList<>();
+        try {
+            passengers = passengerDOListToBeanList(psngrDao.findAll(page, maxResult));
+        } catch (Exception e) {
+            LOG.error("Failed to get all passengers");
+            e.printStackTrace();
+        }
+        return passengers;
     }
-    public PassengerBean getPassenger(int id){
-        return passengerDOToBean(psngrDao.find(id));
+
+    public PassengerBean getPassenger(int id) {
+        PassengerBean passengerBean = null;
+        try {
+            passengerBean = passengerDOToBean(psngrDao.find(id));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get passenger by id=%s", id));
+            e.printStackTrace();
+        }
+        return passengerBean;
     }
 
     //Validation utils
@@ -108,7 +150,7 @@ public class PassengerService {
             validate(p, errors);
     }
 
-    public List<String> possibleValidationErrors(){
+    public List<String> possibleValidationErrors() {
         List<String> errors = new LinkedList<>();
         //first & last names
         errors.add("First and Last names are required");
@@ -120,7 +162,7 @@ public class PassengerService {
         return errors;
     }
 
-    public int countPages(int maxResult){
+    public int countPages(int maxResult) {
         return psngrDao.countPages(maxResult);
     }
 
@@ -129,7 +171,7 @@ public class PassengerService {
         return beanMapper.passengerToBean(entityMapper.passengerToSO(psngr));
     }
 
-    private PassengerDO passengerBeanToDO (PassengerBean psngr) {
+    private PassengerDO passengerBeanToDO(PassengerBean psngr) {
         return entityMapper.passengerToDO(beanMapper.passengerToSO(psngr));
     }
 

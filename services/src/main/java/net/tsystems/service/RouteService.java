@@ -1,20 +1,25 @@
 package net.tsystems.service;
 
 import net.tsystems.bean.*;
-import net.tsystems.beanmapper.*;
+import net.tsystems.beanmapper.RouteBeanMapper;
+import net.tsystems.beanmapper.RouteBeanMapperImpl;
 import net.tsystems.entities.RouteDO;
 import net.tsystems.entitydao.RouteDAO;
-import net.tsystems.entitymapper.*;
+import net.tsystems.entitymapper.RouteEntityMapper;
+import net.tsystems.entitymapper.RouteEntityMapperImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
 import java.util.*;
 
 @Service("routeService")
 @Transactional
 public class RouteService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(RouteService.class);
 
     private RouteDAO routeDao;
     private RouteEntityMapper routeEntityMapper = new RouteEntityMapperImpl();
@@ -23,66 +28,104 @@ public class RouteService {
     private StationService stationService;
     private TripService tripService;
 
-    public void create(RouteBean psngr) {
-        routeDao.create(routeBeanToDO(psngr));
+    public void create(RouteBean route) {
+        try {
+            routeDao.create(routeBeanToDO(route));
+        } catch (Exception e) {
+            LOG.error("Failed to create route");
+            e.printStackTrace();
+        }
     }
 
-    public void update(RouteBean psngr) {
-        routeDao.update(routeBeanToDO(psngr));
+    public void update(RouteBean route) {
+        try {
+            routeDao.update(routeBeanToDO(route));
+        } catch (Exception e) {
+            LOG.error("Failed to update route");
+            e.printStackTrace();
+        }
     }
 
     public void delete(int id) {
-        routeDao.delete(routeDao.find(id));
+        try {
+            routeDao.delete(routeDao.find(id));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to delete route by id=%s", id));
+            e.printStackTrace();
+        }
     }
 
     public List<RouteBean> getAll() {
-        return routeDOListToBeanList(routeDao.findAll());
-    }
-
-    public RouteBean getRoute(int id) {
-        return routeDOToBean(routeDao.find(id));
+        List<RouteBean> routes = new LinkedList<>();
+        try {
+            routes = routeDOListToBeanList(routeDao.findAll());
+        } catch (Exception e) {
+            LOG.error("Failed to get all routes");
+            e.printStackTrace();
+        }
+        return routes;
     }
 
     public List<RouteBean> getRoutesByTrainId(int trainId) {
-        return routeDOListToBeanList(routeDao.getRoutesByTrainId(trainId));
+        List<RouteBean> routes = new LinkedList<>();
+        try {
+            routes = routeDOListToBeanList(routeDao.getRoutesByTrainId(trainId));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get routes by train's id=%s", trainId));
+            e.printStackTrace();
+        }
+        return routes;
     }
 
     public void createTrainPath(TrainBean train, Map<Integer, StationBeanExpanded> stationsData) {
-        TripBean trip = new TripBean();
-        trip.setTrain(train);
-        trip.setFrom(stationService.getStationByName(stationsData.get(1).getStation().getName()));
-        trip.setTo(stationService.getStationByName(stationsData.get(stationsData.size()).getStation().getName()));
-        Integer savedTripId = tripService.createReturnId(trip);
+        try {
+            if (train != null) {
+                TripBean trip = new TripBean();
+                trip.setTrain(train);
+                trip.setFrom(stationService.getStationByName(stationsData.get(1).getStation().getName()));
+                trip.setTo(stationService.getStationByName(stationsData.get(stationsData.size()).getStation().getName()));
+                Integer savedTripId = tripService.createReturnId(trip);
 
-        TripBean savedTrip = tripService.getTripById(savedTripId);
-        createRoutesFromList(stationsData, savedTrip);
+                TripBean savedTrip = tripService.getTripById(savedTripId);
+                createRoutesFromList(stationsData, savedTrip);
+            } else {
+                LOG.error("Failed to create path for train since train = null");
+            }
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to create path for train with id=%s", train.getId()));
+            e.printStackTrace();
+        }
     }
 
     public List<RouteBean> getTrainPathByTrainId(int trainId) {
-        List<RouteBean> trainRoutes = getRoutesByTrainId(trainId);
-
-        Map<Integer, RouteBean> stationsData = new HashMap<Integer, RouteBean>();
-        RouteBean lastRoute = null;
-        //Key - next station's ID
-        for (RouteBean rb : trainRoutes) {
-            if (rb.getNextStation() == null)
-                lastRoute = rb;
-            else
-                stationsData.put(rb.getNextStation().getId(), rb);
-        }
-
-        //Make the ordered path
-        int nextStationId = lastRoute.getStation().getId();
-        RouteBean currRoute;
         List<RouteBean> orderedTrainRoutes = new LinkedList<RouteBean>();
-        orderedTrainRoutes.add(lastRoute);
+        try {
+            List<RouteBean> trainRoutes = getRoutesByTrainId(trainId);
 
-        for (int i = 0; i < trainRoutes.size() - 1; i++) {
-            currRoute = stationsData.get(nextStationId);
-            orderedTrainRoutes.add(0, currRoute);
-            nextStationId = currRoute.getStation().getId();
+            Map<Integer, RouteBean> stationsData = new HashMap<Integer, RouteBean>();
+            RouteBean lastRoute = null;
+            //Key - next station's ID
+            for (RouteBean rb : trainRoutes) {
+                if (rb.getNextStation() == null)
+                    lastRoute = rb;
+                else
+                    stationsData.put(rb.getNextStation().getId(), rb);
+            }
+
+            //Make the ordered path
+            int nextStationId = lastRoute.getStation().getId();
+            RouteBean currRoute;
+            orderedTrainRoutes.add(lastRoute);
+
+            for (int i = 0; i < trainRoutes.size() - 1; i++) {
+                currRoute = stationsData.get(nextStationId);
+                orderedTrainRoutes.add(0, currRoute);
+                nextStationId = currRoute.getStation().getId();
+            }
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get path for train with id=%s", trainId));
+            e.printStackTrace();
         }
-
         return orderedTrainRoutes;
     }
 
@@ -92,14 +135,14 @@ public class RouteService {
         //TODO How does it act if I add a bunch of empty inputs?
         int cnt = 0;
         if (trainPathData != null)
-        for (StationBeanExpanded stExpBean : trainPathData) {
-            if ((stExpBean.getStation() != null &&
-                    !stExpBean.getStation().getName().isEmpty()) ||
-                    stExpBean.getArrTime() != null ||
-                    stExpBean.getDepTime() != null
-            )
-                cnt++;
-        }
+            for (StationBeanExpanded stExpBean : trainPathData) {
+                if ((stExpBean.getStation() != null &&
+                        !stExpBean.getStation().getName().isEmpty()) ||
+                        stExpBean.getArrTime() != null ||
+                        stExpBean.getDepTime() != null
+                )
+                    cnt++;
+            }
         if (cnt < 2) {
             errorsList.put("shortPath", "Train path hast to have at least 2 stations with data");
         } else {
@@ -142,18 +185,23 @@ public class RouteService {
     }
 
     private void createRoutesFromList(Map<Integer, StationBeanExpanded> routesData, TripBean trip) {
-        StationBean nextStation = null;
-        for (int i = routesData.size(); i > 0; i--) {
-            RouteBean route = new RouteBean();
-            StationBeanExpanded currRoutePoint = routesData.get(i);
-            StationBean currStation = stationService.getStationByName(currRoutePoint.getStation().getName());
-            route.setStation(currStation);
-            route.setNextStation(nextStation);
-            route.setArrival(currRoutePoint.getArrTime());
-            route.setDeparture(currRoutePoint.getDepTime());
-            route.setTrip(trip);
-            routeDao.create(routeBeanToDO(route));
-            nextStation = currStation;
+        try {
+            StationBean nextStation = null;
+            for (int i = routesData.size(); i > 0; i--) {
+                RouteBean route = new RouteBean();
+                StationBeanExpanded currRoutePoint = routesData.get(i);
+                StationBean currStation = stationService.getStationByName(currRoutePoint.getStation().getName());
+                route.setStation(currStation);
+                route.setNextStation(nextStation);
+                route.setArrival(currRoutePoint.getArrTime());
+                route.setDeparture(currRoutePoint.getDepTime());
+                route.setTrip(trip);
+                routeDao.create(routeBeanToDO(route));
+                nextStation = currStation;
+            }
+        } catch (Exception e) {
+            LOG.error("Failed to create routes from list");
+            e.printStackTrace();
         }
     }
 

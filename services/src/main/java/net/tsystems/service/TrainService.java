@@ -9,17 +9,21 @@ import net.tsystems.entities.TrainDO;
 import net.tsystems.entitydao.TrainDAO;
 import net.tsystems.entitymapper.TrainEntityMapper;
 import net.tsystems.entitymapper.TrainEntityMapperImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 @Service("trainService")
 @Transactional
 public class TrainService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TrainService.class);
 
     private TrainDAO trainDao;
     private TrainEntityMapper entityMapper = new TrainEntityMapperImpl();
@@ -30,62 +34,120 @@ public class TrainService {
     private TripDataService tripDataService;
 
     public Integer create(TrainBean train) {
-        return trainDao.createReturnObject(trainBeanToDO(train)).getId();
+        Integer id = null;
+        try {
+            id = trainDao.createReturnObject(trainBeanToDO(train)).getId();
+        } catch (Exception e) {
+            LOG.error("Failed to create train");
+            e.printStackTrace();
+        }
+        return id;
     }
 
     public TrainBean createReturnObject(TrainBean train) {
-        return trainDOToBean(trainDao.createReturnObject(trainBeanToDO(train)));
+        TrainBean trainBean = null;
+        try {
+            trainBean = trainDOToBean(trainDao.createReturnObject(trainBeanToDO(train)));
+        } catch (Exception e) {
+            LOG.error("Failed to create train");
+            e.printStackTrace();
+        }
+        return trainBean;
     }
 
     public void create(TrainBean train, Map<Integer, StationBeanExpanded> stationsData) {
-        train = createReturnObject(train);
-
-        routeService.createTrainPath(train,
-                stationsData);
+        try {
+            train = createReturnObject(train);
+            routeService.createTrainPath(train, stationsData);
+        } catch (Exception e) {
+            LOG.error("Failed to create train with stations data passed");
+            e.printStackTrace();
+        }
     }
 
     public void update(TrainBean train) {
-        trainDao.update(trainBeanToDO(train));
+        try {
+            trainDao.update(trainBeanToDO(train));
+        } catch (Exception e) {
+            LOG.error("Failed to update train");
+            e.printStackTrace();
+        }
     }
 
     public void delete(int id) {
-        trainDao.delete(trainDao.find(id));
+        try {
+            trainDao.delete(trainDao.find(id));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to delete train by id=%s", id));
+            e.printStackTrace();
+        }
     }
 
     public List<TrainBean> getAll() {
-        List<TrainBean> trains = trainDOListToBeanList(trainDao.findAll());
-        for (TrainBean train : trains)
-            train.setTrip(tripService.getTripByTrainId(train.getId()));
+        List<TrainBean> trains = new LinkedList<>();
+        try {
+            trains = trainDOListToBeanList(trainDao.findAll());
+            for (TrainBean train : trains)
+                train.setTrip(tripService.getTripByTrainId(train.getId()));
+        } catch (Exception e) {
+            LOG.error("Failed to get all trains");
+            e.printStackTrace();
+        }
         return trains;
     }
+
     public List<TrainBean> getAll(int page, int maxResult) {
-        List<TrainBean> trains = trainDOListToBeanList(trainDao.findAll(page, maxResult));
-
-        for (TrainBean train : trains)
-            train.setTrip(tripService.getTripByTrainId(train.getId()));
-
+        List<TrainBean> trains = new LinkedList<>();
+        try {
+            trains = trainDOListToBeanList(trainDao.findAll(page, maxResult));
+            for (TrainBean train : trains)
+                train.setTrip(tripService.getTripByTrainId(train.getId()));
+        } catch (Exception e) {
+            LOG.error("Failed to get all trains");
+            e.printStackTrace();
+        }
         return trains;
     }
+
     public TrainBean getTrainById(int id) {
-        TrainBean train = trainDOToBean(trainDao.find(id));
-        if (train != null)
+        TrainBean train = null;
+        try {
+            train = trainDOToBean(trainDao.find(id));
+            //if (train != null)
             train.setTrip(tripService.getTripByTrainId(train.getId()));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get train by id=%s", id));
+            e.printStackTrace();
+        }
         return train;
     }
 
     public TrainBean getTrainByNumber(int number) {
-        TrainBean train = trainDOToBean(trainDao.findByNumber(number));
-        if (train != null)
+        TrainBean train = null;
+        try {
+            train = trainDOToBean(trainDao.findByNumber(number));
+            //if (train != null)
             train.setTrip(tripService.getTripByTrainId(train.getId()));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get train by number=%s", number));
+            e.printStackTrace();
+        }
         return train;
     }
 
     public TrainBeanExpanded getTrainWithPath(int id) {
-        TrainBeanExpanded train = new TrainBeanExpanded();
-        train.setTrainBean(getTrainById(id));
-        train.getTrainBean().setTrip(tripService.getTripByTrainId(id));
-        train.setTrainRoute(routeService.getTrainPathByTrainId(id));
-        return train;
+        TrainBeanExpanded trainBeanExpanded;
+        try {
+            trainBeanExpanded = new TrainBeanExpanded();
+            trainBeanExpanded.setTrainBean(getTrainById(id));
+            trainBeanExpanded.getTrainBean().setTrip(tripService.getTripByTrainId(id));
+            trainBeanExpanded.setTrainRoute(routeService.getTrainPathByTrainId(id));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get train with path by train's id=%s", id));
+            e.printStackTrace();
+            trainBeanExpanded = null;
+        }
+        return trainBeanExpanded;
     }
 
     //Validation Utils
@@ -111,7 +173,7 @@ public class TrainService {
     }
 
     //Help Functions
-    public int countPages(int maxResult){
+    public int countPages(int maxResult) {
         return trainDao.countPages(maxResult);
     }
 

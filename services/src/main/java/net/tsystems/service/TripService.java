@@ -7,52 +7,109 @@ import net.tsystems.entities.TripDO;
 import net.tsystems.entitydao.TripDAO;
 import net.tsystems.entitymapper.TripEntityMapper;
 import net.tsystems.entitymapper.TripEntityMapperImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service("tripService")
 @Transactional
 public class TripService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TripService.class);
+
     private TripDAO tripDao;
     private TripEntityMapper entityMapper = new TripEntityMapperImpl();
     private TripBeanMapper beanMapper = new TripBeanMapperImpl();
 
-    public void create(TripBean trip){
-        tripDao.create(tripBeanToDO(trip));
+    public void create(TripBean trip) {
+        try {
+            tripDao.create(tripBeanToDO(trip));
+        } catch (Exception e) {
+            LOG.error("Failed to create trip");
+            e.printStackTrace();
+        }
     }
-    public Integer createReturnId(TripBean trip){
-        return tripDao.createReturnId(tripBeanToDO(trip));
+
+    public Integer createReturnId(TripBean trip) {
+        Integer id = null;
+        try {
+            id = tripDao.createReturnId(tripBeanToDO(trip));
+        } catch (Exception e) {
+            LOG.error("Failed to create trip");
+            e.printStackTrace();
+        }
+        return id;
     }
-    public void update(TripBean trip){
-        tripDao.update(tripBeanToDO(trip));
+
+    public void update(TripBean trip) {
+        try {
+            tripDao.update(tripBeanToDO(trip));
+        } catch (Exception e) {
+            LOG.error("Failed to update trip");
+            e.printStackTrace();
+        }
     }
-    public void delete(int id){
-        tripDao.delete(tripDao.find(id));
+
+    public void delete(int id) {
+        try {
+            tripDao.delete(tripDao.find(id));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to delete trip by id=%s", id));
+            e.printStackTrace();
+        }
     }
+
     public List<TripBean> getAll() {
-        return tripDOListToBeanList(tripDao.findAll());
+        List<TripBean> tripBeans = new LinkedList<>();
+        try {
+            tripBeans = tripDOListToBeanList(tripDao.findAll());
+        } catch (Exception e) {
+            LOG.error("Failed to get all trips");
+            e.printStackTrace();
+        }
+        return tripBeans;
     }
-    public TripBean getTripById(int id){
-        return tripDOToBean(tripDao.find(id));
+
+    public TripBean getTripById(int id) {
+        TripBean tripBean = null;
+        try {
+            tripBean = tripDOToBean(tripDao.find(id));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get trip by id=%s", id));
+            e.printStackTrace();
+        }
+        return tripBean;
     }
+
     public TripBean getTripByTrainId(int id) {
-        return tripDOToBean(tripDao.getByTrainId(id));
+        TripBean tripBean = null;
+        try {
+            tripBean = tripDOToBean(tripDao.getByTrainId(id));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get trip by train's id=%s", id));
+            e.printStackTrace();
+        }
+        return tripBean;
     }
 
     //Mappers
-    public TripBean tripDOToBean (TripDO trip) {
+    public TripBean tripDOToBean(TripDO trip) {
         return beanMapper.tripToBean(entityMapper.tripToSO(trip));
     }
+
     public TripDO tripBeanToDO(TripBean trip) {
         return entityMapper.tripToDO(beanMapper.tripToSO(trip));
     }
-    public List<TripBean> tripDOListToBeanList (List<TripDO> trips) {
+
+    public List<TripBean> tripDOListToBeanList(List<TripDO> trips) {
         return beanMapper.tripListToBeanList(entityMapper.tripListToSOList(trips));
     }
+
     //Autowired
     @Autowired
     public void setTripDao(TripDAO tripDao) {

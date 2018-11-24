@@ -18,19 +18,12 @@
         <div class="col-sm-12 col-md-10 col-lg-8" style="padding:0;border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
-                <h5>Train Details</h5>
-                <div style="display:inline-block; margin-right: 15px;"><b>Train : </b>${trainData.trainBean.number}
+                <h5>Train Trip Details</h5>
+                <div style="display:inline-block; margin-right: 15px;"><b>Train : </b>${train.number}
                 </div>
-                <div style="display:inline-block; margin-right: 15px;"><b>Capacity :</b> ${trainData.trainBean.capacity}
+                <div style="display:inline-block; margin-right: 15px;"><b>Trip Departure : </b>${localDateFormat.format(tripDepDay)}
                 </div>
-                <div style="display:inline-block; margin-right: 15px;"><b>Price :</b> ${trainData.trainBean.price}</div>
-                <div style="display:inline-block">
-                    <a href="/worker/trains/${trainData.trainBean.id}/update">Edit</a> |
-                    <a href="/worker/trains/${trainData.trainBean.id}/delete"
-                       onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${trainData.trainBean.id}/delete')">Delete</a>
-                </div>
-                <p><b>Journeys : </b> <a href="/trains/${trainData.trainBean.id}/journeys">See More...</a></p>
-                <h5>Train Path:</h5>
+
                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                     <thead class="thead-light">
                     <tr>
@@ -39,11 +32,23 @@
                         <th>Departure</th>
                     </tr>
                     </thead>
-                    <c:forEach items="${trainData.trainRoute}" var="routePoint">
+                    <c:forEach items="${journeyDetails}" var="item">
                         <tr>
-                            <td>${routePoint.station.name}</td>
-                            <td>${routePoint.arrival}</td>
-                            <td>${routePoint.departure}</td>
+                            <td>${item.route.station.name}</td>
+                            <td>
+                                <span style="font-size: 11px; color: green; display: block;">
+                                        ${item.route.arrival}
+                                </span>
+                                <span style="font-size: 9px; color: grey; display: block;">
+                                        ${localDateFormat.format(item.date)}
+                                </span>
+                            </td>
+                            <td><span style="font-size: 11px; color: green; display: block;">
+                                    ${item.route.departure}
+                            </span>
+                                <span style="font-size: 9px; color: grey; display: block;">
+                                        ${localDateFormat.format(item.date)}
+                                </span></td>
                         </tr>
                     </c:forEach>
                 </table>

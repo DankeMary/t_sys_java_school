@@ -18,8 +18,12 @@
         <div class="col-sm-12 col-md-10 col-lg-8" style="padding:0;border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
-                <h3>Enter The User Details</h3>
-                <span>${uniqueUsername}</span>
+                <h3 style="text-align: center;">Enter The User Details</h3>
+                <c:if test="${not empty uniqueUsername}">
+                    <div class="alert alert-danger">
+                        <p>${uniqueUsername}</p>
+                    </div>
+                </c:if>
                 <div class="form">
                     <form:form method="POST"
                                action="/signup"
@@ -31,7 +35,7 @@
                                    name="${status.expression}"
                                    class="fm-with-valid"
                                    required>
-                            <div class="form-group col-md-6" style="color: red; display: inline-block;">
+                            <div style="color: red; display: inline-block;">
                                 <div class="error-list">
                                     <c:if test="${status.error}">
                                         <c:forEach items="${status.errorMessages}" var="error">
@@ -45,13 +49,13 @@
 
                         <div class="formFragment">
                             <spring:bind path="password">
-                                <input type="text"
+                                <input type="password"
                                        placeholder="password"
                                        value="${status.value}"
                                        name="${status.expression}"
                                        class="fm-with-valid"
                                        required>
-                                <div class="form-group col-md-6" style="color: red; display: inline-block;">
+                                <div style="color: red; display: inline-block;">
                                     <div class="error-list">
                                         <c:if test="${status.error}">
                                             <c:forEach items="${status.errorMessages}" var="error">
@@ -67,6 +71,8 @@
                         <div style="margin: auto;">
                             <input type="submit" value="Sign Up" id="submit" class="submit-btn"/>
                         </div>
+
+                        <a href="/login">Log In</a>
                     </form:form>
                 </div>
             </div>

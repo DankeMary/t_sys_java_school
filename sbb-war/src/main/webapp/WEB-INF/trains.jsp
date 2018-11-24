@@ -117,10 +117,6 @@
                                     <td>${train.trip.from.name}</td>
                                     <td>${train.trip.to.name}</td>
                                     <td><a href="/trains/${train.id}">Details</a></td>
-                                    <!--<td><a href="/trains/${train.id}/update">Edit</a> |
-                                        <a href="/trains/${train.id}/delete"
-                                           onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${train.id}/delete')">Delete</a>
-                                    </td>-->
                                 </tr>
                             </c:forEach>
                         </table>

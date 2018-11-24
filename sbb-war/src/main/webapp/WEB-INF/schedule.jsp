@@ -51,7 +51,8 @@
                                         <c:choose>
                                             <c:when test="${not item.tripData.isCancelled}">
                                                 <tr>
-                                                    <td>${item.train.number}</td>
+                                                    <td><a href="/user/trains/${item.train.id}/journeys/${item.tripData.id}"
+                                                           target="_blank">${item.train.number}</a></td>
                                                     <td>${item.trip.from.name}</td>
                                                     <td>${item.trip.to.name}</td>
                                                     <td>${localDateTimeFormat.format(item.tripData.date)}</td>

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <title>Passengers List</title>
@@ -104,12 +105,15 @@
                         <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                             <thead class="thead-light">
                             <tr>
-                                <th>#</th>
+                                <th>Ticket</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Birthday</th>
                                 <th>From</th>
                                 <th>To</th>
+                                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                    <th>Bought By</th>
+                                </sec:authorize>
                             </tr>
                             </thead>
                             <c:forEach items="${tickets}" var="ticket">
@@ -117,7 +121,7 @@
                                     <td>${ticket.id}</td>
                                     <td>${ticket.passenger.firstName}</td>
                                     <td>${ticket.passenger.lastName}</td>
-                                    <td>${localDateTimeFormat.format(ticket.passenger.birthday)}</td>
+                                    <td>${localDateFormat.format(ticket.passenger.birthday)}</td>
                                     <td>${ticket.from.route.station.name} <br>
                                         <span style="font-size: 10px;">
                                                 ${localDateTimeFormat.format(ticket.from.date)}
@@ -128,6 +132,9 @@
                                                 ${localDateTimeFormat.format(ticket.to.date)}
                                         </span>
                                     </td>
+                                    <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                        <td><a href="/user/${ticket.boughtBy.username}">${ticket.boughtBy.username}</a></td>
+                                    </sec:authorize>
                                 </tr>
                             </c:forEach>
                         </table>

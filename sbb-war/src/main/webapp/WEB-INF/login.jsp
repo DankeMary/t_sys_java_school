@@ -70,6 +70,8 @@
                         <div style="margin: auto;">
                             <input type="submit" value="Log In" id="submit" class="submit-btn"/>
                         </div>
+
+                        <a href="/signup">Sign Up</a>
                     </form:form>
                 </div>
             </div>

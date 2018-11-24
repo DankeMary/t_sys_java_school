@@ -24,19 +24,19 @@
                 <p><b>From:</b> ${fromMetaInfo}</p>
                 <p><b>To:</b> ${toMetaInfo}</p>
                 <p><b>Price:</b> ${ticketPrice}</p>
+                <p><b>Train Path:</b> <a href="/user/trains/${trainId}/journeys/${fromJourneyId}" target="_blank">See
+                    More...</a></p>
                 <c:choose>
                     <c:when test="${empty noTickets}">
                         <span style="color: red; display: block;">${psngrInfo}</span>
                         <h6>Enter The Passengers Details</h6>
                         <c:if test="${not empty possibleErrors}">
-                            <spring:hasBindErrors name="ticketForm">
-                                <span style="color: red; display: block;">Some of the given data is invalid or missing. Check:</span>
-                                <ul style="color: red; padding-left: 15px;">
-                                    <c:forEach items="${possibleErrors}" var="error">
-                                        <li>${error}</li>
-                                    </c:forEach>
-                                </ul>
-                            </spring:hasBindErrors>
+                            <span style="color: red; display: block;">Some of the given data is invalid or missing. Check:</span>
+                            <ul style="color: red; padding-left: 15px;">
+                                <c:forEach items="${possibleErrors}" var="error">
+                                    <li>${error}</li>
+                                </c:forEach>
+                            </ul>
                         </c:if>
                         <form:form method="POST"
                                    action="/user/buyTicket"

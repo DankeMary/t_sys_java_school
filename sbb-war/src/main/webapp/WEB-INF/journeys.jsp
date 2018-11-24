@@ -136,6 +136,7 @@
                             <td>${localDateTimeFormat.format(journey.departureDay)}</td>
                             <td>
                                 <a href="/worker/trains/${trainId}/journeys/${journey.journeyId}/passengers">Passengers</a> |
+                                <a href="/user/trains/${trainId}/journeys/${journey.journeyId}">Details</a> |
                                 <a href="/worker/trains/${trainId}/journeys/${journey.journeyId}/cancel"
                                    onclick="return confirmDelete(this, '${pageContext.request.contextPath}/worker/trains/${trainId}/journeys/${journey.journeyId}/cancel')">Cancel</a>
                             </td>

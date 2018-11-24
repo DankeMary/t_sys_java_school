@@ -62,7 +62,8 @@
 
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div style="margin: auto;">
-                            <input type="submit" value="Log In" id="submit" class="submit-btn"/>
+                            <button type="button" id="submit" class="submit-btn btn btn-primary"
+                                    style="margin-bottom: 20px">Log In</button>
                         </div>
 
                         <a href="/signup">Sign Up</a>

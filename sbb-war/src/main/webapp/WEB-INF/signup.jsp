@@ -69,7 +69,9 @@
                         </div>
 
                         <div style="margin: auto;">
-                            <input type="submit" value="Sign Up" id="submit" class="submit-btn"/>
+                            <button type="button" value="" id="submit" class="submit-btn btn btn-success"
+                                    style="margin-bottom: 20px">Sign Up
+                            </button>
                         </div>
 
                         <a href="/login">Log In</a>

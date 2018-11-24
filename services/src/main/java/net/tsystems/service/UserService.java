@@ -1,6 +1,8 @@
 package net.tsystems.service;
 
+import net.tsystems.bean.TicketBean;
 import net.tsystems.bean.UserBean;
+import net.tsystems.bean.UserBeanExpanded;
 import net.tsystems.beanmapper.UserBeanMapper;
 import net.tsystems.beanmapper.UserBeanMapperImpl;
 import net.tsystems.entities.UserDO;
@@ -10,6 +12,7 @@ import net.tsystems.entitymapper.UserEntityMapperImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,8 @@ public class UserService {
     private UserDAO userDao;
     private UserEntityMapper entityMapper = new UserEntityMapperImpl();
     private UserBeanMapper beanMapper = new UserBeanMapperImpl();
+
+    private TicketService ticketService;
 
     private PasswordEncoder passwordEncoder;
 
@@ -120,6 +125,23 @@ public class UserService {
         return userBean;
     }
 
+    @PreAuthorize("#username == authentication.principal.username or hasRole('ROLE_ADMIN')")
+    public UserBeanExpanded getUserProfile(String username, int page, int maxResult) {
+        UserBeanExpanded userExp = null;
+        try {
+            UserBean user = userDOToBean(userDao.findByUsername(username));
+            List<TicketBean> tickets = ticketService.getUserTicketsAfterNow(user, page, maxResult);
+
+            userExp = new UserBeanExpanded();
+            userExp.setUser(user);
+            userExp.setTickets(tickets);
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get user's profile by username=%s", username));
+            e.printStackTrace();
+        }
+        return userExp;
+    }
+
     //Validation Utils
     public void validate(UserBean user, Map<String, String> errors) {
         if (userDao.findByUsername(user.getUsername()) != null)
@@ -129,6 +151,7 @@ public class UserService {
     public boolean isUniqueUsername(String username, int id) {
         return userDao.checkUniqueUsername(username, id);
     }
+
 
     //Mappers
     public UserBean userDOToBean(UserDO userDO) {
@@ -154,4 +177,8 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Autowired
+    public void setTicketService(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
 }

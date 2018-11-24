@@ -35,9 +35,15 @@ public class StationsController {
 
 
     @RequestMapping(value = "/worker/stations", method = RequestMethod.GET)
-    public String stations(Model model) {
-        List<StationBean> stations = stationService.getAll();
+    public String stations(@RequestParam(required = false, defaultValue = "") String page,
+                           Model model) {
+        int navPagesQty = stationService.countPages(UtilsClass.MAX_PAGE_RESULT);
+        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+
+        List<StationBean> stations = stationService.getAll(pageInt, UtilsClass.MAX_PAGE_RESULT);
         model.addAttribute("stations", stations);
+        model.addAttribute("navPagesQty", navPagesQty);
+        model.addAttribute("currentPage", pageInt);
         model.addAttribute("loggedinuser", getPrincipal());
         return "stations";
     }
@@ -46,6 +52,7 @@ public class StationsController {
     public String showAddStationForm(Model model) {
         StationBean station = new StationBean();
         model.addAttribute("stationForm", station);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "addStation";
     }
 
@@ -56,6 +63,7 @@ public class StationsController {
 
         stationService.validate(station, true, result);
         if (result.hasErrors()) {
+            model.addAttribute("loggedinuser", getPrincipal());
             return "addStation";
         } else {
             stationService.create(station);
@@ -67,6 +75,7 @@ public class StationsController {
     public String showUpdateStationForm(@PathVariable("id") int id, Model model) {
         StationBean station = stationService.getStationById(id);
         model.addAttribute("stationForm", station);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "editStation";
     }
 
@@ -78,6 +87,7 @@ public class StationsController {
 
         stationService.validate(station, false, result);
         if (result.hasErrors()) {
+            model.addAttribute("loggedinuser", getPrincipal());
             return "editStation";
         } else {
             stationService.update(station);
@@ -108,6 +118,7 @@ public class StationsController {
             model.addAttribute("schedule", new LinkedList<>());
         }
         model.addAttribute("stationName", trimmedStationName);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "schedule";
     }
 
@@ -127,9 +138,11 @@ public class StationsController {
 
         if (principal instanceof UserDetails) {
             userName = ((UserDetails) principal).getUsername();
-        } else {
-            userName = principal.toString();
         }
+        //TODO Is this ok?
+        /*else {
+            userName = principal.toString();
+        }*/
         return userName;
     }
 }

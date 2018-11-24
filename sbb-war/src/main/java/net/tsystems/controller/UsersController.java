@@ -1,6 +1,9 @@
 package net.tsystems.controller;
 
+import net.tsystems.UtilsClass;
 import net.tsystems.bean.UserBean;
+import net.tsystems.bean.UserBeanExpanded;
+import net.tsystems.service.TicketService;
 import net.tsystems.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -17,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +29,8 @@ public class UsersController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    TicketService ticketService;
 
     @Autowired
     AuthenticationTrustResolver authenticationTrustResolver;
@@ -49,7 +55,7 @@ public class UsersController {
         if (isCurrentAuthenticationAnonymous()) {
             return "login";
         } else {
-            return "redirect:/list";
+            return "redirect:/passengers";
         }
     }
 
@@ -84,6 +90,7 @@ public class UsersController {
         userService.create(user, "");
 
         //TODO Is it needed?
+        //TODO You have been successfully signed up
         /*model.addAttribute("loggedinuser", getPrincipal());*/
         return "redirect:/login";
     }
@@ -128,7 +135,7 @@ public class UsersController {
     }
 
     //This method handles Access-Denied redirect.
-    @RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)
+    @RequestMapping(value = "/access_denied", method = RequestMethod.GET)
     public String accessDeniedPage(Model model) {
         model.addAttribute("loggedinuser", getPrincipal());
         model.addAttribute("message", "Access denied");
@@ -140,10 +147,27 @@ public class UsersController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
-            //persistentTokenBasedRememberMeServices.logout(request, response, auth);
+            
             SecurityContextHolder.getContext().setAuthentication(null);
         }
         return "redirect:/login?logout";
+    }
+
+    @RequestMapping(value = "/user/{username}", method = RequestMethod.GET)
+    public String userProfile(@PathVariable String username,
+                              @RequestParam(required = false, defaultValue = "") String page,
+                              Model model) {
+        int navPagesQty = ticketService.countUserTicketsAfterNow(username, UtilsClass.MAX_PAGE_RESULT);
+        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+
+        UserBeanExpanded userProfile = userService.getUserProfile(username, pageInt, UtilsClass.MAX_PAGE_RESULT);
+
+        model.addAttribute("userData", userProfile);
+        model.addAttribute("navPagesQty", navPagesQty);
+        model.addAttribute("currentPage", pageInt);
+        model.addAttribute("loggedinuser", getPrincipal());
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
+        return "userProfile";
     }
 
     //This method returns the principal[user-name] of logged-in user.

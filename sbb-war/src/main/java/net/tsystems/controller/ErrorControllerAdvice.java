@@ -15,7 +15,7 @@ public class ErrorControllerAdvice {
     public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) {
         ModelAndView mav = new ModelAndView(DEFAULT_ERROR_VIEW);
 
-        mav.addObject("message", "Oups! Something went wrong: " + e.getMessage());
+        mav.addObject("message", "Oups! Something went wrong");
         return mav;
     }
 }

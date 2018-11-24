@@ -10,6 +10,7 @@ import net.tsystems.entitymapper.TripDataEntityMapperImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,7 @@ public class TripDataService {
     private PassengerService passengerService;
     private TicketService ticketService;
     private TripService tripService;
+    private UserService userService;
 
     public void create(TripDataBean tripDataBean) {
         try {
@@ -113,6 +115,13 @@ public class TripDataService {
             e.printStackTrace();
         }
         return journeys;
+    }
+
+    public List<TripDataBean> getTrainJourneyDetails(int trainId, int journeyId) {
+        //TODO Logger
+        TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
+
+        return tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getTripDeparture()));
     }
 
     //TODO doesn't work?
@@ -224,17 +233,91 @@ public class TripDataService {
         return availableTicketsData;
     }
 
-    public boolean buyTickets(BuyTicketsForm ticketsData) {
+    @PreAuthorize("#boughtByUsername == authentication.principal.username")
+    public boolean buyTickets(BuyTicketsForm ticketsData, String boughtByUsername) {
+        if (boughtByUsername == null || boughtByUsername.trim().isEmpty()) {
+            LOG.error("Failed to buy tickets since user is not present");
+        } else {
+            try {
+                //1. Find data which satisfies the conditions
+                int fromJourneyId = ticketsData.getFromJourneyId();
+                int toJourneyId = ticketsData.getToJourneyId();
+                TripDataBean fromTD = tripDataDOToBean(tripDataDAO.find(fromJourneyId));
+
+                List<TripDataBean> journeyTripData = tripDataDOListToBeanList(
+                        tripDataDAO.findByTripIdAndTripDepartureDay(
+                                fromTD.getRoute().getTrip().getId(),
+                                fromTD.getTripDeparture()));
+
+                TripDataBean fromTDBean = journeyTripData
+                        .stream()
+                        .filter(i -> i.getId() == fromJourneyId)
+                        .findFirst()
+                        .orElse(null);
+                int fromTDBeanIndex = journeyTripData.indexOf(fromTDBean);
+
+                TripDataBean toTDBean = journeyTripData
+                        .stream()
+                        .filter(i -> i.getId() == toJourneyId)
+                        .findFirst()
+                        .orElse(null);
+                int toTDBeanIndex = journeyTripData.indexOf(toTDBean);
+
+                List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex + 1);
+                //4. Get the min "seats" number - that's the number of tickets available
+                int ticketsAvailable = ticketRelatedTDBeans
+                        .stream()
+                        .min(Comparator.comparing(TripDataBean::getSeatsLeft))
+                        .get()
+                        .getSeatsLeft();
+
+                List<PassengerBean> passengersWithCompleteInfo =
+                        passengerService.filterCompleteInfo(ticketsData.getPassengers());
+
+                if (ticketsAvailable < passengersWithCompleteInfo.size())
+                    return false;
+
+                for (TripDataBean tdBean : ticketRelatedTDBeans) {
+                    tdBean.setSeatsLeft(tdBean.getSeatsLeft() - passengersWithCompleteInfo.size());
+                    tripDataDAO.update(tripDataBeanToDO(tdBean));
+                }
+                //TODO What if user with such name wasn't found?
+                UserBean user = userService.getUser(boughtByUsername);
+
+                for (PassengerBean p : passengersWithCompleteInfo) {
+                    //create passenger
+                    PassengerBean newPassenger = passengerService.createReturnObject(p);
+                    //create ticket
+                    TicketBean ticket = new TicketBean();
+                    ticket.setPassenger(newPassenger);
+                    ticket.setFrom(fromTDBean);
+                    ticket.setTo(toTDBean);
+                    ticket.setBoughtBy(user);
+                    ticketService.create(ticket);
+                }
+            } catch (Exception e) {
+                LOG.error("Failed to buy tickets");
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void ticketWasErased(TicketBean ticket) {
         try {
-            //1. Find data which satisfies the conditions
-            int fromJourneyId = ticketsData.getFromJourneyId();
-            int toJourneyId = ticketsData.getToJourneyId();
-            TripDataBean fromTD = tripDataDOToBean(tripDataDAO.find(fromJourneyId));
+                /*//1. Find data which satisfies the conditions
+                int fromJourneyId = ticketsData.getFromJourneyId();
+                int toJourneyId = ticketsData.getToJourneyId();
+                TripDataBean fromTD = tripDataDOToBean(tripDataDAO.find(fromJourneyId));*/
+
+            int fromJourneyId = ticket.getFrom().getId();
+            int toJourneyId = ticket.getTo().getId();
 
             List<TripDataBean> journeyTripData = tripDataDOListToBeanList(
                     tripDataDAO.findByTripIdAndTripDepartureDay(
-                            fromTD.getRoute().getTrip().getId(),
-                            fromTD.getTripDeparture()));
+                            ticket.getFrom().getRoute().getTrip().getId(),
+                            ticket.getFrom().getTripDeparture()));
 
             TripDataBean fromTDBean = journeyTripData
                     .stream()
@@ -252,39 +335,27 @@ public class TripDataService {
 
             List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex + 1);
             //4. Get the min "seats" number - that's the number of tickets available
-            int ticketsAvailable = ticketRelatedTDBeans
-                    .stream()
-                    .min(Comparator.comparing(TripDataBean::getSeatsLeft))
-                    .get()
-                    .getSeatsLeft();
+                /*int ticketsAvailable = ticketRelatedTDBeans
+                        .stream()
+                        .min(Comparator.comparing(TripDataBean::getSeatsLeft))
+                        .get()
+                        .getSeatsLeft();*/
 
-            List<PassengerBean> passengersWithCompleteInfo =
-                    passengerService.filterCompleteInfo(ticketsData.getPassengers());
+                /*List<PassengerBean> passengersWithCompleteInfo =
+                        passengerService.filterCompleteInfo(ticketsData.getPassengers());*/
 
-            if (ticketsAvailable < passengersWithCompleteInfo.size())
-                return false;
+                /*if (ticketsAvailable < passengersWithCompleteInfo.size())
+                    return false;*/
 
+            //TODO check that if we increase number of tickets won't be bigger than train capacity?
             for (TripDataBean tdBean : ticketRelatedTDBeans) {
-                tdBean.setSeatsLeft(tdBean.getSeatsLeft() - passengersWithCompleteInfo.size());
+                tdBean.setSeatsLeft(tdBean.getSeatsLeft() + 1);
                 tripDataDAO.update(tripDataBeanToDO(tdBean));
-            }
-
-            for (PassengerBean p : passengersWithCompleteInfo) {
-                //create passenger
-                PassengerBean newPassenger = passengerService.createReturnObject(p);
-                //create ticket
-                TicketBean ticket = new TicketBean();
-                ticket.setPassenger(newPassenger);
-                ticket.setFrom(fromTDBean);
-                ticket.setTo(toTDBean);
-                ticketService.create(ticket);
             }
         } catch (Exception e) {
             LOG.error("Failed to buy tickets");
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
 
     //Validation Utils
@@ -381,5 +452,10 @@ public class TripDataService {
     @Autowired
     public void setTripService(TripService tripService) {
         this.tripService = tripService;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

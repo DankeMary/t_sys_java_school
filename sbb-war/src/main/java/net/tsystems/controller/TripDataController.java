@@ -2,16 +2,15 @@ package net.tsystems.controller;
 
 import net.tsystems.UtilsClass;
 import net.tsystems.bean.BuyTicketsForm;
-import net.tsystems.service.PassengerService;
-import net.tsystems.service.TripDataService;
+import net.tsystems.bean.UserBeanExpanded;
+import net.tsystems.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -27,6 +26,9 @@ public class TripDataController {
 
     private TripDataService tripDataService;
     private PassengerService passengerService;
+    private TrainService trainService;
+    private TicketService ticketService;
+    private UserService userService;
 
     @RequestMapping(value = "/trains/find", method = RequestMethod.GET)
     public String findTickets(@RequestParam(required = false, defaultValue = "") String fromDay,
@@ -74,6 +76,7 @@ public class TripDataController {
         model.addAttribute("toTime", toTime);
         model.addAttribute("fromStation", fromStation);
         model.addAttribute("toStation", toStation);
+        model.addAttribute("loggedinuser", getPrincipal());
         model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         return "tickets";
     }
@@ -89,6 +92,7 @@ public class TripDataController {
         Map<String, String> metaData = new HashMap<>();
         tripDataService.makeMetaDataForBuyingTickets(fromJourney, toJourney, metaData);
         model.addAttribute("trainNumber", metaData.get("trainNumber"));
+        model.addAttribute("trainId", trainService.getTrainByNumber(Integer.valueOf(metaData.get("trainNumber"))).getId());
         model.addAttribute("fromMetaInfo", metaData.get("fromMetaInfo"));
         model.addAttribute("toMetaInfo", metaData.get("toMetaInfo"));
         model.addAttribute("ticketPrice", metaData.get("ticketPrice"));
@@ -97,6 +101,7 @@ public class TripDataController {
         model.addAttribute("ticketsQty", 1);
         model.addAttribute("fromJourneyId", fromJourney);
         model.addAttribute("toJourneyId", toJourney);
+        model.addAttribute("loggedinuser", getPrincipal());
 
         return "buyTicket";
     }
@@ -106,9 +111,14 @@ public class TripDataController {
                             BindingResult result, Model model,
                             final RedirectAttributes redirectAttributes) {
 
+        //TODO Validate passengers info!!! (check bday)
         int psngrsQty = passengerService.countCompleteInfo(ticketsData.getPassengers());
+        Map<String, String> errors = new HashMap<>();
+        passengerService.validateList(ticketsData.getPassengers(), errors);
+
         if (result.hasErrors() &&
                 !passengerService.passengersHaveCompleteInfo(ticketsData.getPassengers()) ||
+                !errors.isEmpty() ||
                 (psngrsQty < 1) || (psngrsQty > MAX_TICKETS_QTY)) {
             model.addAttribute("ticketForm", ticketsData);
 
@@ -117,6 +127,7 @@ public class TripDataController {
                     Integer.toString(ticketsData.getToJourneyId()),
                     metaData);
             model.addAttribute("trainNumber", metaData.get("trainNumber"));
+            model.addAttribute("trainId", trainService.getTrainByNumber(Integer.valueOf(metaData.get("trainNumber"))).getId());
             model.addAttribute("fromMetaInfo", metaData.get("fromMetaInfo"));
             model.addAttribute("toMetaInfo", metaData.get("toMetaInfo"));
             model.addAttribute("ticketPrice", metaData.get("ticketPrice"));
@@ -124,19 +135,40 @@ public class TripDataController {
             model.addAttribute("ticketsQty", ticketsData.getPassengers().size());
             model.addAttribute("fromJourneyId", ticketsData.getFromJourneyId());
             model.addAttribute("toJourneyId", ticketsData.getToJourneyId());
-            if (psngrsQty < 1)
-                model.addAttribute("psngrInfo", "Enter info about at least 1 passenger");
-            else if (result.hasErrors() && psngrsQty <= MAX_TICKETS_QTY)
+            model.addAttribute("loggedinuser", getPrincipal());
+            //TODO change order of these 2?
+            if ((result.hasErrors() || !errors.isEmpty()) && psngrsQty <= MAX_TICKETS_QTY)
                 model.addAttribute("possibleErrors", passengerService.possibleValidationErrors());
+            else if (psngrsQty < 1)
+                model.addAttribute("psngrInfo", "Enter info about at least 1 passenger");
+
             return "buyTicket";
         }
 
-        if (!tripDataService.buyTickets(ticketsData)) {
+        if (!tripDataService.buyTickets(ticketsData, getPrincipal())) {
             model.addAttribute("noTickets", "No enough tickets available for this trip");
             return "buyTicket";
         }
 
-        return "redirect:/trains";
+        return "redirect:/user/" + getPrincipal();
+    }
+
+    @RequestMapping(value = {"/user/{username}/tickets/{ticket_id}/delete"}, method = RequestMethod.GET)
+    public String deleteTicket(@PathVariable("username") String username,
+                               @PathVariable("ticket_id") int ticketId, Model model) {
+        ticketService.deleteTicket(username, ticketId);
+
+        int navPagesQty = ticketService.countUserTicketsAfterNow(username, UtilsClass.MAX_PAGE_RESULT);
+        int pageInt = 1;
+
+        UserBeanExpanded userProfile = userService.getUserProfile(username, pageInt, UtilsClass.MAX_PAGE_RESULT);
+
+        model.addAttribute("userData", userProfile);
+        model.addAttribute("navPagesQty", navPagesQty);
+        model.addAttribute("currentPage", pageInt);
+        model.addAttribute("loggedinuser", getPrincipal());
+        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
+        return "userProfile";
     }
 
     //@Autowired
@@ -148,5 +180,32 @@ public class TripDataController {
     @Autowired
     public void setPassengerService(PassengerService passengerService) {
         this.passengerService = passengerService;
+    }
+
+    @Autowired
+    public void setTrainService(TrainService trainService) {
+        this.trainService = trainService;
+    }
+
+    @Autowired
+    public void setTicketService(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    private String getPrincipal() {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        } else {
+            userName = principal.toString();
+        }
+        return userName;
     }
 }

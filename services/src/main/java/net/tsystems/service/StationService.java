@@ -66,6 +66,17 @@ public class StationService {
         return stationBeans;
     }
 
+    public List<StationBean> getAll(int page, int maxResult) {
+        List<StationBean> stationBeans = new LinkedList<>();
+        try {
+            stationBeans = stationDOListToBeanList(stationDao.findAll(page, maxResult));
+        } catch (Exception e) {
+            LOG.error("Failed to get all stations");
+            e.printStackTrace();
+        }
+        return stationBeans;
+    }
+
     public StationBean getStationById(int id) {
         StationBean stationBean = null;
         try {
@@ -92,6 +103,7 @@ public class StationService {
         return stationDao.isUniqueByName(id, name);
     }
 
+    //Validation Utils
     public void validate(StationBean station, boolean isNew, Errors errors) {
         if ((isNew && getStationByName(station.getName()) != null) ||
                 (!isNew && !isUniqueByName(station.getId(), station.getName())))
@@ -105,6 +117,11 @@ public class StationService {
                 stationNames.add(p.getStation().getName());
 
         return stationDao.allStationsExist(stationNames);
+    }
+
+    //Help Functions
+    public int countPages(int maxResult) {
+        return stationDao.countPages(maxResult);
     }
 
     //Mappers

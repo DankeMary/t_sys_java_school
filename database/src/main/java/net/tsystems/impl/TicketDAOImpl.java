@@ -1,6 +1,7 @@
 package net.tsystems.impl;
 
 import net.tsystems.entities.TicketDO;
+import net.tsystems.entities.UserDO;
 import net.tsystems.entitydao.TicketDAO;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -16,8 +17,6 @@ public class TicketDAOImpl extends AbstractDaoImpl<TicketDO, Integer> implements
                 .createQuery("from TicketDO ti where " +
                         "ti.from.route.trip.train.id=" + trainId
                         + " and ti.from.tripDeparture=\'" + date + "\'");
-
-
         return findAll(q, page, maxResult);
     }
 
@@ -39,5 +38,26 @@ public class TicketDAOImpl extends AbstractDaoImpl<TicketDO, Integer> implements
                         "where ti.from.route.trip.train.id=" + trainId
                         + " and ti.from.tripDeparture=\'" + date + "\'").uniqueResult();
         return qty != 0;
+    }
+
+    @Override
+    public List<TicketDO> getUserTicketsForAfterNow(UserDO user, int page, int maxResult) {
+        Query q = getEntityManager()
+                .createQuery("from TicketDO ti where " +
+                        "ti.boughtBy.username=\'" + user.getUsername() + "\' "
+                        + " and ti.from.date > now()" +
+                        " order by ti.from.date, ti.passenger.lastName, ti.passenger.firstName");
+        return findAll(q, page, maxResult);
+    }
+
+    @Override
+    public int countUserTicketsForAfterNow(String username, int maxResult) {
+        return countPages(
+                getEntityManager()
+                        .createQuery("select count(*) from TicketDO ti where " +
+                                "ti.boughtBy.username= \'" + username + "\' "
+                                + " and ti.from.date > now()"),
+                maxResult
+        );
     }
 }

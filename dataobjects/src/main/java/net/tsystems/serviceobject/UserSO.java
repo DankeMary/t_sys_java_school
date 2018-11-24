@@ -7,7 +7,6 @@ public class UserSO {
     private String username;
     private String password;
     private String role;
-    private PassengerSO passenger;
 
     public int getId() {
         return id;
@@ -41,14 +40,6 @@ public class UserSO {
         this.role = role;
     }
 
-    public PassengerSO getPassenger() {
-        return passenger;
-    }
-
-    public void setPassenger(PassengerSO passenger) {
-        this.passenger = passenger;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,12 +48,11 @@ public class UserSO {
         return id == userSO.id &&
                 Objects.equals(username, userSO.username) &&
                 Objects.equals(password, userSO.password) &&
-                Objects.equals(role, userSO.role) &&
-                Objects.equals(passenger, userSO.passenger);
+                Objects.equals(role, userSO.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, role, passenger);
+        return Objects.hash(id, username, password, role);
     }
 }

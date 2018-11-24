@@ -4,6 +4,8 @@ import net.tsystems.UtilsClass;
 import net.tsystems.bean.*;
 import net.tsystems.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,6 +47,7 @@ public class TrainController {
         model.addAttribute("trains", trains);
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "trains";
     }
 
@@ -53,6 +56,7 @@ public class TrainController {
         CreateTrainForm train = new CreateTrainForm();
         model.addAttribute("trainForm", train);
         model.addAttribute("pathErrorMessage", "");
+        model.addAttribute("loggedinuser", getPrincipal());
         return "addTrain";
     }
 
@@ -73,7 +77,7 @@ public class TrainController {
             model.addAttribute("invalidStations", errors.get("invalidStations"));
             model.addAttribute("numberNonUnique", errors.get("numberNonUnique"));
             model.addAttribute("capacityCannotUpdate", errors.get("capacityCannotUpdate"));
-
+            model.addAttribute("loggedinuser", getPrincipal());
             return "addTrain";
         } else {
             trainService.create(train.getTrain(), routeService.generatePathMap(train.getPrimitivePath()));
@@ -85,6 +89,7 @@ public class TrainController {
     public String showUpdateTrainForm(@PathVariable("id") int id, Model model) {
         TrainBean train = trainService.getTrainById(id);
         model.addAttribute("trainForm", train);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "editTrain";
     }
 
@@ -97,6 +102,7 @@ public class TrainController {
         Map<String, String> errors = new HashMap<>();
         trainService.validate(train, false, errors);
         if (result.hasErrors()) {
+            model.addAttribute("loggedinuser", getPrincipal());
             return "editTrain";
         } else {
             trainService.update(train);
@@ -116,6 +122,7 @@ public class TrainController {
     public String showTrainDetails(@PathVariable("id") int id, Model model) {
         TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
         model.addAttribute("trainData", trainBean);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "trainDetails";
     }
 
@@ -136,6 +143,7 @@ public class TrainController {
         model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "journeys";
     }
 
@@ -172,6 +180,7 @@ public class TrainController {
             model.addAttribute("navPagesQty", navPagesQty);
             model.addAttribute("currentPage", pageInt);
             model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
+            model.addAttribute("loggedinuser", getPrincipal());
             return "journeys";
         } else {
             tripDataService.createAll(journey);
@@ -205,7 +214,26 @@ public class TrainController {
         model.addAttribute("journeyForm", new JourneyBean());
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "journeys";
+    }
+
+    @RequestMapping(value = "/user/trains/{train_id}/journeys/{journey_id}", method = RequestMethod.GET)
+    public String showJourneyDetails(@PathVariable("train_id") int trainId,
+                                @PathVariable("journey_id") int journeyId,
+                                Model model,
+                                final RedirectAttributes redirectAttributes) {
+
+        List<TripDataBean> journeyDetails = tripDataService.getTrainJourneyDetails(trainId, journeyId);
+        TrainBean train = trainService.getTrainById(trainId);
+
+        model.addAttribute("tripDepDay", tripDataService.getById(journeyId).getTripDeparture());
+        model.addAttribute("train", train);
+        model.addAttribute("journeyDetails", journeyDetails);
+        model.addAttribute("trainId", trainId);
+        model.addAttribute("loggedinuser", getPrincipal());
+        model.addAttribute("localDateFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
+        return "journeyDetails";
     }
 
     @RequestMapping(value = "/worker/trains/{train_id}/journeys/{journey_id}/passengers", method = RequestMethod.GET)
@@ -230,9 +258,10 @@ public class TrainController {
         model.addAttribute("trainId", trainId);
         model.addAttribute("journeyId", journeyId);
 
-        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
+        //TODO erase? model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
+        model.addAttribute("loggedinuser", getPrincipal());
         return "showPassengers";
     }
 
@@ -281,5 +310,17 @@ public class TrainController {
     @Autowired
     public void setTicketService(TicketService ticketService) {
         this.ticketService = ticketService;
+    }
+
+    private String getPrincipal() {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        } else {
+            userName = principal.toString();
+        }
+        return userName;
     }
 }

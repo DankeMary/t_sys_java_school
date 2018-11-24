@@ -167,15 +167,15 @@ public class PassengerService {
     }
 
     //Mappers
-    private PassengerBean passengerDOToBean(PassengerDO psngr) {
+    public PassengerBean passengerDOToBean(PassengerDO psngr) {
         return beanMapper.passengerToBean(entityMapper.passengerToSO(psngr));
     }
 
-    private PassengerDO passengerBeanToDO(PassengerBean psngr) {
+    public PassengerDO passengerBeanToDO(PassengerBean psngr) {
         return entityMapper.passengerToDO(beanMapper.passengerToSO(psngr));
     }
 
-    private List<PassengerBean> passengerDOListToBeanList(List<PassengerDO> psngrs) {
+    public List<PassengerBean> passengerDOListToBeanList(List<PassengerDO> psngrs) {
         return beanMapper.passengerListToBeanList(entityMapper.passengerListToSOList(psngrs));
     }
 

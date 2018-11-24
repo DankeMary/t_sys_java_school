@@ -5,7 +5,7 @@ public class TicketBean {
     private PassengerBean passenger;
     private TripDataBean from;
     private TripDataBean to;
-    //private UserBean boughtBy;
+    private UserBean boughtBy;
 
 
     public int getId() {
@@ -38,5 +38,13 @@ public class TicketBean {
 
     public void setTo(TripDataBean to) {
         this.to = to;
+    }
+
+    public UserBean getBoughtBy() {
+        return boughtBy;
+    }
+
+    public void setBoughtBy(UserBean boughtBy) {
+        this.boughtBy = boughtBy;
     }
 }

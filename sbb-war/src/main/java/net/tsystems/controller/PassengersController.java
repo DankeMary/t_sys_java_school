@@ -4,6 +4,8 @@ import net.tsystems.UtilsClass;
 import net.tsystems.bean.PassengerBean;
 import net.tsystems.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -106,5 +108,17 @@ public class PassengersController {
                                   final RedirectAttributes redirectAttributes) {
         passengerService.delete(id);
         return "redirect:/passengers";
+    }
+
+    private String getPrincipal() {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        } else {
+            userName = principal.toString();
+        }
+        return userName;
     }
 }

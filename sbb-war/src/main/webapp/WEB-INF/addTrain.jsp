@@ -118,7 +118,7 @@
                             </tr>
                             </thead>
                             <tbody>
-
+                            <div id="parent">
                             <c:forEach begin="0" end="${routesQty - 1}" var="i" varStatus="status">
                                 <tr>
                                     <spring:bind path='trainForm.primitivePath[${status.index}].orderIndex'>
@@ -126,9 +126,10 @@
                                     </spring:bind>
                                     <td>
                                         <spring:bind path='trainForm.primitivePath[${status.index}].station.name'>
-                                            <input onchange='createTrainAutoCompl(this);'
-                                                   id='station-input-search-${i}' value="${status.value}"
-                                                   name="${status.expression}"/>
+                                            <input id='station-input-search-${i}'
+                                                   value="${status.value}"
+                                                   name="${status.expression}"
+                                            class="hehe"/>
                                         </spring:bind>
                                     </td>
                                     <td>
@@ -143,6 +144,7 @@
                                     </td>
                                 </tr>
                             </c:forEach>
+                            </div>
                             <tr id="addRouteRow">
                                 <td align="right"><input type="button" id="addRouteButton" value="Add"/></td>
                             </tr>

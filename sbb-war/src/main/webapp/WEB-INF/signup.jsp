@@ -47,29 +47,28 @@
                             </input>
                         </spring:bind>
 
-                        <div class="formFragment">
-                            <spring:bind path="password">
-                                <input type="password"
-                                       placeholder="password"
-                                       value="${status.value}"
-                                       name="${status.expression}"
-                                       class="fm-with-valid"
-                                       required>
-                                <div style="color: red; display: inline-block;">
-                                    <div class="error-list">
-                                        <c:if test="${status.error}">
-                                            <c:forEach items="${status.errorMessages}" var="error">
-                                                <span style="display: block;">${error}</span>
-                                            </c:forEach>
-                                        </c:if>
-                                    </div>
+
+                        <spring:bind path="password">
+                            <input type="password"
+                                   placeholder="password"
+                                   value="${status.value}"
+                                   name="${status.expression}"
+                                   class="fm-with-valid"
+                                   required>
+                            <div style="color: red; display: inline-block;">
+                                <div class="error-list">
+                                    <c:if test="${status.error}">
+                                        <c:forEach items="${status.errorMessages}" var="error">
+                                            <span style="display: block;">${error}</span>
+                                        </c:forEach>
+                                    </c:if>
                                 </div>
-                                </input>
-                            </spring:bind>
-                        </div>
+                            </div>
+                            </input>
+                        </spring:bind>
 
                         <div style="margin: auto;">
-                            <button type="button" value="" id="submit" class="submit-btn btn btn-success"
+                            <button type="submit" value="" id="submit" class="submit-btn btn btn-success"
                                     style="margin-bottom: 20px">Sign Up
                             </button>
                         </div>

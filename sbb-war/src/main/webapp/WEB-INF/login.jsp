@@ -47,23 +47,22 @@
                             </input>
                         </spring:bind>
 
-                        <div class="formFragment">
-                            <spring:bind path="password">
-                                <input type="password"
-                                       placeholder="password"
-                                       value="${status.value}"
-                                       name="${status.expression}"
-                                       class="fm-with-valid"
-                                       required>
+                        <spring:bind path="password">
+                            <input type="password"
+                                   placeholder="password"
+                                   value="${status.value}"
+                                   name="${status.expression}"
+                                   class="fm-with-valid"
+                                   required>
 
-                                </input>
-                            </spring:bind>
-                        </div>
+                            </input>
+                        </spring:bind>
 
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <div style="margin: auto;">
-                            <button type="button" id="submit" class="submit-btn btn btn-primary"
-                                    style="margin-bottom: 20px">Log In</button>
+                            <button type="submit" id="submit" class="submit-btn btn btn-primary"
+                                    style="margin-bottom: 20px">Log In
+                            </button>
                         </div>
 
                         <a href="/signup">Sign Up</a>

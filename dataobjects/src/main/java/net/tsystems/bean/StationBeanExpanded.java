@@ -1,20 +1,17 @@
 package net.tsystems.bean;
 
-import org.springframework.stereotype.Component;
-
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
 public class StationBeanExpanded {
     private int routeId;
-    //private String stationName;
     @Min(value = 0)
     private int orderIndex;
     @NotNull
+    @Valid
     private StationBean station;
     @NotNull
     private LocalTime arrTime;

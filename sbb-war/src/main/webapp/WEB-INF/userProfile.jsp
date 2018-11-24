@@ -114,7 +114,7 @@
                                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                                     <thead class="thead-light">
                                     <tr>
-                                        <th>#</th>
+                                        <th>Ticket</th>
                                         <th>First Name</th>
                                         <th>Last Name</th>
                                         <th>Birthday</th>

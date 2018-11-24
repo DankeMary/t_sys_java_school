@@ -17,7 +17,6 @@ public class TrainDAOImpl extends AbstractDaoImpl<TrainDO, Integer> implements T
 
     @Override
     public TrainDO createReturnObject(TrainDO t) {
-         //t = (TrainDO)getEntityManager().merge(t);
          getEntityManager().persist(t);
          return t;
     }

@@ -19,9 +19,6 @@ public class TicketDO {
     @ManyToOne
     @JoinColumn(name = "arr_station", nullable = false)
     private TripDataDO to;
-
-    //TODO !!!
-
     @ManyToOne
     @JoinColumn(name = "bought_by", nullable = false)
     private UserDO boughtBy;

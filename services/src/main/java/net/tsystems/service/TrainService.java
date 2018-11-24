@@ -113,7 +113,6 @@ public class TrainService {
         TrainBean train = null;
         try {
             train = trainDOToBean(trainDao.find(id));
-            //if (train != null)
             train.setTrip(tripService.getTripByTrainId(train.getId()));
         } catch (Exception e) {
             LOG.error(String.format("Failed to get train by id=%s", id));
@@ -126,7 +125,6 @@ public class TrainService {
         TrainBean train = null;
         try {
             train = trainDOToBean(trainDao.findByNumber(number));
-            //if (train != null)
             train.setTrip(tripService.getTripByTrainId(train.getId()));
         } catch (Exception e) {
             LOG.error(String.format("Failed to get train by number=%s", number));
@@ -151,7 +149,7 @@ public class TrainService {
     }
 
     //Validation Utils
-    public void validate(TrainBean train, boolean isNew, Map<String, String> errors) {//Errors errors) {
+    public void validate(TrainBean train, boolean isNew, Map<String, String> errors) {
         if (train.getNumber() != null &&
                 train.getNumber() < Integer.MAX_VALUE &&
                 train.getNumber() > 0) {

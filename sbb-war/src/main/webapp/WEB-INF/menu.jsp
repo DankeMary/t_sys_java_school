@@ -19,9 +19,7 @@
     <sec:authorize access="hasRole('ADMIN')">
         <th width="100"></th>
     </sec:authorize>
-    <%--<div class="authbar">
-        <span>Dear , Welcome.</span> <span class="floatRight"><a href="<c:url value="/logout" />">Logout</a></span>
-    </div>--%>
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <%--<li class="nav-item dropdown">

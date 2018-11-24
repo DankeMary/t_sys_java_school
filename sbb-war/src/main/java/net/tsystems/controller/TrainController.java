@@ -55,6 +55,7 @@ public class TrainController {
     public String showAddTrainForm(Model model) {
         CreateTrainForm train = new CreateTrainForm();
         model.addAttribute("trainForm", train);
+        model.addAttribute("routesQty", 1);
         model.addAttribute("pathErrorMessage", "");
         model.addAttribute("loggedinuser", getPrincipal());
         return "addTrain";
@@ -68,12 +69,11 @@ public class TrainController {
         Map<String, String> errors = new HashMap<>();
         trainService.validate(train.getTrain(), true, errors);
         routeService.validatePrimitive(train.getPrimitivePath(), errors);
-        //routeService.validatePrimitive(null, errors);
-        //todo customErrors list
         if (result.hasErrors() || !errors.isEmpty()) {
             model.addAttribute("shortPath", errors.get("shortPath"));
             model.addAttribute("wrongPath", errors.get("wrongPath"));
             model.addAttribute("dataMissing", errors.get("dataMissing"));
+            model.addAttribute("routesQty", train.getPrimitivePath().size());
             model.addAttribute("invalidStations", errors.get("invalidStations"));
             model.addAttribute("numberNonUnique", errors.get("numberNonUnique"));
             model.addAttribute("capacityCannotUpdate", errors.get("capacityCannotUpdate"));
@@ -93,7 +93,7 @@ public class TrainController {
         return "editTrain";
     }
 
-    @RequestMapping(value = "/trains/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/worker/trains/{id}", method = RequestMethod.POST)
     public String updateTrain(@PathVariable("id") int id,
                               @ModelAttribute("trainForm") @Validated TrainBean train,
                               BindingResult result, Model model,
@@ -117,8 +117,7 @@ public class TrainController {
         return "redirect:/worker/trains";
     }
 
-    //TODO Don't show capacity to usual user and don't let them edit or delete train!
-    @RequestMapping(value = "/trains/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/trains/{id}", method = RequestMethod.GET)
     public String showTrainDetails(@PathVariable("id") int id, Model model) {
         TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
         model.addAttribute("trainData", trainBean);
@@ -126,12 +125,11 @@ public class TrainController {
         return "trainDetails";
     }
 
-    //Don't show ADD NEW JOURNEY form to usual user!
-    @RequestMapping(value = "/trains/{id}/journeys", method = RequestMethod.GET)
+    @RequestMapping(value = "/worker/trains/{id}/journeys", method = RequestMethod.GET)
     public String journeys(@PathVariable("id") int id,
                            @RequestParam(required = false, defaultValue = "") String page,
                            Model model) {
-        //TODO Order by date
+
         int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(id, UtilsClass.MAX_PAGE_RESULT);
         int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
 
@@ -185,7 +183,7 @@ public class TrainController {
         } else {
             tripDataService.createAll(journey);
             //TODO !!!!
-            return "redirect:/trains/{id}/journeys";
+            return "redirect:/worker/trains/{id}/journeys";
         }
     }
 
@@ -202,8 +200,7 @@ public class TrainController {
             model.addAttribute("ticketsSold", errors.get("ticketsSold"));
         }
         else tripDataService.cancelJourney(trainId, journeyId);
-        //return "redirect:/trains/{train_id}/journeys";
-        //TODO repetitive code from GET journeys - is that ok?
+
         int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(trainId, UtilsClass.MAX_PAGE_RESULT);
         int pageInt = 1;
 
@@ -248,17 +245,16 @@ public class TrainController {
         List<TicketBean> tickets = ticketService.getTicketsForTrainSold(trainId, journeyId, pageInt, UtilsClass.MAX_PAGE_RESULT);
 
         model.addAttribute("tickets", tickets);
-        //TODO dd-MM-yyy
+
         model.addAttribute("localDateFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy HH:mm"));
-        //TODO What if there are no with such IDs
+
         model.addAttribute("departureDay", tripDataService.getById(journeyId).getTripDeparture());
         model.addAttribute("trainNumber", trainService.getTrainById(trainId).getNumber());
 
         model.addAttribute("trainId", trainId);
         model.addAttribute("journeyId", journeyId);
 
-        //TODO erase? model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
         model.addAttribute("loggedinuser", getPrincipal());
@@ -266,14 +262,12 @@ public class TrainController {
     }
 
     //Ajax related
-    //TODO DOes AJAX need user check?
     @RequestMapping(value = "/getStationsForTrain", method = RequestMethod.GET)
     public @ResponseBody
     List<StationBean> getStations(@RequestParam String stationName) {
         List<StationBean> stationBeans = stationService.getAll();
         List<StationBean> result = new ArrayList<StationBean>();
 
-        //TODO Java 8 Streams?
         for (StationBean station : stationBeans) {
             if (station.getName().toLowerCase().contains(stationName.toLowerCase())) {
                 result.add(station);
@@ -318,8 +312,6 @@ public class TrainController {
 
         if (principal instanceof UserDetails) {
             userName = ((UserDetails) principal).getUsername();
-        } else {
-            userName = principal.toString();
         }
         return userName;
     }

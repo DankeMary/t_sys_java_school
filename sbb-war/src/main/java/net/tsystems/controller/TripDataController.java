@@ -40,7 +40,6 @@ public class TripDataController {
                               @RequestParam(required = false, defaultValue = "") String page,
                               Model model) {
 
-        //TODO check that if some fields are empty and some are not then still not valid
         if (!fromDay.trim().isEmpty() &&
                 !fromTime.trim().isEmpty() &&
                 !toDay.trim().isEmpty() &&
@@ -88,7 +87,6 @@ public class TripDataController {
         if (fromJourney.trim().isEmpty() || toJourney.trim().isEmpty())
             return "redirect:/trains/find";
 
-        //TODO Add Train Number
         Map<String, String> metaData = new HashMap<>();
         tripDataService.makeMetaDataForBuyingTickets(fromJourney, toJourney, metaData);
         model.addAttribute("trainNumber", metaData.get("trainNumber"));
@@ -111,7 +109,6 @@ public class TripDataController {
                             BindingResult result, Model model,
                             final RedirectAttributes redirectAttributes) {
 
-        //TODO Validate passengers info!!! (check bday)
         int psngrsQty = passengerService.countCompleteInfo(ticketsData.getPassengers());
         Map<String, String> errors = new HashMap<>();
         passengerService.validateList(ticketsData.getPassengers(), errors);
@@ -136,7 +133,7 @@ public class TripDataController {
             model.addAttribute("fromJourneyId", ticketsData.getFromJourneyId());
             model.addAttribute("toJourneyId", ticketsData.getToJourneyId());
             model.addAttribute("loggedinuser", getPrincipal());
-            //TODO change order of these 2?
+
             if ((result.hasErrors() || !errors.isEmpty()) && psngrsQty <= MAX_TICKETS_QTY)
                 model.addAttribute("possibleErrors", passengerService.possibleValidationErrors());
             else if (psngrsQty < 1)
@@ -203,8 +200,6 @@ public class TripDataController {
 
         if (principal instanceof UserDetails) {
             userName = ((UserDetails) principal).getUsername();
-        } else {
-            userName = principal.toString();
         }
         return userName;
     }

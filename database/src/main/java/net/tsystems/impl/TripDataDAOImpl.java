@@ -97,7 +97,6 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
         return list;
     }
 
-    //TODO time? (type)
     @Override
     //@SuppressWarnings("unchecked")
     public List<TripDataDO> getDataForSection(LocalDate fromDay,

@@ -29,7 +29,6 @@ public abstract class AbstractDaoImpl <T, ID extends Serializable> implements Ab
     }
 
     public void delete(T t) {
-        //getEntityManager().remove(t);
         getEntityManager().delete(t);
     }
 

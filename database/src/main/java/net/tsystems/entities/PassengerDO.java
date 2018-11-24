@@ -1,8 +1,6 @@
 package net.tsystems.entities;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -14,13 +12,12 @@ public class PassengerDO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
-    @Column(name = "first_name", length = 45)
+    @Column(name = "first_name", nullable = false, length = 45)
     private String firstName;
     @Column(name = "last_name", nullable = false, length = 45)
     private String lastName;
-    @Column(name = "birthday")
+    @Column(name = "birthday", nullable = false)
     private LocalDateTime birthday;
-    //TODO !!! UserDO !!!
 
     public int getId() {
         return id;

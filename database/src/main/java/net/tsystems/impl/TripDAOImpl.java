@@ -10,8 +10,7 @@ import java.util.List;
 public class TripDAOImpl extends AbstractDaoImpl<TripDO, Integer> implements TripDAO {
 
     public Integer createReturnId(TripDO t) {
-        //TODO getSession().persist(t);
-        t = (TripDO)getEntityManager().merge(t);
+        getEntityManager().persist(t);
         return t.getId();
     }
 

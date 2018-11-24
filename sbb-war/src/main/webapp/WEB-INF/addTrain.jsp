@@ -118,26 +118,26 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <c:forEach items="${primitivePath}" var="route" varStatus="status">
+
+                            <c:forEach begin="0" end="${routesQty - 1}" var="i" varStatus="status">
                                 <tr>
-                                    <spring:bind path='route.orderIndex'>
-                                        <input type='hidden'
-                                               value='${status.index}' name="${status.expression}"/>
+                                    <spring:bind path='trainForm.primitivePath[${status.index}].orderIndex'>
+                                        <input type='hidden' value='${i}' name="${status.expression}"/>
                                     </spring:bind>
                                     <td>
-                                        <spring:bind path="route.station.name">
+                                        <spring:bind path='trainForm.primitivePath[${status.index}].station.name'>
                                             <input onchange='createTrainAutoCompl(this);'
-                                                   id='station-input-search-${status.index}' value="${status.value}"
+                                                   id='station-input-search-${i}' value="${status.value}"
                                                    name="${status.expression}"/>
                                         </spring:bind>
                                     </td>
                                     <td>
-                                        <spring:bind path="route.arrTime">
+                                        <spring:bind path='trainForm.primitivePath[${status.index}].arrTime'>
                                             <input type='time' value="${status.value}" name="${status.expression}"/>
                                         </spring:bind>
                                     </td>
                                     <td>
-                                        <spring:bind path="route.depTime">
+                                        <spring:bind path='trainForm.primitivePath[${status.index}].depTime'>
                                             <input type='time' value="${status.value}" name="${status.expression}"/>
                                         </spring:bind>
                                     </td>

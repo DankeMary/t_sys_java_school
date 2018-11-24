@@ -1,6 +1,6 @@
 package net.tsystems.bean;
 
-//TODO Is it better to keep primitive types or Objects? Suppose, not whole train but only its number
+
 public class ScheduleBean {
     private TrainBean train;
     private TripBean trip;

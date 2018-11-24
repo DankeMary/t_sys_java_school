@@ -35,18 +35,6 @@ public class UsersController {
     @Autowired
     AuthenticationTrustResolver authenticationTrustResolver;
 
-
-    //TODO Not needed for now
-    /*@RequestMapping(value = "/users", method = RequestMethod.GET)
-    public String listUsers(Model model) {
-
-        List<UserBean> users = userService.getAll();
-        model.addAttribute("users", users);
-        model.addAttribute("loggedinuser", getPrincipal());
-        //TODO page
-        return "users";
-    }*/
-
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {
         UserBean user = new UserBean();
@@ -75,7 +63,6 @@ public class UsersController {
         Map<String, String> errors = new HashMap<>();
         userService.validate(user, errors);
         if (result.hasErrors() || !errors.isEmpty()) {
-            //TODO add properties from errors
             model.addAttribute("uniqueUsername", errors.get("uniqueUsername"));
             user.setPassword(null);
             return "signup";
@@ -89,9 +76,7 @@ public class UsersController {
 
         userService.create(user, "");
 
-        //TODO Is it needed?
         //TODO You have been successfully signed up
-        /*model.addAttribute("loggedinuser", getPrincipal());*/
         return "redirect:/login";
     }
 
@@ -147,7 +132,7 @@ public class UsersController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
-            
+
             SecurityContextHolder.getContext().setAuthentication(null);
         }
         return "redirect:/login?logout";
@@ -172,13 +157,11 @@ public class UsersController {
 
     //This method returns the principal[user-name] of logged-in user.
     private String getPrincipal() {
-        String userName;
+        String userName = null;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof UserDetails) {
             userName = ((UserDetails) principal).getUsername();
-        } else {
-            userName = principal.toString();
         }
         return userName;
     }

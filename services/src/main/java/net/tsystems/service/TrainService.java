@@ -32,6 +32,7 @@ public class TrainService {
     private RouteService routeService;
     private TripService tripService;
     private TripDataService tripDataService;
+    private TicketService ticketService;
 
     public Integer create(TrainBean train) {
         Integer id = null;
@@ -160,10 +161,13 @@ public class TrainService {
                 errors.put("numberNonUnique", "Train with such number already exists");
         }
         //TODO!!! (check no tickets)
-        if (!isNew && tripDataService.getFirstJourneysByTrainNotCancelled(train.getId(), true, 1, 10).size() != 0)
+        if (!isNew && !(getTrainById(train.getId()).getCapacity().equals(train.getCapacity())) && ticketService.hasTicketsOnTrainSold(train.getId()))
             //TODO in general or only if no tickets were sold yet?
-            errors.put("capacityCannotUpdate", "There are journeys planned already");
+            errors.put("capacityCannotUpdate", "There are tickets sold already");
 
+        /*if (!isNew && ticketService.hasTicketsOnTrainSold(train.getId())) {
+            errors.put("capacityCannotUpdate", "There are journeys planned already");
+        }*/
         //TODO check price
         //TODO check that can update the price when no tickets were sold yet
     }
@@ -209,6 +213,11 @@ public class TrainService {
     @Autowired
     public void setTripDataService(TripDataService tripDataService) {
         this.tripDataService = tripDataService;
+    }
+
+    @Autowired
+    public void setTicketService(TicketService ticketService) {
+        this.ticketService = ticketService;
     }
 }
 

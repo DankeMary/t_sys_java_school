@@ -99,6 +99,10 @@ public class TicketService {
         return ticketDao.ticketsOnTrainSold(trainId, date);
     }
 
+    public boolean hasTicketsOnTrainSold(int trainId) {
+        return ticketDao.ticketsOnTrainSold(trainId);
+    }
+
     //Mappers
     public TicketBean ticketDOtoBean(TicketDO ticketDO) {
         return beanMapper.ticketToBean(entityMapper.ticketToSO(ticketDO));

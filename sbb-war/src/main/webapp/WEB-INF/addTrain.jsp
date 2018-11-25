@@ -37,9 +37,6 @@
                                 <span id="js-number-error" style="display: block;"></span>
                                 <div class="error-list">
                                     <span style="display: block;">${numberNonUnique}</span>
-
-                                    <span style="display: block;">${capacityCannotUpdate}</span>
-
                                     <c:if test="${status.error}">
                                         <c:forEach items="${status.errorMessages}" var="error">
                                             <span style="display: block;">${error}</span>
@@ -63,6 +60,7 @@
                             <div class="form-group col-md-6" style="color: red; display: inline-block;">
                                 <span id="js-capacity-error" style="display: block;"></span>
                                 <div class="error-list">
+                                    <span style="display: block;">${capacityCannotUpdate}</span>
                                     <c:if test="${status.error}">
                                         <ul style="list-style-type:disc">
                                             <c:forEach items="${status.errorMessages}" var="error">

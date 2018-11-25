@@ -69,7 +69,8 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     public boolean journeyOfTripOnDateExists(int tripId, LocalDate date) {
         Long qty = (Long) getEntityManager()
                 .createQuery("select count(*) as n from TripDataDO td where td.route.trip.id=" + tripId
-                        + " and tripDeparture=\'" + date + "\'").uniqueResult();
+                        + " and tripDeparture=\'" + date + "\' and" +
+                        " isCancelled = 0").uniqueResult();
         return qty != 0;
     }
 

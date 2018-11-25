@@ -82,6 +82,38 @@ public class TripDataService {
         }
     }
 
+    public void update (TripDataBean tdBean) {
+        try {
+            tripDataDAO.update(tripDataBeanToDO(tdBean));
+        } catch (Exception e) {
+            LOG.error("Failed to update tripData");
+            e.printStackTrace();
+        }
+    }
+    public void createJourney(JourneyBean journey) {
+        try {
+            TripBean trip = journey.getTrip();
+
+            List<TripDataBean> tripData = tripDataDOListToBeanList(tripDataDAO.findByTripIdAndTripDepartureDay(trip.getId(), journey.getDepartureDay()));
+
+            if (tripData.isEmpty()) {
+                createAll(journey);
+            }
+            else {
+                for (TripDataBean tdBean : tripData) {
+                    tdBean.setIsCancelled(false);
+                    tdBean.setIsLate(false);
+                    tdBean.setSeatsLeft(Math.toIntExact(trip.getTrain().getCapacity()));
+                    update(tdBean);
+                }
+            }
+
+        } catch (Exception e) {
+            LOG.error("Failed to create tripDatas of a journey");
+            e.printStackTrace();
+        }
+    }
+
     public TripDataBean getById(int journeyId) {
         TripDataBean tripDataBean = null;
         try {

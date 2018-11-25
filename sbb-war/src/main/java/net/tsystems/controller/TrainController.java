@@ -101,7 +101,9 @@ public class TrainController {
 
         Map<String, String> errors = new HashMap<>();
         trainService.validate(train, false, errors);
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !errors.isEmpty()) {
+            model.addAttribute("numberNonUnique", errors.get("numberNonUnique"));
+            model.addAttribute("capacityCannotUpdate", errors.get("capacityCannotUpdate"));
             model.addAttribute("loggedinuser", getPrincipal());
             return "editTrain";
         } else {
@@ -172,7 +174,7 @@ public class TrainController {
             model.addAttribute("loggedinuser", getPrincipal());
             return "journeys";
         } else {
-            tripDataService.createAll(journey);
+            tripDataService.createJourney(journey);
             //TODO !!!!
             return "redirect:/worker/trains/{id}/journeys";
         }

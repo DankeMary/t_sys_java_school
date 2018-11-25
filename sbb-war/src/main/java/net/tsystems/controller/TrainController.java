@@ -145,15 +145,6 @@ public class TrainController {
         return "journeys";
     }
 
-    /*@RequestMapping(value = "/worker/trains/{id}/journeys/newJourney", method = RequestMethod.GET)
-    public String newJourney(@PathVariable("id") int id, Model model) {
-
-        model.addAttribute("journey", new JourneyBean());
-        model.addAttribute("trainId", id);
-        model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
-        return "addJourney";
-    }*/
-
     @RequestMapping(value = "/worker/trains/{id}/journeys", method = RequestMethod.POST)
     public String addNewJourney(@PathVariable("id") int id,
                                 @ModelAttribute("journey") @Validated JourneyBean journey,
@@ -201,18 +192,7 @@ public class TrainController {
         }
         else tripDataService.cancelJourney(trainId, journeyId);
 
-        int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(trainId, UtilsClass.MAX_PAGE_RESULT);
-        int pageInt = 1;
-
-        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(trainId, true, pageInt, UtilsClass.MAX_PAGE_RESULT);
-
-        model.addAttribute("journeys", journeys);
-        model.addAttribute("trainId", trainId);
-        model.addAttribute("journeyForm", new JourneyBean());
-        model.addAttribute("navPagesQty", navPagesQty);
-        model.addAttribute("currentPage", pageInt);
-        model.addAttribute("loggedinuser", getPrincipal());
-        return "journeys";
+        return "redirect:/worker/trains/" + trainId + "/journeys";
     }
 
     @RequestMapping(value = "/user/trains/{train_id}/journeys/{journey_id}", method = RequestMethod.GET)

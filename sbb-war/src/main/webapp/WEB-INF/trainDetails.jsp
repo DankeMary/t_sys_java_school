@@ -27,9 +27,9 @@
                 <div style="display:inline-block">
                     <a href="/worker/trains/${trainData.trainBean.id}/update">Edit</a> |
                     <a href="/worker/trains/${trainData.trainBean.id}/delete"
-                       onclick="return confirmDelete(this, '${pageContext.request.contextPath}/trains/${trainData.trainBean.id}/delete')">Delete</a>
+                       onclick="return confirmDelete(this, '${pageContext.request.contextPath}/worker/trains/${trainData.trainBean.id}/delete')">Delete</a>
                 </div>
-                <p><b>Journeys : </b> <a href="/trains/${trainData.trainBean.id}/journeys">See More...</a></p>
+                <p><b>Journeys : </b> <a href="/worker/trains/${trainData.trainBean.id}/journeys">See More...</a></p>
                 <h5>Train Path:</h5>
                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
                     <thead class="thead-light">

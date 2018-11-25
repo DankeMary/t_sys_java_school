@@ -67,6 +67,7 @@ public class TrainService {
 
     public void update(TrainBean train) {
         try {
+            //TODO !!!check if new capacity is bigger than previous one and that tickets are already sole
             trainDao.update(trainBeanToDO(train));
         } catch (Exception e) {
             LOG.error("Failed to update train");
@@ -76,6 +77,7 @@ public class TrainService {
 
     public void delete(int id) {
         try {
+            //TODO !!! check that no tickets were sold!!!!!
             trainDao.delete(trainDao.find(id));
         } catch (Exception e) {
             LOG.error(String.format("Failed to delete train by id=%s", id));

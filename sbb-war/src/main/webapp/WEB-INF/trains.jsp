@@ -116,7 +116,7 @@
                                     <td>${train.number}</td>
                                     <td>${train.trip.from.name}</td>
                                     <td>${train.trip.to.name}</td>
-                                    <td><a href="/trains/${train.id}">Details</a></td>
+                                    <td><a href="/worker/trains/${train.id}">Details</a></td>
                                 </tr>
                             </c:forEach>
                         </table>

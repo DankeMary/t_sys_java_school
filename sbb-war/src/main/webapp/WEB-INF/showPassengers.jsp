@@ -18,7 +18,7 @@
         <div class="col-sm-12 col-md-10 col-lg-8" style="padding:0;border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
-                <h5>Data for train #${trainNumber} on ${localDateFormat.format(departureDay)}</h5>
+                <h5>Passengers of train #${trainNumber} on ${localDateFormat.format(departureDay)}</h5>
                 <c:choose>
                     <c:when test="${empty tickets}">
                         <h4>No passengers yet</h4>

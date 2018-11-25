@@ -52,6 +52,7 @@ public class TripDataService {
 
     public void createAll(JourneyBean journey) {
         try {
+            //TODO !!!! if journey on this day was cancelled before then simply switch the flag
             TripBean trip = journey.getTrip();
 
             List<RouteBean> trainPath = routeService.getTrainPathByTrainId(trip.getTrain().getId());
@@ -168,20 +169,13 @@ public class TripDataService {
                                                     int page, int maxResult) {
         List<SearchTicketForm> availableTicketsData = new LinkedList<>();
         try {
-            LocalDate fromDate = LocalDate.parse(fromDay.trim());
-            LocalDate toDate = LocalDate.parse(toDay.trim());
-
-            LocalTime fromLocalTime = LocalTime.parse(fromTime);
-            LocalTime toLocalTime = LocalTime.parse(toTime);
-
             //1. Find data which satisfies the conditions
+            LocalDateTime from = LocalDateTime.of(LocalDate.parse(fromDay.trim()), LocalTime.parse(fromTime));
+            LocalDateTime to = LocalDateTime.of(LocalDate.parse(toDay.trim()), LocalTime.parse(toTime));
+
             List<TripDataBean> result = tripDataDOListToBeanList(tripDataDAO.getDataForSection(
-                    fromDate,
-                    fromLocalTime,
-                    toDate,
-                    toLocalTime,
-                    fromStation,
-                    toStation,
+                    from, to,
+                    fromStation, toStation,
                     page, maxResult));
 
             for (TripDataBean tdBean : result) {
@@ -306,11 +300,6 @@ public class TripDataService {
 
     public void ticketWasErased(TicketBean ticket) {
         try {
-                /*//1. Find data which satisfies the conditions
-                int fromJourneyId = ticketsData.getFromJourneyId();
-                int toJourneyId = ticketsData.getToJourneyId();
-                TripDataBean fromTD = tripDataDOToBean(tripDataDAO.find(fromJourneyId));*/
-
             int fromJourneyId = ticket.getFrom().getId();
             int toJourneyId = ticket.getTo().getId();
 
@@ -334,18 +323,6 @@ public class TripDataService {
             int toTDBeanIndex = journeyTripData.indexOf(toTDBean);
 
             List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex + 1);
-            //4. Get the min "seats" number - that's the number of tickets available
-                /*int ticketsAvailable = ticketRelatedTDBeans
-                        .stream()
-                        .min(Comparator.comparing(TripDataBean::getSeatsLeft))
-                        .get()
-                        .getSeatsLeft();*/
-
-                /*List<PassengerBean> passengersWithCompleteInfo =
-                        passengerService.filterCompleteInfo(ticketsData.getPassengers());*/
-
-                /*if (ticketsAvailable < passengersWithCompleteInfo.size())
-                    return false;*/
 
             //TODO check that if we increase number of tickets won't be bigger than train capacity?
             for (TripDataBean tdBean : ticketRelatedTDBeans) {
@@ -384,7 +361,6 @@ public class TripDataService {
         try {
             TripDataBean fromTdBean = tripDataDOToBean(tripDataDAO.find(Integer.parseInt(fromJourneyId)));
             TripDataBean toTdBean = tripDataDOToBean(tripDataDAO.find(Integer.parseInt(toJourneyId)));
-            StringBuilder result = new StringBuilder();
 
             data.put("trainNumber", Long.toString(fromTdBean.getRoute().getTrip().getTrain().getNumber()));
 
@@ -411,8 +387,10 @@ public class TripDataService {
         LocalTime fromLocalTime = LocalTime.parse(fromTime);
         LocalTime toLocalTime = LocalTime.parse(toTime);
 
-        return tripDataDAO.countDataForSectionPages(fromDate, fromLocalTime,
-                toDate, toLocalTime,
+        LocalDateTime from = LocalDateTime.of(fromDate, fromLocalTime);
+        LocalDateTime to = LocalDateTime.of(toDate, toLocalTime);
+
+        return tripDataDAO.countDataForSectionPages(from, to,
                 fromStation, toStation, maxResult);
     }
 

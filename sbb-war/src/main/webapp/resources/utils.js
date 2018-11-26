@@ -61,7 +61,7 @@ $(document).ready(function () {
         $("#addRouteRow").before(
             "<tr>" +
             "<input name='primitivePath[" + routeIndex + "].orderIndex' type='hidden' value='" + routeIndex + "'>" +
-            "<td><input name='primitivePath[" + routeIndex + "].station.name' class='hehe' id='station-input-search-" + routeIndex + "'/></td>" +
+            "<td><input name='primitivePath[" + routeIndex + "].station.name' class='autocompl-dropdown' id='station-input-search-" + routeIndex + "'/></td>" +
 
             "<td><input name='primitivePath[" + routeIndex + "].arrTime' type='time' /></td>" +
 
@@ -71,9 +71,11 @@ $(document).ready(function () {
         console.log(routeIndex);
         $(document).on("change", "#station-input-search-" + routeIndex + "" , createTrainAutoCompl("#station-input-search-" + routeIndex + ""));
     });
-    let routeIndex = $('#pathRoutes tbody').children().length - 2;
-    console.log(routeIndex);
-    $(document).on("change", "#station-input-search-" + routeIndex + "" , createTrainAutoCompl("#station-input-search-" + routeIndex + ""));
+
+    $('.autocompl-dropdown').each(function( index, value ) {
+        console.log(index);
+        $(document).on("change", value , createTrainAutoCompl("#station-input-search-" + index + ""));
+    });
 });
 
 $(document).ready(function () {

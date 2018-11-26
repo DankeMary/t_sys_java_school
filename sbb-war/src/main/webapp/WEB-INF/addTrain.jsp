@@ -127,7 +127,7 @@
                                             <input id='station-input-search-${i}'
                                                    value="${status.value}"
                                                    name="${status.expression}"
-                                            class="hehe"/>
+                                            class="autocompl-dropdown"/>
                                         </spring:bind>
                                     </td>
                                     <td>

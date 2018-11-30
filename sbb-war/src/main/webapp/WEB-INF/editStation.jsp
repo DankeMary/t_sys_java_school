@@ -6,10 +6,8 @@
 <head>
     <title>Edit Station</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" type="text/css" href="/resources/style.css">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/style.css" />">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.min.css" />">
 </head>
 <body>
 <div class="container">
@@ -19,7 +17,7 @@
         <div class="col-sm-12 col-md-10 col-lg-8" style="padding:0;border: 3px outset steelblue">
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
-                <h3>Edit The Station Details</h3>
+                <h3>Edit The Station's Details</h3>
                 <c:choose>
                     <c:when test="${empty stationForm}">
                         <h5>No station with such data found</h5>
@@ -27,14 +25,16 @@
                     <c:otherwise>
                         <form:form method="POST"
                                    action="/worker/stations/${stationForm.id}"
-                                   modelAttribute="stationForm">
+                                   modelAttribute="stationForm"
+                                   autocomplete="off">
                             <div class="formFragment">
                                 <form:label path="name"
                                             cssClass="fm-with-valid">Name</form:label>
                                 <spring:bind path="name">
                                     <input value="${status.value}"
                                            name="${status.expression}"
-                                           class="fm-with-valid"
+                                           class="fm-with-valid form-control"
+                                           style="width: 200px; display: inline-block; height: 30px;"
                                     required>
                                     <div class="form-group col-md-6" style="color: red; display: inline-block;">
                                         <div class="error-list">
@@ -60,14 +60,8 @@
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-        crossorigin="anonymous"></script>
+<script src="<c:url value="/resources/js/jquery-3.3.1.min.js" />"></script>
+<script src="<c:url value="/resources/js/popper.min.js" />"></script>
+<script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 </body>
 </html>

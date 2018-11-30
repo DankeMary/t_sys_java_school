@@ -43,11 +43,11 @@ $(document).ready(function () {
         let psngrIndex = $('#journeyPassengers tbody').children().length - 1;
         $("#addPassengerRow").before(
             "<tr>" +
-            "<td><input name='passengers[" + psngrIndex + "].firstName'/></td>" +
+            "<td><input name='passengers[" + psngrIndex + "].firstName' class='form-control'/></td>" +
 
-            "<td><input name='passengers[" + psngrIndex + "].lastName'/></td>" +
+            "<td><input name='passengers[" + psngrIndex + "].lastName' class='form-control'/></td>" +
 
-            "<td><input name='passengers[" + psngrIndex + "].birthday' type='date' /></td>" +
+            "<td><input name='passengers[" + psngrIndex + "].birthday' type='date' class='form-control'/></td>" +
             "</tr>");
         if (psngrIndex >= 10) {
             $('#addPassengerButton').attr("disabled", true);
@@ -61,11 +61,11 @@ $(document).ready(function () {
         $("#addRouteRow").before(
             "<tr>" +
             "<input name='primitivePath[" + routeIndex + "].orderIndex' type='hidden' value='" + routeIndex + "'>" +
-            "<td><input name='primitivePath[" + routeIndex + "].station.name' class='autocompl-dropdown' id='station-input-search-" + routeIndex + "'/></td>" +
+            "<td><input name='primitivePath[" + routeIndex + "].station.name' class='autocompl-dropdown form-control' id='station-input-search-" + routeIndex + "'/></td>" +
 
-            "<td><input name='primitivePath[" + routeIndex + "].arrTime' type='time' /></td>" +
+            "<td><input name='primitivePath[" + routeIndex + "].arrTime' type='time' class='form-control'/></td>" +
 
-            "<td><input name='primitivePath[" + routeIndex + "].depTime' type='time' /></td>" +
+            "<td><input name='primitivePath[" + routeIndex + "].depTime' type='time' class='form-control'/></td>" +
             "</tr>");
 
         console.log(routeIndex);

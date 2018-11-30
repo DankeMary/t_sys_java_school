@@ -5,6 +5,7 @@ html {
 body{
     height: 100vh;
     max-height: 100vh;
+    overflow-wrap: break-word;
 }
 
 .container, .col-8 {
@@ -47,8 +48,13 @@ th, td {
     max-width: 150px;
     text-align: right;
 }
-
-.submit-btn {
+.inp-btn, .submit-btn {
+    background-color: #dde2e3;
+    width: 76px;
+    border-radius: 5px;
+    height: 38px;
+}
+.submit-btn{
     margin: auto;
     display: inherit;
 }
@@ -87,7 +93,7 @@ th, td {
 }
 /*Pagination*/
 .pagination {
-    display: table;
+    display: table !important;
     margin: 10px auto;
 }
 
@@ -100,9 +106,14 @@ th, td {
 .pagination a.active {
     background-color: skyblue;
     color: black;
+    text-decoration:none;
 }
 
-.pagination a:hover:not(.active) {background-color: #ddd;}
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+    color:black;
+    text-decoration:none;
+}
 
 .pagination a.invisible-link, .pagination a.invisible-link:hover {
     visibility:hidden;
@@ -114,7 +125,7 @@ th, td {
     background: #FFFFFF;
     max-width: 360px;
     margin: 0 auto 0;
-    padding: 45px 45px 25px;
+    padding: 25px 45px 25px;
     text-align: center;
 }
 .form input {

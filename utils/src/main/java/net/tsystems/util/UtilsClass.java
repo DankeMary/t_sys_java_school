@@ -1,4 +1,4 @@
-package net.tsystems;
+package net.tsystems.util;
 
 public class UtilsClass {
     public static final int MAX_PAGE_RESULT = 10;

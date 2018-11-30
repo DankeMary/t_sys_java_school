@@ -7,6 +7,7 @@ import net.tsystems.entities.TripDataDO;
 import net.tsystems.entitydao.TripDataDAO;
 import net.tsystems.entitymapper.TripDataEntityMapper;
 import net.tsystems.entitymapper.TripDataEntityMapperImpl;
+import net.tsystems.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("journeyService")
 @Transactional
@@ -41,6 +39,8 @@ public class TripDataService {
     private TripService tripService;
     private UserService userService;
 
+    private CollectionUtils<RouteBean> collUtil = new CollectionUtils<>();
+
     public void create(TripDataBean tripDataBean) {
         try {
             tripDataDAO.create(tripDataBeanToDO(tripDataBean));
@@ -52,13 +52,12 @@ public class TripDataService {
 
     public void createAll(JourneyBean journey) {
         try {
-            //TODO !!!! if journey on this day was cancelled before then simply switch the flag
             TripBean trip = journey.getTrip();
 
             List<RouteBean> trainPath = routeService.getTrainPathByTrainId(trip.getTrain().getId());
             LocalDate tripDepDay = journey.getDepartureDay();
             LocalDate currDate = journey.getDepartureDay();
-            RouteBean prevStData = trainPath.get(0);
+            RouteBean prevStData = collUtil.getFirst(trainPath);
             TrainBean train = trip.getTrain();
 
             for (RouteBean stData : trainPath) {

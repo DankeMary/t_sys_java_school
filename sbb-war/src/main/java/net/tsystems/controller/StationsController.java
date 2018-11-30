@@ -1,7 +1,7 @@
 package net.tsystems.controller;
 
 
-import net.tsystems.UtilsClass;
+import net.tsystems.util.UtilsClass;
 import net.tsystems.bean.StationBean;
 import net.tsystems.service.StationService;
 import net.tsystems.service.TripDataService;

@@ -15,6 +15,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>net.tsystems</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>3.1.2.RELEASE</version>

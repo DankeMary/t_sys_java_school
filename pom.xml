@@ -27,6 +27,7 @@
         <module>sbb-war</module>
         <module>services</module>
         <module>dataobjects</module>
+        <module>utils</module>
     </modules>
 
     <build>

@@ -1,6 +1,6 @@
 package net.tsystems.controller;
 
-import net.tsystems.UtilsClass;
+import net.tsystems.util.UtilsClass;
 import net.tsystems.bean.*;
 import net.tsystems.service.*;
 import org.springframework.beans.factory.annotation.Autowired;

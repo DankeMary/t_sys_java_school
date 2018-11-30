@@ -1,10 +1,10 @@
 package net.tsystems.controller;
 
-import net.tsystems.UtilsClass;
 import net.tsystems.bean.UserBean;
 import net.tsystems.bean.UserBeanExpanded;
 import net.tsystems.service.TicketService;
 import net.tsystems.service.UserService;
+import net.tsystems.util.UtilsClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.core.Authentication;

@@ -76,20 +76,6 @@
             <version>2.9.7</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
-        </dependency>
-
-
-
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator-annotation-processor</artifactId>
-            <version>6.0.2.Final</version>
-        </dependency>-->
-
         <!-- local modules-->
         <dependency>
             <groupId>net.tsystems</groupId>
@@ -100,6 +86,12 @@
         <dependency>
             <groupId>net.tsystems</groupId>
             <artifactId>dataobjects</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.tsystems</groupId>
+            <artifactId>utils</artifactId>
             <version>1.0</version>
         </dependency>
         <!-- END local modules-->
@@ -154,23 +146,6 @@
         <!-- END Spring dependencies -->
 
         <!-- logging -->
-       <!-- <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.7</version>
-        </dependency>-->
-
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>

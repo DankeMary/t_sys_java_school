@@ -32,7 +32,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     }
 
     @Override
-    public List<TripDataDO> findFirstAfterNowByTrain(int id) {
+    public List<TripDataDO> findFirstAfterNowByTrainOrdered(int id) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery("from TripDataDO where route.trip.train.id=" + id
                         + " and route.station = route.trip.from"
@@ -43,13 +43,14 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     }
 
     @Override
-    public List<TripDataDO> findFirstAfterNowByTrain(int id, int page, int maxResult) {
+    public List<TripDataDO> findFirstAfterNowByTrainOrdered(int id, int page, int maxResult) {
         Query q = getEntityManager()
                 .createQuery("from TripDataDO " +
                         " where route.trip.train.id=" + id
                         + " and route.station = route.trip.from"
                         + " and date >= now() " +
-                        " and isCancelled = 0 ");
+                        " and isCancelled = 0 " +
+                        "order by date");
         q.setFirstResult((page - 1) * maxResult);
         q.setMaxResults(maxResult);
 
@@ -87,21 +88,6 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
 
     @Override
     public List<TripDataDO> getScheduleForStation(String stationName, int maxResults) {
-        /*List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
-                .createQuery("select td from TripDataDO td " +
-                        "join RouteDO r on td.route = r " +
-                        "join TripDO t on r.trip = t " +
-                        "join TrainDO tr on t.train = tr " +
-                        "where r.station.name =\'" + stationName + "\' and " +
-                        " (td.date > current_date() or" +
-                        " (td.date = current_date() and " +
-                        "((hour(r.arrival) >= hour(now()) and" +
-                        " minute(r.arrival) >= minute(now())) or " +
-                        "((hour(r.departure) >= hour(now()) and " +
-                        " minute(r.departure) >= minute(now()))))))" +
-                        " order by td.date, r.arrival")
-                .setMaxResults(maxResults)
-                .list();*/
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
                 .createQuery("select td from TripDataDO td " +
                         "join RouteDO r on td.route = r " +
@@ -109,7 +95,7 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                         "join TrainDO tr on t.train = tr " +
                         "where r.station.name =\'" + stationName + "\' and " +
                         " td.date >= now() " +
-                        " order by td.date, r.arrival")
+                        " order by td.date, r.arrival, r.departure, tr.number")
                 .setMaxResults(maxResults)
                 .list();
 
@@ -141,7 +127,8 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                                 "join TrainDO tr2 on t2.train = tr2  " +
                                 "where td1.route.trip = td2.route.trip and " +
                                 "td1.tripDeparture = td2.tripDeparture and " +
-                                "r2.station.name = \'" + toStation + "\' )"
+                                "r2.station.name = \'" + toStation + "\' )" +
+                                " order by td1.date, td1.route.trip.train.number"
                 );
 
         q.setFirstResult((page - 1) * maxResult);

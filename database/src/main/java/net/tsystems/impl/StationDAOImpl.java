@@ -2,13 +2,19 @@ package net.tsystems.impl;
 
 import net.tsystems.entities.StationDO;
 import net.tsystems.entitydao.StationDAO;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class StationDAOImpl extends AbstractDaoImpl<StationDO, Integer> implements StationDAO {
+    @Override
+    public List<StationDO> getAllOrdered(int page, int maxResult) {
+        Query q = getEntityManager().createQuery( "from StationDO st order by name");
+        return findAll(q, page, maxResult);
+    }
+
     public StationDO findByName(String name) {
         List<StationDO> list = (List<StationDO>)getEntityManager()
                                     .createQuery("from StationDO where name='" + name + "'")

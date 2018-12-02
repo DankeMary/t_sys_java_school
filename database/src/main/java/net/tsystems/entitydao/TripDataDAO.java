@@ -12,9 +12,9 @@ public interface TripDataDAO extends AbstractDao<TripDataDO, Integer> {
 
     int countFirstAfterNowByTrainPages(int id, int maxResult);
 
-    List<TripDataDO> findFirstAfterNowByTrain(int id);
+    List<TripDataDO> findFirstAfterNowByTrainOrdered(int id);
 
-    List<TripDataDO> findFirstAfterNowByTrain(int id, int page, int maxResult);
+    List<TripDataDO> findFirstAfterNowByTrainOrdered(int id, int page, int maxResult);
 
     List<TripDataDO> findByTrainIdAndTripDepartureDay(int trainId, LocalDate date);
 

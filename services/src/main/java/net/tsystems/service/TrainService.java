@@ -105,7 +105,7 @@ public class TrainService {
     public List<TrainBean> getAll(int page, int maxResult) {
         List<TrainBean> trains = new LinkedList<>();
         try {
-            trains = trainDOListToBeanList(trainDao.findAll(page, maxResult));
+            trains = trainDOListToBeanList(trainDao.getAllOrdered(page, maxResult));
             for (TrainBean train : trains)
                 train.setTrip(tripService.getTripByTrainId(train.getId()));
         } catch (Exception e) {

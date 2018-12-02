@@ -127,10 +127,10 @@ public class TripDataService {
     public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow) {
         List<JourneyBean> journeys = new LinkedList<>();
         try {
-            List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
+            List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrainOrdered(id));
             //For now only afterNow
             /*if (afterNow)
-                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
+                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrainOrdered(id));
             else
                 tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));*/
 
@@ -145,10 +145,10 @@ public class TripDataService {
     public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow, int page, int maxResult) {
         List<JourneyBean> journeys = new LinkedList<>();
         try {
-            List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id, page, maxResult));
+            List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrainOrdered(id, page, maxResult));
             //For now only afterNow
             /*if (afterNow)
-                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
+                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrainOrdered(id));
             else
                 tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));*/
 
@@ -169,7 +169,6 @@ public class TripDataService {
         return tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getTripDeparture()));
     }
 
-    //TODO doesn't work?
     //public void cancelJourney(int trainId, Date departureDay) {
     public void cancelJourney(int trainId, int journeyId) {
         try {

@@ -2,12 +2,19 @@ package net.tsystems.impl;
 
 import net.tsystems.entities.TrainDO;
 import net.tsystems.entitydao.TrainDAO;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public class TrainDAOImpl extends AbstractDaoImpl<TrainDO, Integer> implements TrainDAO {
+    @Override
+    public List<TrainDO> getAllOrdered(int page, int maxResult) {
+        Query q = getEntityManager().createQuery( "from TrainDO t order by number");
+        return findAll(q, page, maxResult);
+    }
+
     public TrainDO findByNumber(int number) {
         List<TrainDO> list = (List<TrainDO>)getEntityManager()
                 .createQuery("from TrainDO where number=" + number)

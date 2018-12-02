@@ -69,7 +69,7 @@ public class StationService {
     public List<StationBean> getAll(int page, int maxResult) {
         List<StationBean> stationBeans = new LinkedList<>();
         try {
-            stationBeans = stationDOListToBeanList(stationDao.findAll(page, maxResult));
+            stationBeans = stationDOListToBeanList(stationDao.getAllOrdered(page, maxResult));
         } catch (Exception e) {
             LOG.error("Failed to get all stations");
             e.printStackTrace();

@@ -12,6 +12,7 @@ import net.tsystems.entitymapper.TicketEntityMapperImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,10 +74,11 @@ public class TicketService {
         return tickets;
     }
 
+    @PreAuthorize("#username == authentication.principal.username")
     public void deleteTicket(String username, int ticketId) {
         try {
             TicketBean ticket = ticketDOtoBean(ticketDao.find(ticketId));
-            delete(ticketId);
+            delete(ticket.getId());
             passengerService.delete(ticket.getPassenger().getId());
             tripDataService.ticketWasErased(ticket);
         } catch (Exception e) {

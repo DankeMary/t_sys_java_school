@@ -13,12 +13,12 @@
         <input type="date" name="fromDay" value="${fromDay}" class=" form-control" style="width: 150px; display:inline-block;" required/>
 
         <label path="fromTime">Min Time</label>
-        <input type='time' name="fromTime" value="${fromTime}" class=" form-control" style="width: 150px; display:inline-block;" required/>
+        <input type='time' name="fromTime" value="${fromTime}" class=" form-control" style="width: 100px; display:inline-block;" required/>
     </div>
 
     <div class="formFragment">
         <label path="toDay">Max Day</label>
-        <input type="date" name="toDay" value="${toDay}" class=" form-control" style="width: 100px; display:inline-block;" required/>
+        <input type="date" name="toDay" value="${toDay}" class=" form-control" style="width: 150px; display:inline-block;" required/>
 
         <label path="toTime">Max Time</label>
         <input type='time' name="toTime" value="${toTime}" class=" form-control" style="width: 100px; display:inline-block;" required/>

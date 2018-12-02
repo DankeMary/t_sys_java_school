@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
@@ -19,10 +19,10 @@
             <div class="col-12" style="overflow:auto">
                 <h5>Train Journeys</h5>
                 <div class="formFragment">
-                <form:form method="POST"
-                           action="/worker/trains/${trainId}/journeys"
-                           modelAttribute="journeyForm"
-                           autocomplete="off">
+                    <form:form method="POST"
+                               action="/worker/trains/${trainId}/journeys"
+                               modelAttribute="journeyForm"
+                               autocomplete="off">
                         <spring:bind path="departureDay">
                             <label style="width: 110px;">Departure Day</label>
                             <input type="date" value="${status.value}"
@@ -37,15 +37,15 @@
                             </input>
                         </spring:bind>
 
-                    <div style="display: inline-block;">
-                        <input type="submit" value="Add New" id="submit"
-                               style="background-color: #dde2e3; width: 90px;
+                        <div style="display: inline-block;">
+                            <input type="submit" value="Add New" id="submit"
+                                   style="background-color: #dde2e3; width: 90px;
                                border-radius: 5px; height: 38px;"/>
-                    </div>
-                    <span style="color:red; display: block;"><c:out value="${depDayError}"/></span>
-                    <span style="color:red; display: block;"><c:out value="${journeyExists}"/></span>
-                    <span style="color:red; display: block;"><c:out value="${invalidTrip}"/></span>
-                </form:form>
+                        </div>
+                        <span style="color:red; display: block;"><c:out value="${depDayError}"/></span>
+                        <span style="color:red; display: block;"><c:out value="${journeyExists}"/></span>
+                        <span style="color:red; display: block;"><c:out value="${invalidTrip}"/></span>
+                    </form:form>
                 </div>
                 <span style="color:red; display: block;"><c:out value="${ticketsSold}"/></span>
                 <div class="pagination">
@@ -126,25 +126,33 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
-                <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
-                    <thead class="thead-light">
-                    <tr>
-                        <th>Date</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <c:forEach items="${journeys}" var="journey">
-                        <tr>
-                            <td>${localDateTimeFormat.format(journey.departureDay)}</td>
-                            <td>
-                                <a href="/worker/trains/${trainId}/journeys/${journey.journeyId}/passengers">Passengers</a> |
-                                <a href="/user/trains/${trainId}/journeys/${journey.journeyId}">Details</a> |
-                                <a href="/worker/trains/${trainId}/journeys/${journey.journeyId}/cancel"
-                                   onclick="return confirmDelete(this, '${pageContext.request.contextPath}/worker/trains/${trainId}/journeys/${journey.journeyId}/cancel')">Cancel</a>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </table>
+                <c:choose>
+                    <c:when test="${empty journeys}">
+                        <h6>No journeys yet</h6>
+                    </c:when>
+                    <c:otherwise>
+                        <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>Date</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <c:forEach items="${journeys}" var="journey">
+                                <tr>
+                                    <td>${localDateTimeFormat.format(journey.departureDay)}</td>
+                                    <td>
+                                        <a href="/worker/trains/${trainId}/journeys/${journey.journeyId}/passengers">Passengers</a>
+                                        |
+                                        <a href="/user/trains/${trainId}/journeys/${journey.journeyId}">Details</a> |
+                                        <a href="/worker/trains/${trainId}/journeys/${journey.journeyId}/cancel"
+                                           onclick="return confirmDelete(this, '${pageContext.request.contextPath}/worker/trains/${trainId}/journeys/${journey.journeyId}/cancel')">Cancel</a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <div class="col">

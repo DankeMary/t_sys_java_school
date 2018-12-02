@@ -132,13 +132,19 @@
                                                 <a href="/user/trains/${ticket.from.route.trip.train.id}/journeys/${ticket.from.id}"
                                                    target="_blank">${ticket.from.route.trip.train.number}</a></td>
                                             <td>${ticket.from.route.station.name} <br>
-                                                <span style="font-size: 10px;">
+                                                <span style="font-size: 11px; color: grey; display: block;">
                                                         ${localDateTimeFormat.format(ticket.from.date)}
+                                                </span>
+                                                <span style="font-size: 9px; color: green; display: block;">
+                                                     ${ticket.from.route.departure}
                                                 </span>
                                             </td>
                                             <td>${ticket.to.route.station.name} <br>
-                                                <span style="font-size: 10px;">
+                                                <span style="font-size: 11px; color: grey; display: block;">
                                                         ${localDateTimeFormat.format(ticket.to.date)}
+                                                </span>
+                                                <span style="font-size: 9px; color: green; display: block;">
+                                                        ${ticket.to.route.departure}
                                                 </span>
                                             </td>
                                             <td><a href="/user/${loggedinuser}/tickets/${ticket.id}/delete"

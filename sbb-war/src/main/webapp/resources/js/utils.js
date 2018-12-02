@@ -60,8 +60,7 @@ $(document).ready(function () {
         let routeIndex = $('#pathRoutes tbody').children().length - 1;
         $("#addRouteRow").before(
             "<tr>" +
-            "<input name='primitivePath[" + routeIndex + "].orderIndex' type='hidden' value='" + routeIndex + "'>" +
-            "<td><input name='primitivePath[" + routeIndex + "].station.name' class='autocompl-dropdown form-control' id='station-input-search-" + routeIndex + "'/></td>" +
+            "<td><input name='primitivePath[" + routeIndex + "].stationName' class='autocompl-dropdown form-control' id='station-input-search-" + routeIndex + "'/></td>" +
 
             "<td><input name='primitivePath[" + routeIndex + "].arrTime' type='time' class='form-control'/></td>" +
 

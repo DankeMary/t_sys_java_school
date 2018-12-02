@@ -123,20 +123,20 @@
                                                 <tr>
                                                     <td>${item.fromTDBean.route.trip.train.number}</td>
                                                     <td>${item.fromTDBean.route.station.name} <br>
-                                                        <span style="font-size: 11px; color: green; display: block;">
-                                                                ${item.fromTDBean.route.departure}
-                                                        </span>
-                                                        <span style="font-size: 9px; color: grey; display: block;">
+                                                        <span style="font-size: 11px; color: grey; display: block;">
                                                                 ${localDateTimeFormat.format(item.fromTDBean.date)}
+                                                        </span>
+                                                        <span style="font-size: 9px; color: green; display: block;">
+                                                                ${item.fromTDBean.route.departure}
                                                         </span>
                                                     </td>
 
                                                     <td>${item.toTDBean.route.station.name} <br>
-                                                        <span style="font-size: 11px; color: green; display: block;">
-                                                                ${item.toTDBean.route.departure}
-                                                        </span>
-                                                        <span style="font-size: 9px; color: grey; display: block;">
+                                                        <span style="font-size: 11px; color: grey; display: block;">
                                                                 ${localDateTimeFormat.format(item.toTDBean.date)}
+                                                        </span>
+                                                        <span style="font-size: 9px; color: green; display: block;">
+                                                                ${item.toTDBean.route.arrival}
                                                         </span>
                                                     </td>
                                                     <td>

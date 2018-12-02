@@ -61,7 +61,7 @@ public class TripDataService {
             TrainBean train = trip.getTrain();
 
             for (RouteBean stData : trainPath) {
-                if (prevStData.getArrival().isAfter(stData.getArrival())) {
+                if (prevStData.getDeparture().isAfter(stData.getDeparture())) {
                     currDate = currDate.plusDays(1);
                 }
                 TripDataBean tripDataBean = new TripDataBean();
@@ -81,7 +81,7 @@ public class TripDataService {
         }
     }
 
-    public void update (TripDataBean tdBean) {
+    public void update(TripDataBean tdBean) {
         try {
             tripDataDAO.update(tripDataBeanToDO(tdBean));
         } catch (Exception e) {
@@ -89,6 +89,7 @@ public class TripDataService {
             e.printStackTrace();
         }
     }
+
     public void createJourney(JourneyBean journey) {
         try {
             TripBean trip = journey.getTrip();
@@ -97,8 +98,7 @@ public class TripDataService {
 
             if (tripData.isEmpty()) {
                 createAll(journey);
-            }
-            else {
+            } else {
                 for (TripDataBean tdBean : tripData) {
                     tdBean.setIsCancelled(false);
                     tdBean.setIsLate(false);
@@ -124,30 +124,43 @@ public class TripDataService {
         return tripDataBean;
     }
 
-    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow, int page, int maxResult) {
-        //TODO For now only afterNow
+    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow) {
         List<JourneyBean> journeys = new LinkedList<>();
         try {
-            List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id, page, maxResult));
-
+            List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
+            //For now only afterNow
             /*if (afterNow)
                 tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
             else
                 tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));*/
 
-            for (TripDataBean tdb : tripDataBeans) {
-                JourneyBean jb = new JourneyBean();
-                jb.setJourneyId(tdb.getId());
-                jb.setTrip(tdb.getRoute().getTrip());
-                jb.setDepartureDay(tdb.getDate().toLocalDate());
-                journeys.add(jb);
-            }
+            makeJourneysFromTripDatas(journeys, tripDataBeans);
         } catch (Exception e) {
             LOG.error(String.format("Failed to get first tripDatas for train with id=%s", id));
             e.printStackTrace();
         }
         return journeys;
     }
+
+    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow, int page, int maxResult) {
+        List<JourneyBean> journeys = new LinkedList<>();
+        try {
+            List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id, page, maxResult));
+            //For now only afterNow
+            /*if (afterNow)
+                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrain(id));
+            else
+                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));*/
+
+            makeJourneysFromTripDatas(journeys, tripDataBeans);
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get first tripDatas for train with id=%s", id));
+            e.printStackTrace();
+        }
+        return journeys;
+    }
+
+
 
     public List<TripDataBean> getTrainJourneyDetails(int trainId, int journeyId) {
         //TODO Logger
@@ -260,7 +273,8 @@ public class TripDataService {
 
     @PreAuthorize("#boughtByUsername == authentication.principal.username")
     public boolean buyTickets(BuyTicketsForm ticketsData, String boughtByUsername) {
-        if (boughtByUsername == null || boughtByUsername.trim().isEmpty()) {
+        UserBean user = boughtByUsername == null ? null : userService.getUser(boughtByUsername);
+        if (user == null) {
             LOG.error("Failed to buy tickets since user is not present");
         } else {
             try {
@@ -306,8 +320,6 @@ public class TripDataService {
                     tdBean.setSeatsLeft(tdBean.getSeatsLeft() - passengersWithCompleteInfo.size());
                     tripDataDAO.update(tripDataBeanToDO(tdBean));
                 }
-                //TODO What if user with such name wasn't found?
-                UserBean user = userService.getUser(boughtByUsername);
 
                 for (PassengerBean p : passengersWithCompleteInfo) {
                     //create passenger
@@ -327,6 +339,14 @@ public class TripDataService {
             }
         }
         return true;
+    }
+
+    public void trainWasErased(int trainId) {
+        //TODO logger
+        List<JourneyBean> trainJourneys = getFirstJourneysByTrainNotCancelled(trainId, true);
+        for (JourneyBean jBean : trainJourneys) {
+            cancelJourney(trainId, jBean.getJourneyId());
+        }
     }
 
     public void ticketWasErased(TicketBean ticket) {
@@ -355,7 +375,6 @@ public class TripDataService {
 
             List<TripDataBean> ticketRelatedTDBeans = journeyTripData.subList(fromTDBeanIndex, toTDBeanIndex + 1);
 
-            //TODO check that if we increase number of tickets won't be bigger than train capacity?
             for (TripDataBean tdBean : ticketRelatedTDBeans) {
                 tdBean.setSeatsLeft(tdBean.getSeatsLeft() + 1);
                 tripDataDAO.update(tripDataBeanToDO(tdBean));
@@ -384,10 +403,28 @@ public class TripDataService {
         if (tdBean == null)
             errors.put("invalidTrip", "No such trip found");
         else if (ticketService.hasTicketsOnTrainSold(trainId, tdBean.getTripDeparture()))
-            errors.put("ticketsSold", "Can't cancel - tickets have been already sold");
+            errors.put("ticketsSold", "Can't cancel - tickets have already been sold");
+    }
+
+    public void validateCancellation(int trainId, List<JourneyBean> journeys, Map<String, String> errors) {
+        for (JourneyBean jBean : journeys) {
+            validateCancellation(trainId, jBean.getJourneyId(), errors);
+            if (errors.get("ticketsSold") != null)
+                break;
+        }
     }
 
     //Help Functions
+    private void makeJourneysFromTripDatas(List<JourneyBean> journeys, List<TripDataBean> tripDataBeans) {
+        for (TripDataBean tdb : tripDataBeans) {
+            JourneyBean jb = new JourneyBean();
+            jb.setJourneyId(tdb.getId());
+            jb.setTrip(tdb.getRoute().getTrip());
+            jb.setDepartureDay(tdb.getDate().toLocalDate());
+            journeys.add(jb);
+        }
+    }
+
     public void makeMetaDataForBuyingTickets(String fromJourneyId, String toJourneyId, Map<String, String> data) {
         try {
             TripDataBean fromTdBean = tripDataDOToBean(tripDataDAO.find(Integer.parseInt(fromJourneyId)));

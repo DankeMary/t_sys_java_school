@@ -57,6 +57,10 @@
                                                     <td>${localDateTimeFormat.format(item.tripData.date)}</td>
                                                     <td>
                                                         <c:choose>
+                                                            <c:when test="${item.route.arrival == item.route.departure and
+                                                                            item.route.nextStation != null}">
+                                                                —
+                                                            </c:when>
                                                             <c:when test="${not item.tripData.isLate}">
                                                                 ${item.route.arrival}
                                                             </c:when>
@@ -67,6 +71,9 @@
                                                     </td>
                                                     <td>
                                                         <c:choose>
+                                                            <c:when test="${item.route.nextStation == null}">
+                                                                —
+                                                            </c:when>
                                                             <c:when test="${not item.tripData.isLate}">
                                                                 ${item.route.departure}
                                                             </c:when>

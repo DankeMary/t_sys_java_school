@@ -87,6 +87,14 @@ public class TrainController {
 
     @RequestMapping(value = "/worker/trains/{id}/update", method = RequestMethod.GET)
     public String showUpdateTrainForm(@PathVariable("id") int id, Model model) {
+        if (!trainService.canUpdate(id)) {
+            TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
+            model.addAttribute("trainData", trainBean);
+            model.addAttribute("ticketsSold", "Couldn't update: tickets have already been sold!");
+            model.addAttribute("loggedinuser", getPrincipal());
+            return "trainDetails";
+        }
+
         TrainBean train = trainService.getTrainById(id);
         model.addAttribute("trainForm", train);
         model.addAttribute("loggedinuser", getPrincipal());
@@ -102,6 +110,13 @@ public class TrainController {
         Map<String, String> errors = new HashMap<>();
         trainService.validate(train, false, errors);
         if (result.hasErrors() || !errors.isEmpty()) {
+            model.addAttribute("loggedinuser", getPrincipal());
+            if (errors.get("ticketsSold") != null) {
+                TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
+                model.addAttribute("trainData", trainBean);
+                model.addAttribute("ticketsSold", "Couldn't update: tickets have already been sold!");
+                return "trainDetails";
+            }
             model.addAttribute("numberNonUnique", errors.get("numberNonUnique"));
             model.addAttribute("capacityCannotUpdate", errors.get("capacityCannotUpdate"));
             model.addAttribute("loggedinuser", getPrincipal());
@@ -114,7 +129,18 @@ public class TrainController {
 
     @RequestMapping(value = "/worker/trains/{id}/delete")
     public String deleteTrain(@PathVariable("id") int id,
+                              Model model,
                               final RedirectAttributes redirectAttributes) {
+        Map<String, String> errors = new HashMap<>();
+        trainService.validateDeletion(id, errors);
+        if (!errors.isEmpty()) {
+            TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
+            model.addAttribute("ticketsSold", "Couldn't delete: tickets have already been sold!");
+            model.addAttribute("trainData", trainBean);
+            model.addAttribute("loggedinuser", getPrincipal());
+            return "trainDetails";
+        }
+            //TODO output ticketsSold
         trainService.delete(id);
         return "redirect:/worker/trains";
     }
@@ -191,8 +217,22 @@ public class TrainController {
         if (!errors.isEmpty()) {
             model.addAttribute("invalidTrip", errors.get("invalidTrip"));
             model.addAttribute("ticketsSold", errors.get("ticketsSold"));
+            int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(trainId, UtilsClass.MAX_PAGE_RESULT);
+            int pageInt = 1;
+
+            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(trainId, true, pageInt, UtilsClass.MAX_PAGE_RESULT);
+
+            model.addAttribute("journeys", journeys);
+            model.addAttribute("trainId", trainId);
+            model.addAttribute("journeyForm", new JourneyBean());
+            model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
+            model.addAttribute("navPagesQty", navPagesQty);
+            model.addAttribute("currentPage", pageInt);
+            model.addAttribute("loggedinuser", getPrincipal());
+            return "journeys";
         }
-        else tripDataService.cancelJourney(trainId, journeyId);
+        else
+            tripDataService.cancelJourney(trainId, journeyId);
 
         return "redirect:/worker/trains/" + trainId + "/journeys";
     }

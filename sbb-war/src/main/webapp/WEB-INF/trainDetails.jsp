@@ -17,6 +17,7 @@
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h5>Train Details</h5>
+                <span style="color:red; display: block;"><c:out value="${ticketsSold}"/></span>
                 <div style="display:inline-block; margin-right: 15px;"><b>Train : </b>${trainData.trainBean.number}
                 </div>
                 <div style="display:inline-block; margin-right: 15px;"><b>Capacity :</b> ${trainData.trainBean.capacity}
@@ -40,8 +41,27 @@
                     <c:forEach items="${trainData.trainRoute}" var="routePoint">
                         <tr>
                             <td>${routePoint.station.name}</td>
-                            <td>${routePoint.arrival}</td>
-                            <td>${routePoint.departure}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${routePoint.arrival == routePoint.departure
+                                                    and routePoint.nextStation != null}">
+                                        —
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${routePoint.arrival}
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${routePoint.nextStation == null}">
+                                        —
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${routePoint.departure}
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                         </tr>
                     </c:forEach>
                 </table>

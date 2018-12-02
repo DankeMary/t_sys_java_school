@@ -18,7 +18,8 @@
                 <h5>Train Trip Details</h5>
                 <div style="display:inline-block; margin-right: 15px;"><b>Train : </b>${train.number}
                 </div>
-                <div style="display:inline-block; margin-right: 15px;"><b>Trip Departure : </b>${localDateFormat.format(tripDepDay)}
+                <div style="display:inline-block; margin-right: 15px;"><b>Trip Departure
+                    : </b>${localDateFormat.format(tripDepDay)}
                 </div>
 
                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
@@ -29,23 +30,39 @@
                         <th>Departure</th>
                     </tr>
                     </thead>
-                    <c:forEach items="${journeyDetails}" var="item">
+                    <c:forEach items="${journeyDetails}" var="item" varStatus="index">
                         <tr>
                             <td>${item.route.station.name}</td>
                             <td>
-                                <span style="font-size: 11px; color: green; display: block;">
-                                        ${item.route.arrival}
-                                </span>
-                                <span style="font-size: 9px; color: grey; display: block;">
-                                        ${localDateFormat.format(item.date)}
-                                </span>
+                                <c:choose>
+                                    <c:when test="${index.first}">
+                                        —
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span style="font-size: 11px; color: green; display: block;">
+                                                ${item.route.arrival}
+                                        </span>
+                                        <span style="font-size: 9px; color: grey; display: block;">
+                                                ${localDateFormat.format(item.date)}
+                                        </span>
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
-                            <td><span style="font-size: 11px; color: green; display: block;">
-                                    ${item.route.departure}
-                            </span>
-                                <span style="font-size: 9px; color: grey; display: block;">
-                                        ${localDateFormat.format(item.date)}
-                                </span></td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${index.last}">
+                                        —
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span style="font-size: 11px; color: green; display: block;">
+                                                ${item.route.departure}
+                                        </span>
+                                        <span style="font-size: 9px; color: grey; display: block;">
+                                                ${localDateFormat.format(item.date)}
+                                        </span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                         </tr>
                     </c:forEach>
                 </table>

@@ -113,8 +113,8 @@ public class StationService {
     public boolean allStationsExist(List<StationBeanExpanded> trainPath) {
         List<String> stationNames = new LinkedList<>();
         for (StationBeanExpanded p : trainPath)
-            if (!p.getStation().getName().isEmpty())
-                stationNames.add(p.getStation().getName());
+            if (!p.getStationName().isEmpty())
+                stationNames.add(p.getStationName());
 
         return stationDao.allStationsExist(stationNames);
     }

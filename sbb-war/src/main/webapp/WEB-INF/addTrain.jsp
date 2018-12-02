@@ -121,11 +121,8 @@
                             <div id="parent">
                             <c:forEach begin="0" end="${routesQty - 1}" var="i" varStatus="status">
                                 <tr>
-                                    <spring:bind path='trainForm.primitivePath[${status.index}].orderIndex'>
-                                        <input type='hidden' value='${i}' name="${status.expression}"/>
-                                    </spring:bind>
                                     <td>
-                                        <spring:bind path='trainForm.primitivePath[${status.index}].station.name'>
+                                        <spring:bind path='trainForm.primitivePath[${status.index}].stationName'>
                                             <input id='station-input-search-${i}'
                                                    value="${status.value}"
                                                    name="${status.expression}"

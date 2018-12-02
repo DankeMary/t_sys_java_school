@@ -33,31 +33,31 @@
                     <a class="dropdown-item" href="/passengers/add">Add New</a>
                 </div>
             </li>--%>
-                <sec:authorize access="hasRole('ROLE_WORKER') or hasRole('ROLE_ADMIN')">
+            <sec:authorize access="hasRole('ROLE_WORKER') or hasRole('ROLE_ADMIN')">
 
 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle navbarDropdown" href="#" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    Stations
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/worker/stations">View All</a>
-                    <a class="dropdown-item" href="/worker/stations/add">Add New</a>
-                </div>
-            </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle navbarDropdown" href="#" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Stations
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/worker/stations">View All</a>
+                        <a class="dropdown-item" href="/worker/stations/add">Add New</a>
+                    </div>
+                </li>
 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle navbarDropdown" href="#" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    Trains
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/worker/trains">View All</a>
-                    <a class="dropdown-item" href="/worker/trains/add">Add New</a>
-                </div>
-            </li>
-                </sec:authorize>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle navbarDropdown" href="#" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Trains
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/worker/trains">View All</a>
+                        <a class="dropdown-item" href="/worker/trains/add">Add New</a>
+                    </div>
+                </li>
+            </sec:authorize>
             <li class="nav-item dropdown">
                 <a class="nav-link" href="/schedule" role="button" aria-haspopup="true" aria-expanded="false">
                     Schedule

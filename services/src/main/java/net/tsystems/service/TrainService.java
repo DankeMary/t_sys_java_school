@@ -79,7 +79,10 @@ public class TrainService {
     public void delete(int id) {
         try {
             //TODO !!! check that no tickets were sold!!!!!
+            //tripDataService.getFirstJourneysByTrainNotCancelled(id)
+            tripDataService.trainWasErased(id);
             trainDao.delete(trainDao.find(id));
+            //TODO cancel journeys, erase routes ?
         } catch (Exception e) {
             LOG.error(String.format("Failed to delete train by id=%s", id));
             e.printStackTrace();
@@ -116,7 +119,8 @@ public class TrainService {
         TrainBean train = null;
         try {
             train = trainDOToBean(trainDao.find(id));
-            train.setTrip(tripService.getTripByTrainId(train.getId()));
+            if (train != null)
+                train.setTrip(tripService.getTripByTrainId(train.getId()));
         } catch (Exception e) {
             LOG.error(String.format("Failed to get train by id=%s", id));
             e.printStackTrace();
@@ -128,7 +132,8 @@ public class TrainService {
         TrainBean train = null;
         try {
             train = trainDOToBean(trainDao.findByNumber(number));
-            train.setTrip(tripService.getTripByTrainId(train.getId()));
+            if (train != null)
+                train.setTrip(tripService.getTripByTrainId(train.getId()));
         } catch (Exception e) {
             LOG.error(String.format("Failed to get train by number=%s", number));
             e.printStackTrace();
@@ -152,24 +157,29 @@ public class TrainService {
     }
 
     //Validation Utils
-    public void validate(TrainBean train, boolean isNew, Map<String, String> errors) {
-        if (train.getNumber() != null &&
-                train.getNumber() < Integer.MAX_VALUE &&
-                train.getNumber() > 0) {
-            if ((isNew && getTrainByNumber(train.getNumber().intValue()) != null) ||
-                    (!isNew && !isUniqueByNumber(train.getId(), train.getNumber().intValue())))
-                errors.put("numberNonUnique", "Train with such number already exists");
-        }
-        //TODO!!! (check no tickets)
-        if (!isNew && !(getTrainById(train.getId()).getCapacity().equals(train.getCapacity())) && ticketService.hasTicketsOnTrainSold(train.getId()))
-            //TODO in general or only if no tickets were sold yet?
-            errors.put("capacityCannotUpdate", "There are tickets sold already");
+    public boolean canUpdate(int trainId) {
+        return !ticketService.hasTicketsOnTrainSold(trainId);
+    }
 
-        /*if (!isNew && ticketService.hasTicketsOnTrainSold(train.getId())) {
-            errors.put("capacityCannotUpdate", "There are journeys planned already");
-        }*/
-        //TODO check price
-        //TODO check that can update the price when no tickets were sold yet
+    public void validate(TrainBean train, boolean isNew, Map<String, String> errors) {
+        TrainBean oldTrain = isNew ? null : trainDOToBean(trainDao.find(train.getId()));
+        if (!isNew && ticketService.hasTicketsOnTrainSold(train.getId())) {
+            errors.put("ticketsSold", "Can't update - tickets have already been sold");
+        } else {
+            if (train.getNumber() != null &&
+                    train.getNumber() < Integer.MAX_VALUE &&
+                    train.getNumber() > 0) {
+                if ((isNew && getTrainByNumber(train.getNumber().intValue()) != null) ||
+                        (!isNew && !isUniqueByNumber(train.getId(), train.getNumber().intValue())))
+                    errors.put("numberNonUnique", "Train with such number already exists");
+            }
+        }
+    }
+
+    public void validateDeletion(int trainId, Map<String, String> errors) {
+        tripDataService.validateCancellation(trainId,
+                tripDataService.getFirstJourneysByTrainNotCancelled(trainId, true),
+                errors);
     }
 
     public boolean isUniqueByNumber(int id, int number) {

@@ -28,6 +28,8 @@ public class StationService {
     private StationEntityMapper entityMapper = new StationEntityMapperImpl();
     private StationBeanMapper beanMapper = new StationBeanMapperImpl();
 
+    private TripService tripService;
+
     public void create(StationBean station) {
         try {
             stationDao.create(stationBeanToDO(station));
@@ -110,6 +112,10 @@ public class StationService {
             errors.rejectValue("name", "NonUnique", "Station with such name already exists");
     }
 
+    public boolean canDelete(int id) {
+        return !tripService.existByStationId(id);
+    }
+
     public boolean allStationsExist(List<StationBeanExpanded> trainPath) {
         List<String> stationNames = new LinkedList<>();
         for (StationBeanExpanded p : trainPath)
@@ -137,8 +143,14 @@ public class StationService {
         return beanMapper.stationListToBeanList(entityMapper.stationListToSOList(stations));
     }
 
+    //Autowired
     @Autowired
     public void setStationDao(StationDAO stationDao) {
         this.stationDao = stationDao;
+    }
+
+    @Autowired
+    public void setTripService(TripService tripService) {
+        this.tripService = tripService;
     }
 }

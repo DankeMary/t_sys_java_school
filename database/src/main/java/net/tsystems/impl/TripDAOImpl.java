@@ -21,4 +21,14 @@ public class TripDAOImpl extends AbstractDaoImpl<TripDO, Integer> implements Tri
                 .list();
         return list.size() == 0 ? null : list.get(0);
     }
+
+    @Override
+    public boolean existByStationId(int stationId) {
+        List<TripDO> list = (List<TripDO>)getEntityManager()
+                .createQuery("from TripDO t where (t.from.id =" + stationId + " or " +
+                        "t.to.id=" + stationId + ") and " +
+                        "t.train is not null ")
+                .list();
+        return list.size() != 0;
+    }
 }

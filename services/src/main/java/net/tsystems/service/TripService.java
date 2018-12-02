@@ -97,6 +97,9 @@ public class TripService {
         return tripBean;
     }
 
+    public boolean existByStationId(int stationId) {
+        return tripDao.existByStationId(stationId);
+    }
     //Mappers
     public TripBean tripDOToBean(TripDO trip) {
         return beanMapper.tripToBean(entityMapper.tripToSO(trip));

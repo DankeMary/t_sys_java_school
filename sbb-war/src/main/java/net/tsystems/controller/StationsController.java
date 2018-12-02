@@ -97,9 +97,22 @@ public class StationsController {
 
     @RequestMapping(value = "/worker/stations/{id}/delete")
     public String deleteStation(@PathVariable("id") int id,
+                                Model model,
                                 final RedirectAttributes redirectAttributes) {
-        stationService.delete(id);
-        return "redirect:/worker/stations";
+        if (stationService.canDelete(id)) {
+            stationService.delete(id);
+            return "redirect:/worker/stations";
+        }
+        int navPagesQty = stationService.countPages(UtilsClass.MAX_PAGE_RESULT);
+        int pageInt = 1;
+
+        List<StationBean> stations = stationService.getAll(pageInt, UtilsClass.MAX_PAGE_RESULT);
+        model.addAttribute("stations", stations);
+        model.addAttribute("navPagesQty", navPagesQty);
+        model.addAttribute("currentPage", pageInt);
+        model.addAttribute("loggedinuser", getPrincipal());
+        model.addAttribute("restrictDelete", "Couldn't delete the station - some trains depend on it.");
+        return "stations";
     }
 
     @RequestMapping(value = "/schedule", method = RequestMethod.GET)

@@ -23,6 +23,7 @@
                     </c:when>
                     <c:when test="${not empty stations}">
                         <h5>Stations</h5>
+                        <span style="color:red; display: block;"><c:out value="${restrictDelete}"/></span>
                         <div class="pagination">
                             <c:choose>
                                 <c:when test="${currentPage != 1}">

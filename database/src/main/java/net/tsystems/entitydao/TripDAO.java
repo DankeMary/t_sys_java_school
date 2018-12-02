@@ -6,4 +6,5 @@ import net.tsystems.entities.TripDO;
 public interface TripDAO extends AbstractDao<TripDO, Integer> {
     Integer createReturnId(TripDO t);
     TripDO getByTrainId(int trainId);
+    boolean existByStationId(int stationId);
 }

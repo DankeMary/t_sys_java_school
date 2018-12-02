@@ -104,6 +104,8 @@ public class PassengerService {
     public void validate(PassengerBean passenger, Map<String, String> errors) {
         if (passenger.getBirthday() != null && passenger.getBirthday().isAfter(LocalDate.now()))
             errors.put("birthdayError", "Birthday has to be in the past");
+        else if (passenger.getBirthday() != null && LocalDate.of(1900, 1, 1).isAfter(passenger.getBirthday()))
+            errors.put("birthdayError", "Minimal birthday date is 01-01-1900");
     }
 
     //Check that only empty lines are invalid (no incomplete information is provided)
@@ -159,6 +161,7 @@ public class PassengerService {
         //birthday
         errors.add("Birthday is required");
         errors.add("Birthday has to be in the past");
+        errors.add("Minimal birthday date is 01-01-1900");
         return errors;
     }
 

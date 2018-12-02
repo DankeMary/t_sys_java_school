@@ -27,7 +27,8 @@
                             <label style="width: 110px;">Departure Day</label>
                             <input type="date" value="${status.value}"
                                    name="${status.expression}"
-                                   class=" form-control" style="width: 150px; display: inline-block;">
+                                   class=" form-control" style="width: 150px; display: inline-block;"
+                            required>
                             <span style="color: red">
                             <c:if test="${status.error}">
                                 <c:forEach items="${status.errorMessages}" var="error">

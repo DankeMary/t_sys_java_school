@@ -101,7 +101,7 @@
                         </spring:bind>
                     </div>
 
-                    <h5>Add Train Path</h5>
+                    <h5>Add Train Path <span style="font-size: 14px">(Completely blank items are not counted)</span></h5>
                     <div class="error-list">
                         <span style="color:red; display: block;"><c:out value="${shortPath}"/></span>
                         <span style="color:red; display: block;"><c:out value="${wrongPath}"/></span>

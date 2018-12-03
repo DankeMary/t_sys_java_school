@@ -14,10 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service("passengerService")
 @Transactional
@@ -109,13 +114,15 @@ public class PassengerService {
     }
 
     //Check that only empty lines are invalid (no incomplete information is provided)
-    public boolean passengersHaveCompleteInfo(List<PassengerBean> passengers) {
+    public boolean passengersHaveCompleteAndValidInfo(List<PassengerBean> passengers) {
         for (PassengerBean p : passengers) {
-            if ((!p.getFirstName().trim().isEmpty() &&
-                    !p.getLastName().trim().isEmpty() &&
-                    (p.getBirthday() != null)) || (p.getFirstName().trim().isEmpty() &&
+            if (p.getFirstName().trim().isEmpty() &&
                     p.getLastName().trim().isEmpty() &&
-                    (p.getBirthday() == null)))
+                    (p.getBirthday() == null))
+                continue;
+            else if (!p.getFirstName().trim().isEmpty() &&
+                    !p.getLastName().trim().isEmpty() &&
+                    (p.getBirthday() != null) && validBean(p))
                 continue;
             else return false;
         }
@@ -147,9 +154,16 @@ public class PassengerService {
     }
 
     //Help Functions
+    private boolean validBean(PassengerBean pBean) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<PassengerBean>> violations = validator.validate(pBean);
+        return violations.isEmpty();
+    }
     public void validateList(List<PassengerBean> passengers, Map<String, String> errors) {
-        for (PassengerBean p : passengers)
+        for (PassengerBean p : passengers) {
             validate(p, errors);
+        }
     }
 
     public List<String> possibleValidationErrors() {

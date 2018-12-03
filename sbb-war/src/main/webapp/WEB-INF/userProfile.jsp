@@ -3,7 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>Passenger Profile</title>
+    <title>User Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/style.css" />">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.min.css" />">
@@ -109,7 +109,7 @@
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
-                                <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
+                                <table class="table table-striped table-hover" style="width: 100%; min-width: 500px; font-size: 14px;">
                                     <thead class="thead-light">
                                     <tr>
                                         <th>Ticket</th>

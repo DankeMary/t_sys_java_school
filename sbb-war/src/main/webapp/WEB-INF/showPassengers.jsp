@@ -19,7 +19,7 @@
                 <h5>Passengers of train #${trainNumber} on ${localDateFormat.format(departureDay)}</h5>
                 <c:choose>
                     <c:when test="${empty tickets}">
-                        <h4>No passengers yet</h4>
+                        <h6>No passengers yet</h6>
                     </c:when>
                     <c:when test="${not empty tickets}">
                         <div class="pagination">
@@ -100,7 +100,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
-                        <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
+                        <table class="table table-striped table-hover" style="width: 100%; min-width: 500px; font-size: 14px;">
                             <thead class="thead-light">
                             <tr>
                                 <th>Ticket</th>

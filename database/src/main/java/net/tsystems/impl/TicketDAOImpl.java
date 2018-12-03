@@ -16,10 +16,10 @@ public class TicketDAOImpl extends AbstractDaoImpl<TicketDO, Integer> implements
         Query q = getEntityManager()
                 .createQuery("from TicketDO ti where " +
                         "ti.from.route.trip.train.id = :trainId and " +
-                        " date(ti.from.tripDeparture) = :date " +
+                        " ti.from.tripDeparture = \'" + date + "\'" +
                         " order by ti.passenger.lastName, ti.passenger.firstName");
         q.setParameter("trainId", trainId);
-        q.setParameter("date", java.sql.Date.valueOf(date));
+        //q.setParameter("date", java.sql.Date.valueOf(date));
         return findAll(q, page, maxResult);
     }
 

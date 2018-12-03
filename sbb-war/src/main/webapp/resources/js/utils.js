@@ -49,7 +49,7 @@ $(document).ready(function () {
 
             "<td><input name='passengers[" + psngrIndex + "].birthday' type='date' class='form-control'/></td>" +
             "</tr>");
-        if (psngrIndex >= 10) {
+        if (psngrIndex === 9) {
             $('#addPassengerButton').attr("disabled", true);
         }
     });

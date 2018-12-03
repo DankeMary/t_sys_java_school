@@ -26,8 +26,8 @@
                     More...</a></p>
                 <c:choose>
                     <c:when test="${empty noTickets}">
-                        <span style="color: red; display: block;">${psngrInfo}</span>
                         <h6>Enter The Passengers Details <span style="font-size: 14px">(Completely blank items are not counted)</span></h6>
+                        <span style="color: red; display: block;">${psngrInfo}</span>
                         <c:if test="${not empty possibleErrors}">
                             <span style="color: red; display: block;">Some of the given data is invalid or missing. Check:</span>
                             <ul style="color: red; padding-left: 15px;">

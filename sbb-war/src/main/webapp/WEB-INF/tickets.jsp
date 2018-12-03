@@ -114,7 +114,7 @@
                                         <th>From</th>
                                         <th>To</th>
                                         <th>Tickets</th>
-                                        <th>Buy</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <c:forEach items="${ticketsAvailable}" var="item">

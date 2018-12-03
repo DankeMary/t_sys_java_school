@@ -16,10 +16,14 @@
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h5>Train Trip Details</h5>
-                <div style="display:inline-block; margin-right: 15px;"><b>Train : </b>${train.number}
+                <div style="display:inline-block; margin-right: 15px;">
+                    <b>Train : </b>${train.number}
                 </div>
-                <div style="display:inline-block; margin-right: 15px;"><b>Trip Departure
-                    : </b>${localDateFormat.format(tripDepDay)}
+                <div style="display:inline-block; margin-right: 15px;">
+                    <b>Trip Departure : </b>${localDateFormat.format(tripDepDay)}
+                </div>
+                <div style="display:inline-block; margin-right: 15px;">
+                    <b>Price : </b>${train.price}
                 </div>
 
                 <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">

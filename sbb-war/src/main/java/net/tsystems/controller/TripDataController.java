@@ -112,9 +112,10 @@ public class TripDataController {
         int psngrsQty = passengerService.countCompleteInfo(ticketsData.getPassengers());
         Map<String, String> errors = new HashMap<>();
         passengerService.validateList(ticketsData.getPassengers(), errors);
+        boolean passengersHaveCompleteAndValidInfo = passengerService.passengersHaveCompleteAndValidInfo(ticketsData.getPassengers());
 
         if (result.hasErrors() &&
-                !passengerService.passengersHaveCompleteInfo(ticketsData.getPassengers()) ||
+                !passengersHaveCompleteAndValidInfo ||
                 !errors.isEmpty() ||
                 (psngrsQty < 1) || (psngrsQty > MAX_TICKETS_QTY)) {
             model.addAttribute("ticketForm", ticketsData);
@@ -134,7 +135,7 @@ public class TripDataController {
             model.addAttribute("toJourneyId", ticketsData.getToJourneyId());
             model.addAttribute("loggedinuser", getPrincipal());
 
-            if ((result.hasErrors() || !errors.isEmpty()) && psngrsQty <= MAX_TICKETS_QTY)
+            if (((result.hasErrors() && !passengersHaveCompleteAndValidInfo) || !errors.isEmpty()) && psngrsQty <= MAX_TICKETS_QTY)
                 model.addAttribute("possibleErrors", passengerService.possibleValidationErrors());
             else if (psngrsQty < 1)
                 model.addAttribute("psngrInfo", "Enter info about at least 1 passenger");

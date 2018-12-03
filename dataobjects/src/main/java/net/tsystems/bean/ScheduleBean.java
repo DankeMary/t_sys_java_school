@@ -1,7 +1,9 @@
 package net.tsystems.bean;
 
 
-public class ScheduleBean {
+import java.io.Serializable;
+
+public class ScheduleBean  implements Serializable {
     private TrainBean train;
     private TripBean trip;
     private RouteBean route;

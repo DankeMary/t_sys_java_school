@@ -1,6 +1,8 @@
 package net.tsystems.bean;
 
-public class TripBean {
+import java.io.Serializable;
+
+public class TripBean  implements Serializable {
     private int id;
     private TrainBean train;
     private StationBean from;

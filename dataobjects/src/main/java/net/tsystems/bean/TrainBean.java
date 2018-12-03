@@ -2,9 +2,10 @@ package net.tsystems.bean;
 
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class TrainBean {
+public class TrainBean  implements Serializable {
     private int id;
 
     @NotNull(message = "Train number is mandatory")

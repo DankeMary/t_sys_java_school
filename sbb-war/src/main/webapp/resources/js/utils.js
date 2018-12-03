@@ -12,7 +12,7 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (data) {
                     response($.map($.parseJSON(JSON.stringify(data)), function (item) {
-                        return {label: item.name, value: item.name};//value: item.id};
+                        return {label: item.name, value: item.name};
                     }));
                 },
                 error: function (error) {

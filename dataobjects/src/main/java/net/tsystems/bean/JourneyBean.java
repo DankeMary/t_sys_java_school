@@ -2,9 +2,10 @@ package net.tsystems.bean;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class JourneyBean {
+public class JourneyBean  implements Serializable {
     private int journeyId;
     private TripBean trip;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

@@ -36,14 +36,18 @@ public class UsersController {
     AuthenticationTrustResolver authenticationTrustResolver;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {
+    public String loginPage(@RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "registered", required = false) String registered,
+                            Model model) {
         UserBean user = new UserBean();
         model.addAttribute("userForm", user);
 
         if (isCurrentAuthenticationAnonymous()) {
+            if (registered != null && !registered.isEmpty())
+                model.addAttribute("signup", "You have registered successfully");
             return "login";
         } else {
-            return "redirect:/passengers";
+            return "redirect:/";
         }
     }
 
@@ -75,9 +79,10 @@ public class UsersController {
         }*/
 
         userService.create(user, "");
-
+        model.addAttribute("signup", "You have registered successfully");
+        model.addAttribute("loggedinuser", getPrincipal());
         //TODO You have been successfully signed up
-        return "redirect:/login";
+        return "redirect:/login?registered=ok";
     }
 
     //TODO Is needed?

@@ -1,11 +1,14 @@
 package net.tsystems.bean;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalTime;
 
 
-public class StationBeanExpanded {
+public class StationBeanExpanded  implements Serializable {
     private int routeId;
     /*@Min(value = 0)
     private int orderIndex;*/
@@ -15,8 +18,10 @@ public class StationBeanExpanded {
     @Pattern(regexp = "^$|^[a-zA-Z][a-zA-Z \\-0-9]+$", message = "Station name has to have at least one letter and can have only latin letters, digits, spaces and hyphens")
     private String stationName;
     //@NotNull
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime arrTime;
     //@NotNull
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime depTime;
 
     public int getRouteId() {

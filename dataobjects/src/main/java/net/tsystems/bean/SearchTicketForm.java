@@ -1,6 +1,8 @@
 package net.tsystems.bean;
 
-public class SearchTicketForm {
+import java.io.Serializable;
+
+public class SearchTicketForm  implements Serializable {
     private TripDataBean fromTDBean;
     private TripDataBean toTDBean;
     private int ticketsQty;

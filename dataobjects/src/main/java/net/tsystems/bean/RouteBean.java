@@ -1,10 +1,11 @@
 package net.tsystems.bean;
 
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
 
-public class RouteBean {
+public class RouteBean  implements Serializable {
     private int id;
     private TripBean trip;
     private StationBean station;

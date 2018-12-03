@@ -70,6 +70,7 @@ public class TrainController {
         trainService.validate(train.getTrain(), true, errors);
         routeService.validatePrimitive(train.getPrimitivePath(), errors);
         if (result.hasErrors() || !errors.isEmpty()) {
+            model.addAttribute("trainForm", train);
             model.addAttribute("shortPath", errors.get("shortPath"));
             model.addAttribute("wrongPath", errors.get("wrongPath"));
             model.addAttribute("dataMissing", errors.get("dataMissing"));
@@ -123,7 +124,7 @@ public class TrainController {
             return "editTrain";
         } else {
             trainService.update(train);
-            return "redirect:/worker/trains";
+            return "redirect:/worker/trains/" + id;
         }
     }
 

@@ -18,13 +18,21 @@
             <div class="col-12" style="overflow:auto">
                 <h3 style="text-align: center;">Log In</h3>
                 <c:if test="${param.error != null}">
-                    <div class="alert alert-danger">
-                        <p>Invalid username and password.</p>
+                    <div class="alert alert-danger"
+                         style="max-width: 360px; margin: 0 auto; text-align: center;">
+                        <p style="margin: 0;">Invalid username or password.</p>
                     </div>
                 </c:if>
                 <c:if test="${param.logout != null}">
-                    <div class="alert alert-success">
-                        <p>You have been logged out successfully.</p>
+                    <div class="alert alert-success"
+                         style="max-width: 360px; margin: 0 auto; text-align: center;">
+                        <p style="margin: 0;">You have been logged out successfully.</p>
+                    </div>
+                </c:if>
+                <c:if test="${not empty signup}">
+                    <div class="alert alert-success"
+                         style="max-width: 360px; margin: 0 auto; text-align: center;">
+                        <p style="margin: 0;">${signup}</p>
                     </div>
                 </c:if>
 

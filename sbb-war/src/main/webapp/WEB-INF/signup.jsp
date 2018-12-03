@@ -18,8 +18,9 @@
             <div class="col-12" style="overflow:auto">
                 <h3 style="text-align: center;">Enter The User Details</h3>
                 <c:if test="${not empty uniqueUsername}">
-                    <div class="alert alert-danger">
-                        <p>${uniqueUsername}</p>
+                    <div class="alert alert-danger"
+                         style="max-width: 360px; margin: 0 auto; text-align: center;">
+                        <p style="margin: 0;">${uniqueUsername}</p>
                     </div>
                 </c:if>
                 <div class="form">
@@ -69,7 +70,7 @@
 
                         <div style="margin: auto;">
                             <button type="submit" value="" id="submit" class="submit-btn btn btn-success"
-                                    style="margin-bottom: 20px">Sign Up
+                                    style="margin-bottom: 20px; width: 80px;">Sign Up
                             </button>
                         </div>
 

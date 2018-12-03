@@ -2,9 +2,10 @@ package net.tsystems.bean;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 
-public class CreateTrainForm {
+public class CreateTrainForm  implements Serializable {
     @NotNull
     @Valid
     private TrainBean train;

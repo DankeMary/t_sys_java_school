@@ -17,54 +17,65 @@
             <jsp:include page="menu.jsp"/>
             <div class="col-12" style="overflow:auto">
                 <h5>Train Details</h5>
-                <span style="color:red; display: block;"><c:out value="${ticketsSold}"/></span>
-                <div style="display:inline-block; margin-right: 15px;"><b>Train : </b>${trainData.trainBean.number}
-                </div>
-                <div style="display:inline-block; margin-right: 15px;"><b>Capacity :</b> ${trainData.trainBean.capacity}
-                </div>
-                <div style="display:inline-block; margin-right: 15px;"><b>Price :</b> ${trainData.trainBean.price}</div>
-                <div style="display:inline-block">
-                    <a href="/worker/trains/${trainData.trainBean.id}/update">Edit</a> |
-                    <a href="/worker/trains/${trainData.trainBean.id}/delete"
-                       onclick="return confirmDelete(this, '${pageContext.request.contextPath}/worker/trains/${trainData.trainBean.id}/delete')">Delete</a>
-                </div>
-                <p><b>Journeys : </b> <a href="/worker/trains/${trainData.trainBean.id}/journeys">See More...</a></p>
-                <h5>Train Path:</h5>
-                <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
-                    <thead class="thead-light">
-                    <tr>
-                        <th>Station</th>
-                        <th>Arrival</th>
-                        <th>Departure</th>
-                    </tr>
-                    </thead>
-                    <c:forEach items="${trainData.trainRoute}" var="routePoint">
-                        <tr>
-                            <td>${routePoint.station.name}</td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${routePoint.arrival == routePoint.departure
+                <c:choose>
+                    <c:when test="${empty trainData}">
+                        <h6>No train with such id found</h6>
+                    </c:when>
+                    <c:otherwise>
+                        <span style="color:red; display: block;"><c:out value="${ticketsSold}"/></span>
+                        <div style="display:inline-block; margin-right: 15px;"><b>Train
+                            : </b>${trainData.trainBean.number}
+                        </div>
+                        <div style="display:inline-block; margin-right: 15px;"><b>Capacity
+                            :</b> ${trainData.trainBean.capacity}
+                        </div>
+                        <div style="display:inline-block; margin-right: 15px;"><b>Price
+                            :</b> ${trainData.trainBean.price}</div>
+                        <div style="display:inline-block">
+                            <a href="/worker/trains/${trainData.trainBean.id}/update">Edit</a> |
+                            <a href="/worker/trains/${trainData.trainBean.id}/delete"
+                               onclick="return confirmDelete(this, '${pageContext.request.contextPath}/worker/trains/${trainData.trainBean.id}/delete')">Delete</a>
+                        </div>
+                        <p><b>Journeys : </b> <a href="/worker/trains/${trainData.trainBean.id}/journeys">See
+                            More...</a></p>
+                        <h5>Train Path:</h5>
+                        <table class="table table-striped table-hover" style="width: 100%; min-width: 500px">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>Station</th>
+                                <th>Arrival</th>
+                                <th>Departure</th>
+                            </tr>
+                            </thead>
+                            <c:forEach items="${trainData.trainRoute}" var="routePoint">
+                                <tr>
+                                    <td>${routePoint.station.name}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${routePoint.arrival == routePoint.departure
                                                     and routePoint.nextStation != null}">
-                                        —
-                                    </c:when>
-                                    <c:otherwise>
-                                        ${routePoint.arrival}
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${routePoint.nextStation == null}">
-                                        —
-                                    </c:when>
-                                    <c:otherwise>
-                                        ${routePoint.departure}
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </table>
+                                                —
+                                            </c:when>
+                                            <c:otherwise>
+                                                ${routePoint.arrival}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${routePoint.nextStation == null}">
+                                                —
+                                            </c:when>
+                                            <c:otherwise>
+                                                ${routePoint.departure}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <div class="col">

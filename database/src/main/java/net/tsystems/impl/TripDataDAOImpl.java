@@ -13,9 +13,10 @@ import java.util.List;
 public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implements TripDataDAO {
     public List<TripDataDO> findFirstByTrain(int id) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
-                .createQuery("from TripDataDO where route.trip.train=" + id
+                .createQuery("from TripDataDO where route.trip.train = :id "
                         + " and route.station = route.trip.from " +
                         " and isCancelled = 0 ")
+                .setParameter("id", id)
                 .list();
         return list;
     }
@@ -23,21 +24,23 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     @Override
     public int countFirstAfterNowByTrainPages(int id, int maxResult) {
         return countPages(getEntityManager()
-                .createQuery( "select count(*) from TripDataDO " +
-                        " where route.trip.train.id=" + id
-                        + " and route.station = route.trip.from"
-                        + " and date >= now() " +
-                        " and isCancelled = 0"),
+                        .createQuery("select count(*) from TripDataDO " +
+                                " where route.trip.train.id = :id "
+                                + " and route.station = route.trip.from"
+                                + " and date >= now() " +
+                                " and isCancelled = 0")
+                        .setParameter("id", id),
                 maxResult);
     }
 
     @Override
     public List<TripDataDO> findFirstAfterNowByTrainOrdered(int id) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
-                .createQuery("from TripDataDO where route.trip.train.id=" + id
+                .createQuery("from TripDataDO where route.trip.train.id = :id "
                         + " and route.station = route.trip.from"
                         + " and date >= now() " +
                         " and isCancelled = 0 ")
+                .setParameter("id", id)
                 .list();
         return list;
     }
@@ -46,11 +49,12 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     public List<TripDataDO> findFirstAfterNowByTrainOrdered(int id, int page, int maxResult) {
         Query q = getEntityManager()
                 .createQuery("from TripDataDO " +
-                        " where route.trip.train.id=" + id
+                        " where route.trip.train.id = :id "
                         + " and route.station = route.trip.from"
                         + " and date >= now() " +
                         " and isCancelled = 0 " +
                         "order by date");
+        q.setParameter("id", id);
         q.setFirstResult((page - 1) * maxResult);
         q.setMaxResults(maxResult);
 
@@ -60,9 +64,11 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     @Override
     public List<TripDataDO> findByTrainIdAndTripDepartureDay(int trainId, LocalDate date) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
-                .createQuery("from TripDataDO td where td.route.trip.train.id=" + trainId
-                        + " and tripDeparture=\'" + date + "\'" +
+                .createQuery("from TripDataDO td where td.route.trip.train.id = :trainId "
+                        + " and td.tripDeparture = \'" + date + "\' " +
                         "order by td.date")
+                .setParameter("trainId", trainId)
+                //.setParameter("date", java.sql.Date.valueOf(date))
                 .list();
         return list;
     }
@@ -70,9 +76,11 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     @Override
     public List<TripDataDO> findByTripIdAndTripDepartureDay(int tripId, LocalDate date) {
         List<TripDataDO> list = (List<TripDataDO>) getEntityManager()
-                .createQuery("from TripDataDO td where td.route.trip.id=" + tripId
-                        + " and tripDeparture=\'" + date + "\'" +
+                .createQuery("from TripDataDO td where td.route.trip.id = :tripId "
+                        + " and tripDeparture = \'" + date + "\' " +
                         "order by td.date")
+                .setParameter("tripId", tripId)
+                //.setParameter("date", java.sql.Date.valueOf(date))
                 .list();
         return list;
     }
@@ -80,9 +88,13 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
     @Override
     public boolean journeyOfTripOnDateExists(int tripId, LocalDate date) {
         Long qty = (Long) getEntityManager()
-                .createQuery("select count(*) as n from TripDataDO td where td.route.trip.id=" + tripId
-                        + " and tripDeparture=\'" + date + "\' and" +
-                        " isCancelled = 0").uniqueResult();
+                .createQuery("select count(*) as n from TripDataDO td " +
+                        " where td.route.trip.id = :tripId "
+                        + " and tripDeparture = \'" + date + "\'  and" +
+                        " isCancelled = 0")
+                .setParameter("tripId", tripId)
+                //.setParameter("date", java.sql.Date.valueOf(date))
+                .uniqueResult();
         return qty != 0;
     }
 
@@ -93,9 +105,10 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                         "join RouteDO r on td.route = r " +
                         "join TripDO t on r.trip = t " +
                         "join TrainDO tr on t.train = tr " +
-                        "where r.station.name =\'" + stationName + "\' and " +
+                        "where r.station.name = :stationName and " +
                         " td.date >= now() " +
                         " order by td.date, r.arrival, r.departure, tr.number")
+                .setParameter("stationName", stationName)
                 .setMaxResults(maxResults)
                 .list();
 
@@ -117,9 +130,9 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                                 "join TripDO t on r.trip = t  " +
                                 "join TrainDO tr on t.train = tr " +
                                 "where td.id = td1.id and " +
-                                "r.station.name = \'" + fromStation + "\' and  " +
-                                "td.date between \'" + from + "\' and \'" + to + "\' and " +
-                                "td.date between \'" + tenMinutesMore + "\' and \'" + to + "\')" +
+                                "r.station.name = :fromStation and  " +
+                                "td.date between :fromDate  and :toDate and " +
+                                "td.date between :tenMinutesMore and :toDate )" +
 
                                 " and exists (select td2 from TripDataDO td2  " +
                                 "join RouteDO r2 on td2.route = r2  " +
@@ -127,10 +140,15 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                                 "join TrainDO tr2 on t2.train = tr2  " +
                                 "where td1.route.trip = td2.route.trip and " +
                                 "td1.tripDeparture = td2.tripDeparture and " +
-                                "r2.station.name = \'" + toStation + "\' )" +
+                                "r2.station.name = :toStation )" +
                                 " order by td1.date, td1.route.trip.train.number"
                 );
 
+        q.setParameter("fromStation", fromStation);
+        q.setParameter("fromDate", from);
+        q.setParameter("toDate", to);
+        q.setParameter("tenMinutesMore", tenMinutesMore);
+        q.setParameter("toStation", toStation);
         q.setFirstResult((page - 1) * maxResult);
         q.setMaxResults(maxResult);
 
@@ -151,9 +169,9 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                                         "join TripDO t on r.trip = t  " +
                                         "join TrainDO tr on t.train = tr " +
                                         "where td.id = td1.id and " +
-                                        "r.station.name = \'" + fromStation + "\' and  " +
-                                        "td.date between \'" + from + "\' and \'" + to + "\' and " +
-                                        "td.date between \'" + tenMinutesMore + "\' and \'" + to + "\')" +
+                                        "r.station.name = :fromStation and  " +
+                                        "td.date between :fromDate and :toDate and " +
+                                        "td.date between :tenMinutesMore and :toDate )" +
 
                                         " and exists (select td2 from TripDataDO td2  " +
                                         "join RouteDO r2 on td2.route = r2  " +
@@ -161,8 +179,13 @@ public class TripDataDAOImpl extends AbstractDaoImpl<TripDataDO, Integer> implem
                                         "join TrainDO tr2 on t2.train = tr2  " +
                                         "where td1.route.trip = td2.route.trip and " +
                                         "td1.tripDeparture = td2.tripDeparture and " +
-                                        "r2.station.name = \'" + toStation + "\' )"
-                        ),
+                                        "r2.station.name = :toStation )"
+                        )
+                        .setParameter("fromStation", fromStation)
+                        .setParameter("fromDate", from)
+                        .setParameter("toDate", to)
+                        .setParameter("tenMinutesMore", tenMinutesMore)
+                        .setParameter("toStation", toStation),
                 maxResult
         );
     }

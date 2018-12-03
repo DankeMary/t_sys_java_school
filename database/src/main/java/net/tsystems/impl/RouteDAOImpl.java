@@ -11,7 +11,8 @@ public class RouteDAOImpl extends AbstractDaoImpl<RouteDO, Integer> implements R
     @Override
     public List<RouteDO> getRoutesByTrainId(int trainId) {
         List<RouteDO> list = (List<RouteDO>) getEntityManager()
-                .createQuery("from RouteDO where trip.train.id=" + trainId)
+                .createQuery("from RouteDO where trip.train.id = :trainId")
+                .setParameter("trainId", trainId)
                 .list();
         return list;
     }

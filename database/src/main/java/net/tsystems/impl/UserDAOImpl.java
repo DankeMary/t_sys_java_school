@@ -17,7 +17,8 @@ public class UserDAOImpl extends AbstractDaoImpl<UserDO, Integer> implements Use
     @Override
     public UserDO findByUsername(String username) {
         List<UserDO> list = (List<UserDO>) getEntityManager()
-                .createQuery("from UserDO where username='" + username + "'")
+                .createQuery("from UserDO where username = :username ")
+                .setParameter("username", username)
                 .list();
         return list.size() == 0 ? null : list.get(0);
     }
@@ -25,7 +26,9 @@ public class UserDAOImpl extends AbstractDaoImpl<UserDO, Integer> implements Use
     @Override
     public boolean checkUniqueUsername(String username, int id) {
         List<UserDO> list = (List<UserDO>)getEntityManager()
-                .createQuery("from UserDO where username='" + username + "' and id <> " + id)
+                .createQuery("from UserDO where username = :username and id <> :id")
+                .setParameter("username", username)
+                .setParameter("id", id)
                 .list();
         return list.size() == 0;
     }

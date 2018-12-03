@@ -1,9 +1,10 @@
 package net.tsystems.bean;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class TripDataBean {
+public class TripDataBean  implements Serializable {
     private int id;
     private RouteBean route;
     private int seatsLeft;

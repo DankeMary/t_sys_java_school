@@ -147,7 +147,7 @@ public class RouteService {
             }*/
 
         if (notEmptyPathData.size() < 2) {
-            errorsList.put("shortPath", "Train path hast to have at least 2 stations with data");
+            errorsList.put("shortPath", "Train path hast to have at least 2 items with data");
         } else {
             //all stations exist
             //TODO change order of these 2

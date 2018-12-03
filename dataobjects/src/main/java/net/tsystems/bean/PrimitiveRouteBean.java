@@ -1,7 +1,9 @@
 package net.tsystems.bean;
 
 
-public class PrimitiveRouteBean {
+import java.io.Serializable;
+
+public class PrimitiveRouteBean  implements Serializable {
     private int orderIndex;
     private String station;
     private String arrival;

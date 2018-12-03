@@ -1,8 +1,9 @@
 package net.tsystems.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class TrainBeanExpanded {
+public class TrainBeanExpanded  implements Serializable {
     private TrainBean trainBean;
     private List<RouteBean> trainRoute;
 

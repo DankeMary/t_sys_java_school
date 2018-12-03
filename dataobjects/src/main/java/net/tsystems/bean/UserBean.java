@@ -4,8 +4,9 @@ package net.tsystems.bean;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
-public class UserBean {
+public class UserBean  implements Serializable {
     private int id;
     @Size(min = 3, max = 45, message = "Min length - 3, Max length - 45")
     @NotEmpty(message = "Username required")

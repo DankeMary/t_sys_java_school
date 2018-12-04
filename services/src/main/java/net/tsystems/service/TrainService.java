@@ -68,7 +68,6 @@ public class TrainService {
 
     public void update(TrainBean train) {
         try {
-            //TODO !!!check if new capacity is bigger than previous one and that tickets are already sole
             trainDao.update(trainBeanToDO(train));
         } catch (Exception e) {
             LOG.error("Failed to update train");
@@ -78,11 +77,8 @@ public class TrainService {
 
     public void delete(int id) {
         try {
-            //TODO !!! check that no tickets were sold!!!!!
-            //tripDataService.getFirstJourneysByTrainNotCancelled(id)
             tripDataService.trainWasErased(id);
             trainDao.delete(trainDao.find(id));
-            //TODO cancel journeys, erase routes ?
         } catch (Exception e) {
             LOG.error(String.format("Failed to delete train by id=%s", id));
             e.printStackTrace();
@@ -178,7 +174,7 @@ public class TrainService {
 
     public void validateDeletion(int trainId, Map<String, String> errors) {
         tripDataService.validateCancellation(trainId,
-                tripDataService.getFirstJourneysByTrainNotCancelled(trainId, true),
+                tripDataService.getFirstJourneysByTrainNotCancelled(trainId),
                 errors);
     }
 

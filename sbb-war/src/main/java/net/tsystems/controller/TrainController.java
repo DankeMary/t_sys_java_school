@@ -141,7 +141,6 @@ public class TrainController {
             model.addAttribute("loggedinuser", getPrincipal());
             return "trainDetails";
         }
-            //TODO output ticketsSold
         trainService.delete(id);
         return "redirect:/worker/trains";
     }
@@ -162,7 +161,7 @@ public class TrainController {
         int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(id, UtilsClass.MAX_PAGE_RESULT);
         int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
 
-        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, true, pageInt, UtilsClass.MAX_PAGE_RESULT);
+        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, pageInt, UtilsClass.MAX_PAGE_RESULT);
 
         model.addAttribute("journeys", journeys);
         model.addAttribute("trainId", id);
@@ -190,7 +189,7 @@ public class TrainController {
             int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(id, UtilsClass.MAX_PAGE_RESULT);
             int pageInt = 1;
 
-            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, true, pageInt, UtilsClass.MAX_PAGE_RESULT);
+            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, pageInt, UtilsClass.MAX_PAGE_RESULT);
 
             model.addAttribute("journeys", journeys);
             model.addAttribute("trainId", id);
@@ -202,7 +201,6 @@ public class TrainController {
             return "journeys";
         } else {
             tripDataService.createJourney(journey);
-            //TODO !!!!
             return "redirect:/worker/trains/{id}/journeys";
         }
     }
@@ -221,7 +219,7 @@ public class TrainController {
             int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(trainId, UtilsClass.MAX_PAGE_RESULT);
             int pageInt = 1;
 
-            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(trainId, true, pageInt, UtilsClass.MAX_PAGE_RESULT);
+            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(trainId, pageInt, UtilsClass.MAX_PAGE_RESULT);
 
             model.addAttribute("journeys", journeys);
             model.addAttribute("trainId", trainId);
@@ -246,8 +244,9 @@ public class TrainController {
 
         List<TripDataBean> journeyDetails = tripDataService.getTrainJourneyDetails(trainId, journeyId);
         TrainBean train = trainService.getTrainById(trainId);
+        TripDataBean tdBean = tripDataService.getById(journeyId);
 
-        model.addAttribute("tripDepDay", tripDataService.getById(journeyId).getTripDeparture());
+        model.addAttribute("tripDepDay", tdBean == null ? null : tdBean.getTripDeparture());
         model.addAttribute("train", train);
         model.addAttribute("journeyDetails", journeyDetails);
         model.addAttribute("trainId", trainId);
@@ -299,6 +298,17 @@ public class TrainController {
         return result;
     }
 
+    private String getPrincipal() {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        }
+        return userName;
+    }
+
+    //Autowired
     @Autowired
     public void setTrainService(TrainService trainService) {
         this.trainService = trainService;
@@ -327,15 +337,5 @@ public class TrainController {
     @Autowired
     public void setTicketService(TicketService ticketService) {
         this.ticketService = ticketService;
-    }
-
-    private String getPrincipal() {
-        String userName = null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            userName = ((UserDetails) principal).getUsername();
-        }
-        return userName;
     }
 }

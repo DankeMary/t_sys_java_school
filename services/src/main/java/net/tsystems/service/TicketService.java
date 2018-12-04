@@ -50,7 +50,7 @@ public class TicketService {
             e.printStackTrace();
         }
     }
-    //TODO Delete ticket!!!
+
     public List<TicketBean> getTicketsForTrainSold(int trainId, int journeyID, int page, int maxResult) {
         TripDataBean tdBean = tripDataService.getById(journeyID);
         List<TicketBean> tickets = new LinkedList<>();
@@ -88,9 +88,17 @@ public class TicketService {
     }
 
     //Help Functions
-    public int countTicketsForTrainSold(int trainId, int journeyID, int maxResult) {
-        TripDataBean tdBean = tripDataService.getById(journeyID);
-        return ticketDao.countTicketsByTrainIdAndDatePages(trainId, tdBean.getTripDeparture(), maxResult);
+    public int countTicketsForTrainSold(int trainId, int journeyId, int maxResult) {
+        int cnt = 0;
+        try {
+        TripDataBean tdBean = tripDataService.getById(journeyId);
+        cnt = ticketDao.countTicketsByTrainIdAndDatePages(trainId, tdBean.getTripDeparture(), maxResult);
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to count tickets for : trainId=%s, journeyId=%s, ",
+                    trainId, journeyId));
+            e.printStackTrace();
+        }
+        return cnt;
     }
 
     public int countUserTicketsAfterNow(String username, int maxResult) {

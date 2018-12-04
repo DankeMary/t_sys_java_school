@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 public class CollectionUtils <T> {
     public T get(Collection<T> coll, int index) {
-        //TODO is it supposed to be checked here?
         if (coll == null)
             return null;
 

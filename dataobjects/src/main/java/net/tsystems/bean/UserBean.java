@@ -12,7 +12,7 @@ public class UserBean  implements Serializable {
     @NotEmpty(message = "Username required")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Only latin letters and numbers are allowed")
     private String username;
-    @NotEmpty
+    @NotEmpty(message = "Password required")
     private String password;
     private String role;
 
@@ -27,14 +27,14 @@ public class UserBean  implements Serializable {
         return username;
     }
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.trim();
     }
 
     public String getPassword() {
         return password;
     }
     public void setPassword(String password) {
-        this.password = password;
+        this.password = password.trim();
     }
 
     public String getRole() {

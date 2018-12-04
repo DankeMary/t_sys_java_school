@@ -53,7 +53,7 @@ public class StationBeanExpanded  implements Serializable {
     }
 
     public void setStationName(String stationName) {
-        this.stationName = stationName;
+        this.stationName = stationName.trim();
     }
 
     public LocalTime getArrTime() {

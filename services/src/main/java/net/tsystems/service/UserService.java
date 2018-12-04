@@ -63,7 +63,6 @@ public class UserService {
 
     public void update(UserBean user) {
         try {
-            //TODO Is this action needed?
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userDao.update(userBeanToDO(user));
         } catch (Exception e) {

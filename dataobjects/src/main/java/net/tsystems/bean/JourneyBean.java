@@ -27,14 +27,6 @@ public class JourneyBean  implements Serializable {
         this.trip = trip;
     }
 
-    /*public int getRouteId() {
-        return routeId;
-    }
-
-    public void setRouteId(int routeId) {
-        this.routeId = routeId;
-    }*/
-
     public LocalDate getDepartureDay() {
         return departureDay;
     }

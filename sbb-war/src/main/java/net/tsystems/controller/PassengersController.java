@@ -1,8 +1,8 @@
 package net.tsystems.controller;
 
-import net.tsystems.util.UtilsClass;
 import net.tsystems.bean.PassengerBean;
 import net.tsystems.service.PassengerService;
+import net.tsystems.util.UtilsClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,11 +30,6 @@ POST /passengers/{id}/delete
 @Controller
 public class PassengersController {
     private PassengerService passengerService;
-
-    @Autowired
-    public void setPassengerService(PassengerService passengerService) {
-        this.passengerService = passengerService;
-    }
 
     @RequestMapping(value = "/passengers", method = RequestMethod.GET)
     public String passengers(@RequestParam(required = false, defaultValue = "") String page,
@@ -119,4 +114,11 @@ public class PassengersController {
         }
         return userName;
     }
+
+    //Autowired
+    @Autowired
+    public void setPassengerService(PassengerService passengerService) {
+        this.passengerService = passengerService;
+    }
+
 }

@@ -169,6 +169,16 @@ public class TripDataController {
         return "userProfile";
     }
 
+    private String getPrincipal() {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        }
+        return userName;
+    }
+
     //@Autowired
     @Autowired
     public void setTripDataService(TripDataService tripDataService) {
@@ -195,13 +205,4 @@ public class TripDataController {
         this.userService = userService;
     }
 
-    private String getPrincipal() {
-        String userName = null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            userName = ((UserDetails) principal).getUsername();
-        }
-        return userName;
-    }
 }

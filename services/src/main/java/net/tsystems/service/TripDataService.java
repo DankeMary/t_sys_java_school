@@ -28,7 +28,6 @@ public class TripDataService {
     private static final Logger LOG = LoggerFactory.getLogger(TripDataService.class);
     private final String DEFAULT_CURRENCY = "Fr.";
 
-    @Autowired
     private TripDataDAO tripDataDAO;
     private TripDataEntityMapper tripDataEntityMapper = new TripDataEntityMapperImpl();
     private TripDataBeanMapper tripDataBeanMapper = new TripDataBeanMapperImpl();
@@ -124,15 +123,10 @@ public class TripDataService {
         return tripDataBean;
     }
 
-    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow) {
+    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id) {
         List<JourneyBean> journeys = new LinkedList<>();
         try {
             List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrainOrdered(id));
-            //For now only afterNow
-            /*if (afterNow)
-                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrainOrdered(id));
-            else
-                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));*/
 
             makeJourneysFromTripDatas(journeys, tripDataBeans);
         } catch (Exception e) {
@@ -142,15 +136,10 @@ public class TripDataService {
         return journeys;
     }
 
-    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, boolean afterNow, int page, int maxResult) {
+    public List<JourneyBean> getFirstJourneysByTrainNotCancelled(int id, int page, int maxResult) {
         List<JourneyBean> journeys = new LinkedList<>();
         try {
             List<TripDataBean> tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrainOrdered(id, page, maxResult));
-            //For now only afterNow
-            /*if (afterNow)
-                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstAfterNowByTrainOrdered(id));
-            else
-                tripDataBeans = tripDataDOListToBeanList(tripDataDAO.findFirstByTrain(id));*/
 
             makeJourneysFromTripDatas(journeys, tripDataBeans);
         } catch (Exception e) {
@@ -161,12 +150,16 @@ public class TripDataService {
     }
 
 
-
     public List<TripDataBean> getTrainJourneyDetails(int trainId, int journeyId) {
-        //TODO Logger
-        TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
-
-        return tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getTripDeparture()));
+        List<TripDataBean> details = new LinkedList<>();
+        try {
+            TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
+            details = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getTripDeparture()));
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to get journey details of a train with id=%s and tripData with id=%s", trainId, journeyId));
+            e.printStackTrace();
+        }
+        return details;
     }
 
     //public void cancelJourney(int trainId, Date departureDay) {
@@ -341,10 +334,14 @@ public class TripDataService {
     }
 
     public void trainWasErased(int trainId) {
-        //TODO logger
-        List<JourneyBean> trainJourneys = getFirstJourneysByTrainNotCancelled(trainId, true);
-        for (JourneyBean jBean : trainJourneys) {
-            cancelJourney(trainId, jBean.getJourneyId());
+        try {
+            List<JourneyBean> trainJourneys = getFirstJourneysByTrainNotCancelled(trainId);
+            for (JourneyBean jBean : trainJourneys) {
+                cancelJourney(trainId, jBean.getJourneyId());
+            }
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to do post-actions for erased train with id=%s", trainId));
+            e.printStackTrace();
         }
     }
 
@@ -448,17 +445,29 @@ public class TripDataService {
                                         String toDay, String toTime,
                                         String fromStation, String toStation,
                                         int maxResult) {
-        LocalDate fromDate = LocalDate.parse(fromDay.trim());
-        LocalDate toDate = LocalDate.parse(toDay.trim());
+        int cnt = 0;
+        try {
+            LocalDate fromDate = LocalDate.parse(fromDay.trim());
+            LocalDate toDate = LocalDate.parse(toDay.trim());
 
-        LocalTime fromLocalTime = LocalTime.parse(fromTime);
-        LocalTime toLocalTime = LocalTime.parse(toTime);
+            LocalTime fromLocalTime = LocalTime.parse(fromTime);
+            LocalTime toLocalTime = LocalTime.parse(toTime);
 
-        LocalDateTime from = LocalDateTime.of(fromDate, fromLocalTime);
-        LocalDateTime to = LocalDateTime.of(toDate, toLocalTime);
+            LocalDateTime from = LocalDateTime.of(fromDate, fromLocalTime);
+            LocalDateTime to = LocalDateTime.of(toDate, toLocalTime);
+            cnt = tripDataDAO.countDataForSectionPages(from, to,
+                    fromStation, toStation, maxResult);
+        } catch (Exception e) {
+            LOG.error(String.format("Failed to count pages for data about tickets for: fromDate=%s, toDate=%s, " +
+                            "fromTime=%s, toTime=%s, " +
+                            "fromStation=%s, toStation=%s",
+                    fromDay, toDay,
+                    fromTime, toTime,
+                    fromStation, toStation));
+            e.printStackTrace();
+        }
 
-        return tripDataDAO.countDataForSectionPages(from, to,
-                fromStation, toStation, maxResult);
+        return cnt;
     }
 
     public int countFirstAfterNowByTrainPages(int id, int maxResult) {
@@ -479,6 +488,11 @@ public class TripDataService {
     }
 
     //Autowired
+    @Autowired
+    public void setTripDataDAO(TripDataDAO tripDataDAO) {
+        this.tripDataDAO = tripDataDAO;
+    }
+
     @Autowired
     public void setRouteService(RouteService routeService) {
         this.routeService = routeService;

@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,13 +26,11 @@ import java.util.Map;
 @Controller
 public class UsersController {
 
-    @Autowired
-    UserService userService;
-    @Autowired
-    TicketService ticketService;
+    private UserService userService;
+    private TicketService ticketService;
 
     @Autowired
-    AuthenticationTrustResolver authenticationTrustResolver;
+    private AuthenticationTrustResolver authenticationTrustResolver;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginPage(@RequestParam(value = "error", required = false) String error,
@@ -56,7 +53,6 @@ public class UsersController {
         UserBean user = new UserBean();
         model.addAttribute("userForm", user);
         model.addAttribute("edit", false);
-        //model.addAttribute("loggedinuser", getPrincipal());
         return "signup";
     }
 
@@ -72,59 +68,12 @@ public class UsersController {
             return "signup";
         }
 
-        /*if (!userService.isUniqueUsername(user.getUsername(), user.getId())) {
-            FieldError ssoError = new FieldError("user", "username", "User with such username already exists");
-            result.addError(ssoError);
-            return "signup";
-        }*/
-
         userService.create(user, "");
         model.addAttribute("signup", "You have registered successfully");
         model.addAttribute("loggedinuser", getPrincipal());
-        //TODO You have been successfully signed up
         return "redirect:/login?registered=ok";
     }
 
-    //TODO Is needed?
-    @RequestMapping(value = {"/user/{id}/update"}, method = RequestMethod.GET)
-    public String editUser(@PathVariable int id, Model model) {
-        UserBean user = userService.getUser(id);
-        model.addAttribute("user", user);
-        model.addAttribute("edit", true);
-        model.addAttribute("loggedinuser", getPrincipal());
-        //TODO make another page?
-        return "signup";
-    }
-
-    //TODO Is needed?
-    @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.POST)
-    public String updateUser(@Validated UserBean user, BindingResult result,
-                             Model model, @PathVariable int id) {
-
-        //TODO How to check that new password is fine?
-        if (result.hasErrors()) {
-            //TODO add properties from errors
-            model.addAttribute("haha", "lala");
-            return "userProfile";
-        }
-
-        userService.update(user);
-
-        //TODO Is it needed?
-        model.addAttribute("success", "User " + user.getUsername() + " updated successfully");
-        model.addAttribute("loggedinuser", getPrincipal());
-        return "userProfile";
-    }
-
-    //TODO Delete yourself? Make logout?
-    @RequestMapping(value = {"/user/{id}/delete"}, method = RequestMethod.GET)
-    public String deleteUser(@PathVariable int id,
-                             final RedirectAttributes redirectAttributes) {
-        userService.delete(id);
-        return "redirect:/users";
-    }
-
-    //This method handles Access-Denied redirect.
     @RequestMapping(value = "/access_denied", method = RequestMethod.GET)
     public String accessDeniedPage(Model model) {
         model.addAttribute("loggedinuser", getPrincipal());
@@ -160,7 +109,6 @@ public class UsersController {
         return "userProfile";
     }
 
-    //This method returns the principal[user-name] of logged-in user.
     private String getPrincipal() {
         String userName = null;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -171,9 +119,20 @@ public class UsersController {
         return userName;
     }
 
-    //This method returns true if users is already authenticated [logged-in], else false.
+    //This method returns true if users is already authenticated, else false.
     private boolean isCurrentAuthenticationAnonymous() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authenticationTrustResolver.isAnonymous(authentication);
+    }
+
+    //Autowired
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    public void setTicketService(TicketService ticketService) {
+        this.ticketService = ticketService;
     }
 }

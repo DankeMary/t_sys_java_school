@@ -34,8 +34,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                //TODO Why needed?
-                //.csrf().disable()
                 .authorizeRequests()
 
                 .antMatchers("/worker/**").access("hasAnyRole('ROLE_WORKER', 'ROLE_ADMIN')")

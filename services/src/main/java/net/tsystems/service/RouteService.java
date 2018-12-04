@@ -131,39 +131,17 @@ public class RouteService {
 
     //Validation Utils
     public void validatePrimitive(List<StationBeanExpanded> trainPathData, Map<String, String> errorsList) {
-        //TODO check that all stations exist
-        //TODO How does it act if I add a bunch of empty inputs?
-        int cnt = 0;
         List<StationBeanExpanded> notEmptyPathData = extractNotEmptyPathData(trainPathData);
-
-        /*if (trainPathData != null)
-            for (StationBeanExpanded stExpBean : trainPathData) {
-                if ((stExpBean.getStation() != null &&
-                        !stExpBean.getStation().getName().isEmpty()) ||
-                        stExpBean.getArrTime() != null ||
-                        stExpBean.getDepTime() != null
-                )
-                    cnt++;
-            }*/
 
         if (notEmptyPathData.size() < 2) {
             errorsList.put("shortPath", "Train path hast to have at least 2 items with data");
         } else {
             //all stations exist
-            //TODO change order of these 2
             if (!areUniqueStations(notEmptyPathData)) {
                 errorsList.put("wrongPath", "Path has to have unique stations");
             } else if (!stationService.allStationsExist(notEmptyPathData))
                 errorsList.put("invalidStations", "Not all of the given stations exist");
 
-            /*for (StationBeanExpanded stExpBean : trainPathData) {
-                if (stExpBean.getStation().getName().equals("") ||
-                        stExpBean.getArrTime() == null ||
-                        stExpBean.getDepTime() == null) {
-                    errorsList.put("dataMissing", "Some path data is missing (station name or timing)");
-                    break;
-                }
-            }*/
             if (!pathHasCompleteInfo(notEmptyPathData))
                 errorsList.put("dataMissing", "Some path data is missing (station name or timing)");
         }
@@ -177,14 +155,11 @@ public class RouteService {
 
 
     //Help Functions
-    //TODO Is using orderIndex actually better? Ont he other hand we cannot guarantee the ordered list
     public Map<Integer, StationBeanExpanded> generatePathMap(List<StationBeanExpanded> trainPathData) {
         Map<Integer, StationBeanExpanded> result = new HashMap<>();
 
         for (StationBeanExpanded stExpBean : extractNotEmptyPathData(trainPathData)) {
-            //TODO !!!! changed here
             result.put(result.size() + 1, stExpBean);
-            //result.put(stExpBean.getOrderIndex() + 1, stExpBean);
         }
 
         return result;

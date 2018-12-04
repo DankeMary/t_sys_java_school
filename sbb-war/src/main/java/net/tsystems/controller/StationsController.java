@@ -135,6 +135,17 @@ public class StationsController {
         return "schedule";
     }
 
+    private String getPrincipal() {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        }
+        return userName;
+    }
+
+    //Autowired
     @Autowired
     public void setStationService(StationService stationService) {
         this.stationService = stationService;
@@ -144,18 +155,5 @@ public class StationsController {
     public void setTripDataService(TripDataService tripDataService) {
         this.tripDataService = tripDataService;
     }
-
-    private String getPrincipal() {
-        String userName = null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            userName = ((UserDetails) principal).getUsername();
-        }
-        //TODO Is this ok?
-        /*else {
-            userName = principal.toString();
-        }*/
-        return userName;
-    }
 }
+

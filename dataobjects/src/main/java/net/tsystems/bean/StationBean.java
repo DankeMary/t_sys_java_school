@@ -11,7 +11,6 @@ public class StationBean implements Serializable {
 
     @NotEmpty(message = "Station name required")
     @Size(max = 65, message = "Max length - 65")
-    //"^[a-zA-Z][a-zA-ZÄöß\\w\\u00F0-\\u02AF \\-0-9]+$"
     @Pattern(regexp = "^[a-zA-Z][a-zA-Z \\-0-9]+$", message = "Station name has to have at least one letter and can have only latin letters, digits, spaces and hyphens")
     private String name;
 

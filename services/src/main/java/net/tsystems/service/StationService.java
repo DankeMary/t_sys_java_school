@@ -34,8 +34,7 @@ public class StationService {
         try {
             stationDao.create(stationBeanToDO(station));
         } catch (Exception e) {
-            LOG.error("Failed to create station");
-            e.printStackTrace();
+            LOG.error("Failed to create station", e);
         }
     }
 
@@ -43,8 +42,7 @@ public class StationService {
         try {
             stationDao.update(stationBeanToDO(station));
         } catch (Exception e) {
-            LOG.error("Failed to update station");
-            e.printStackTrace();
+            LOG.error("Failed to update station", e);
         }
     }
 
@@ -52,8 +50,7 @@ public class StationService {
         try {
             stationDao.delete(stationDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to delete station by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to delete station by id=%s", id), e);
         }
     }
 
@@ -62,8 +59,7 @@ public class StationService {
         try {
             stationBeans = stationDOListToBeanList(stationDao.findAll());
         } catch (Exception e) {
-            LOG.error("Failed to get all stations");
-            e.printStackTrace();
+            LOG.error("Failed to get all stations", e);
         }
         return stationBeans;
     }
@@ -73,8 +69,7 @@ public class StationService {
         try {
             stationBeans = stationDOListToBeanList(stationDao.getAllOrdered(page, maxResult));
         } catch (Exception e) {
-            LOG.error("Failed to get all stations");
-            e.printStackTrace();
+            LOG.error("Failed to get all stations", e);
         }
         return stationBeans;
     }
@@ -84,8 +79,7 @@ public class StationService {
         try {
             stationBean = stationDOToBean(stationDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to find station by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to find station by id=%s", id), e);
         }
         return stationBean;
     }
@@ -95,8 +89,7 @@ public class StationService {
         try {
             stationBean = stationDOToBean(stationDao.findByName(name));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get station by name=%s", name));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get station by name=%s", name), e);
         }
         return stationBean;
     }

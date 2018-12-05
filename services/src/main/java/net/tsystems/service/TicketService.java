@@ -38,16 +38,14 @@ public class TicketService {
         try {
             ticketDao.create(ticketBeanToDO(ticket));
         } catch (Exception e) {
-            LOG.error("Failed to create ticket");
-            e.printStackTrace();
+            LOG.error("Failed to create ticket", e);
         }
     }
     public void delete(int id) {
         try {
             ticketDao.delete(ticketDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to delete ticket by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to delete ticket by id=%s", id), e);
         }
     }
 
@@ -57,8 +55,7 @@ public class TicketService {
         try {
             tickets = ticketDOListToBeanList(ticketDao.getTicketsByTrainIdAndDate(trainId, tdBean.getTripDeparture(), page, maxResult));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get tickets for train with id=%s on journey with id=%s", trainId, journeyID));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get tickets for train with id=%s on journey with id=%s", trainId, journeyID), e);
         }
         return tickets;
     }
@@ -68,8 +65,7 @@ public class TicketService {
         try {
             tickets = ticketDOListToBeanList(ticketDao.getUserTicketsForAfterNow(userService.userBeanToDO(user), page, maxResult));
         } catch (Exception e) {
-            LOG.error("Failed to get tickets for user");
-            e.printStackTrace();
+            LOG.error("Failed to get tickets for user", e);
         }
         return tickets;
     }
@@ -82,8 +78,7 @@ public class TicketService {
             passengerService.delete(ticket.getPassenger().getId());
             tripDataService.ticketWasErased(ticket);
         } catch (Exception e) {
-            LOG.error(String.format("Failed to delete ticket by id=%s", ticketId));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to delete ticket by id=%s", ticketId), e);
         }
     }
 
@@ -94,8 +89,7 @@ public class TicketService {
         cnt = ticketDao.countTicketsByTrainIdAndDatePages(trainId, tdBean.getTripDeparture(), maxResult);
         } catch (Exception e) {
             LOG.error(String.format("Failed to count tickets for : trainId=%s, journeyId=%s, ",
-                    trainId, journeyId));
-            e.printStackTrace();
+                    trainId, journeyId), e);
         }
         return cnt;
     }

@@ -38,8 +38,7 @@ public class PassengerService {
         try {
             psngrDao.create(passengerBeanToDO(psngr));
         } catch (Exception e) {
-            LOG.error("Failed to create passenger");
-            e.printStackTrace();
+            LOG.error("Failed to create passenger", e);
         }
     }
 
@@ -48,8 +47,7 @@ public class PassengerService {
         try {
             passengerBean = passengerDOToBean(psngrDao.createReturnObject(passengerBeanToDO(psngr)));
         } catch (Exception e) {
-            LOG.error("Failed to create passenger");
-            e.printStackTrace();
+            LOG.error("Failed to create passenger", e);
         }
         return passengerBean;
     }
@@ -58,8 +56,7 @@ public class PassengerService {
         try {
             psngrDao.update(passengerBeanToDO(psngr));
         } catch (Exception e) {
-            LOG.error("Failed to update passenger");
-            e.printStackTrace();
+            LOG.error("Failed to update passenger", e);
         }
     }
 
@@ -67,8 +64,7 @@ public class PassengerService {
         try {
             psngrDao.delete(psngrDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to delete passenger by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to delete passenger by id=%s", id), e);
         }
     }
 
@@ -77,8 +73,7 @@ public class PassengerService {
         try {
             passengers = passengerDOListToBeanList(psngrDao.findAll());
         } catch (Exception e) {
-            LOG.error("Failed to get all passengers");
-            e.printStackTrace();
+            LOG.error("Failed to get all passengers", e);
         }
         return passengers;
     }
@@ -88,8 +83,7 @@ public class PassengerService {
         try {
             passengers = passengerDOListToBeanList(psngrDao.findAll(page, maxResult));
         } catch (Exception e) {
-            LOG.error("Failed to get all passengers");
-            e.printStackTrace();
+            LOG.error("Failed to get all passengers", e);
         }
         return passengers;
     }
@@ -99,8 +93,7 @@ public class PassengerService {
         try {
             passengerBean = passengerDOToBean(psngrDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get passenger by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get passenger by id=%s", id), e);
         }
         return passengerBean;
     }

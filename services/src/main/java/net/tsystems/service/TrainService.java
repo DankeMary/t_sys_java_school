@@ -39,8 +39,7 @@ public class TrainService {
         try {
             id = trainDao.createReturnObject(trainBeanToDO(train)).getId();
         } catch (Exception e) {
-            LOG.error("Failed to create train");
-            e.printStackTrace();
+            LOG.error("Failed to create train", e);
         }
         return id;
     }
@@ -50,8 +49,7 @@ public class TrainService {
         try {
             trainBean = trainDOToBean(trainDao.createReturnObject(trainBeanToDO(train)));
         } catch (Exception e) {
-            LOG.error("Failed to create train");
-            e.printStackTrace();
+            LOG.error("Failed to create train", e);
         }
         return trainBean;
     }
@@ -61,8 +59,7 @@ public class TrainService {
             train = createReturnObject(train);
             routeService.createTrainPath(train, stationsData);
         } catch (Exception e) {
-            LOG.error("Failed to create train with stations data passed");
-            e.printStackTrace();
+            LOG.error("Failed to create train with stations data passed", e);
         }
     }
 
@@ -70,8 +67,7 @@ public class TrainService {
         try {
             trainDao.update(trainBeanToDO(train));
         } catch (Exception e) {
-            LOG.error("Failed to update train");
-            e.printStackTrace();
+            LOG.error("Failed to update train", e);
         }
     }
 
@@ -80,8 +76,7 @@ public class TrainService {
             tripDataService.trainWasErased(id);
             trainDao.delete(trainDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to delete train by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to delete train by id=%s", id), e);
         }
     }
 
@@ -92,8 +87,7 @@ public class TrainService {
             for (TrainBean train : trains)
                 train.setTrip(tripService.getTripByTrainId(train.getId()));
         } catch (Exception e) {
-            LOG.error("Failed to get all trains");
-            e.printStackTrace();
+            LOG.error("Failed to get all trains", e);
         }
         return trains;
     }
@@ -105,8 +99,7 @@ public class TrainService {
             for (TrainBean train : trains)
                 train.setTrip(tripService.getTripByTrainId(train.getId()));
         } catch (Exception e) {
-            LOG.error("Failed to get all trains");
-            e.printStackTrace();
+            LOG.error("Failed to get all trains", e);
         }
         return trains;
     }
@@ -118,8 +111,7 @@ public class TrainService {
             if (train != null)
                 train.setTrip(tripService.getTripByTrainId(train.getId()));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get train by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get train by id=%s", id), e);
         }
         return train;
     }
@@ -131,8 +123,7 @@ public class TrainService {
             if (train != null)
                 train.setTrip(tripService.getTripByTrainId(train.getId()));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get train by number=%s", number));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get train by number=%s", number), e);
         }
         return train;
     }
@@ -145,8 +136,7 @@ public class TrainService {
             trainBeanExpanded.getTrainBean().setTrip(tripService.getTripByTrainId(id));
             trainBeanExpanded.setTrainRoute(routeService.getTrainPathByTrainId(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get train with path by train's id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get train with path by train's id=%s", id), e);
             trainBeanExpanded = null;
         }
         return trainBeanExpanded;

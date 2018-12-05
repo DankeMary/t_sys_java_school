@@ -42,8 +42,7 @@ public class TripDataService {
         try {
             tripDataDAO.create(tripDataBeanToDO(tripDataBean));
         } catch (Exception e) {
-            LOG.error("Failed to ");
-            e.printStackTrace();
+            LOG.error("Failed to ", e);
         }
     }
 
@@ -73,8 +72,7 @@ public class TripDataService {
                 prevStData = stData;
             }
         } catch (Exception e) {
-            LOG.error("Failed to create tripDatas of a journey");
-            e.printStackTrace();
+            LOG.error("Failed to create tripDatas of a journey", e);
         }
     }
 
@@ -82,8 +80,7 @@ public class TripDataService {
         try {
             tripDataDAO.update(tripDataBeanToDO(tdBean));
         } catch (Exception e) {
-            LOG.error("Failed to update tripData");
-            e.printStackTrace();
+            LOG.error("Failed to update tripData", e);
         }
     }
 
@@ -105,8 +102,7 @@ public class TripDataService {
             }
 
         } catch (Exception e) {
-            LOG.error("Failed to create tripDatas of a journey");
-            e.printStackTrace();
+            LOG.error("Failed to create tripDatas of a journey", e);
         }
     }
 
@@ -115,8 +111,7 @@ public class TripDataService {
         try {
             tripDataBean = tripDataDOToBean(tripDataDAO.find(journeyId));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to find tripData by id=%s", journeyId));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to find tripData by id=%s", journeyId), e);
         }
         return tripDataBean;
     }
@@ -128,8 +123,7 @@ public class TripDataService {
 
             makeJourneysFromTripDatas(journeys, tripDataBeans);
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get first tripDatas for train with id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get first tripDatas for train with id=%s", id), e);
         }
         return journeys;
     }
@@ -141,8 +135,7 @@ public class TripDataService {
 
             makeJourneysFromTripDatas(journeys, tripDataBeans);
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get first tripDatas for train with id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get first tripDatas for train with id=%s", id), e);
         }
         return journeys;
     }
@@ -154,8 +147,7 @@ public class TripDataService {
             TripDataBean first = tripDataDOToBean(tripDataDAO.find(journeyId));
             details = tripDataDOListToBeanList(tripDataDAO.findByTrainIdAndTripDepartureDay(trainId, first.getTripDeparture()));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get journey details of a train with id=%s and tripData with id=%s", trainId, journeyId));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get journey details of a train with id=%s and tripData with id=%s", trainId, journeyId), e);
         }
         return details;
     }
@@ -172,8 +164,7 @@ public class TripDataService {
                 tripDataDAO.update(tripDataBeanToDO(tdBean));
             }
         } catch (Exception e) {
-            LOG.error(String.format("Failed to cancel journey of a train with id=%s and tripData with id=%s", trainId, journeyId));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to cancel journey of a train with id=%s and tripData with id=%s", trainId, journeyId), e);
         }
     }
 
@@ -191,8 +182,7 @@ public class TripDataService {
                 schedule.add(item);
             }
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get schedule for station=%s", stationName));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get schedule for station=%s", stationName), e);
         }
         return schedule;
     }
@@ -254,8 +244,7 @@ public class TripDataService {
                             "fromStation=%s, toStation=%s",
                     fromDay, toDay,
                     fromTime, toTime,
-                    fromStation, toStation));
-            e.printStackTrace();
+                    fromStation, toStation), e);
         }
 
         return availableTicketsData;
@@ -266,6 +255,7 @@ public class TripDataService {
         UserBean user = boughtByUsername == null ? null : userService.getUser(boughtByUsername);
         if (user == null) {
             LOG.error("Failed to buy tickets since user is not present");
+            return false;
         } else {
             try {
                 //1. Find data which satisfies the conditions
@@ -323,8 +313,7 @@ public class TripDataService {
                     ticketService.create(ticket);
                 }
             } catch (Exception e) {
-                LOG.error("Failed to buy tickets");
-                e.printStackTrace();
+                LOG.error("Failed to buy tickets", e);
                 return false;
             }
         }
@@ -338,8 +327,7 @@ public class TripDataService {
                 cancelJourney(trainId, jBean.getJourneyId());
             }
         } catch (Exception e) {
-            LOG.error(String.format("Failed to do post-actions for erased train with id=%s", trainId));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to do post-actions for erased train with id=%s", trainId), e);
         }
     }
 
@@ -374,8 +362,7 @@ public class TripDataService {
                 tripDataDAO.update(tripDataBeanToDO(tdBean));
             }
         } catch (Exception e) {
-            LOG.error("Failed to buy tickets");
-            e.printStackTrace();
+            LOG.error("Failed to buy tickets", e);
         }
     }
 
@@ -424,8 +411,7 @@ public class TripDataService {
 
             data.put("ticketPrice", fromTdBean.getRoute().getTrip().getTrain().getPrice() + " " + DEFAULT_CURRENCY);
         } catch (Exception e) {
-            LOG.error(String.format("Failed to make metadata for fromTripDataId=%s, toTripDataId=%s", fromJourneyId, toJourneyId));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to make metadata for fromTripDataId=%s, toTripDataId=%s", fromJourneyId, toJourneyId), e);
         }
     }
 
@@ -451,8 +437,7 @@ public class TripDataService {
                             "fromStation=%s, toStation=%s",
                     fromDay, toDay,
                     fromTime, toTime,
-                    fromStation, toStation));
-            e.printStackTrace();
+                    fromStation, toStation), e);
         }
 
         return cnt;

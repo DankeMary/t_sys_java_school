@@ -32,8 +32,7 @@ public class RouteService {
         try {
             routeDao.create(routeBeanToDO(route));
         } catch (Exception e) {
-            LOG.error("Failed to create route");
-            e.printStackTrace();
+            LOG.error("Failed to create route", e);
         }
     }
 
@@ -41,8 +40,7 @@ public class RouteService {
         try {
             routeDao.update(routeBeanToDO(route));
         } catch (Exception e) {
-            LOG.error("Failed to update route");
-            e.printStackTrace();
+            LOG.error("Failed to update route", e);
         }
     }
 
@@ -50,8 +48,7 @@ public class RouteService {
         try {
             routeDao.delete(routeDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to delete route by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to delete route by id=%s", id), e);
         }
     }
 
@@ -60,8 +57,7 @@ public class RouteService {
         try {
             routes = routeDOListToBeanList(routeDao.findAll());
         } catch (Exception e) {
-            LOG.error("Failed to get all routes");
-            e.printStackTrace();
+            LOG.error("Failed to get all routes", e);
         }
         return routes;
     }
@@ -71,8 +67,7 @@ public class RouteService {
         try {
             routes = routeDOListToBeanList(routeDao.getRoutesByTrainId(trainId));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get routes by train's id=%s", trainId));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get routes by train's id=%s", trainId), e);
         }
         return routes;
     }
@@ -92,8 +87,7 @@ public class RouteService {
                 LOG.error("Failed to create path for train since train = null");
             }
         } catch (Exception e) {
-            LOG.error(String.format("Failed to create path for train with id=%s", train.getId()));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to create path for train with id=%s", train.getId()), e);
         }
     }
 
@@ -123,8 +117,7 @@ public class RouteService {
                 nextStationId = currRoute.getStation().getId();
             }
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get path for train with id=%s", trainId));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get path for train with id=%s", trainId), e);
         }
         return orderedTrainRoutes;
     }
@@ -183,8 +176,7 @@ public class RouteService {
                 nextStation = currStation;
             }
         } catch (Exception e) {
-            LOG.error("Failed to create routes from list");
-            e.printStackTrace();
+            LOG.error("Failed to create routes from list", e);
         }
     }
 

@@ -30,8 +30,7 @@ public class TripService {
         try {
             tripDao.create(tripBeanToDO(trip));
         } catch (Exception e) {
-            LOG.error("Failed to create trip");
-            e.printStackTrace();
+            LOG.error("Failed to create trip", e);
         }
     }
 
@@ -40,8 +39,7 @@ public class TripService {
         try {
             id = tripDao.createReturnId(tripBeanToDO(trip));
         } catch (Exception e) {
-            LOG.error("Failed to create trip");
-            e.printStackTrace();
+            LOG.error("Failed to create trip", e);
         }
         return id;
     }
@@ -50,8 +48,7 @@ public class TripService {
         try {
             tripDao.update(tripBeanToDO(trip));
         } catch (Exception e) {
-            LOG.error("Failed to update trip");
-            e.printStackTrace();
+            LOG.error("Failed to update trip", e);
         }
     }
 
@@ -59,8 +56,7 @@ public class TripService {
         try {
             tripDao.delete(tripDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to delete trip by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to delete trip by id=%s", id), e);
         }
     }
 
@@ -69,8 +65,7 @@ public class TripService {
         try {
             tripBeans = tripDOListToBeanList(tripDao.findAll());
         } catch (Exception e) {
-            LOG.error("Failed to get all trips");
-            e.printStackTrace();
+            LOG.error("Failed to get all trips", e);
         }
         return tripBeans;
     }
@@ -80,8 +75,7 @@ public class TripService {
         try {
             tripBean = tripDOToBean(tripDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get trip by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get trip by id=%s", id), e);
         }
         return tripBean;
     }
@@ -91,8 +85,7 @@ public class TripService {
         try {
             tripBean = tripDOToBean(tripDao.getByTrainId(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get trip by train's id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get trip by train's id=%s", id), e);
         }
         return tripBean;
     }

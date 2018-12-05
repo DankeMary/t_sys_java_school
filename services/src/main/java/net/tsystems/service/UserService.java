@@ -44,8 +44,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userDao.create(userBeanToDO(user));
         } catch (Exception e) {
-            LOG.error("Failed to create user");
-            e.printStackTrace();
+            LOG.error("Failed to create user", e);
         }
     }
 
@@ -55,8 +54,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userBean = userDOToBean(userDao.createReturnObject(userBeanToDO(user)));
         } catch (Exception e) {
-            LOG.error("Failed to create user");
-            e.printStackTrace();
+            LOG.error("Failed to create user", e);
         }
         return userBean;
     }
@@ -66,8 +64,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userDao.update(userBeanToDO(user));
         } catch (Exception e) {
-            LOG.error("Failed to update user");
-            e.printStackTrace();
+            LOG.error("Failed to update user", e);
         }
     }
 
@@ -75,8 +72,7 @@ public class UserService {
         try {
             userDao.delete(userDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to delete user by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to delete user by id=%s", id), e);
         }
     }
 
@@ -85,8 +81,7 @@ public class UserService {
         try {
             userBean = userDOToBean(userDao.findByUsername(username));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get user by username=%s", username));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get user by username=%s", username), e);
         }
         return userBean;
     }
@@ -96,8 +91,7 @@ public class UserService {
         try {
             users = userDOListToBeanList(userDao.findAll());
         } catch (Exception e) {
-            LOG.error("Failed to get all users");
-            e.printStackTrace();
+            LOG.error("Failed to get all users", e);
         }
         return users;
     }
@@ -107,8 +101,7 @@ public class UserService {
         try {
             users = userDOListToBeanList(userDao.findAll(page, maxResult));
         } catch (Exception e) {
-            LOG.error("Failed to get all users");
-            e.printStackTrace();
+            LOG.error("Failed to get all users", e);
         }
         return users;
     }
@@ -118,8 +111,7 @@ public class UserService {
         try {
             userBean = userDOToBean(userDao.find(id));
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get user by id=%s", id));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get user by id=%s", id), e);
         }
         return userBean;
     }
@@ -135,8 +127,7 @@ public class UserService {
             userExp.setUser(user);
             userExp.setTickets(tickets);
         } catch (Exception e) {
-            LOG.error(String.format("Failed to get user's profile by username=%s", username));
-            e.printStackTrace();
+            LOG.error(String.format("Failed to get user's profile by username=%s", username), e);
         }
         return userExp;
     }

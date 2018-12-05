@@ -11,8 +11,8 @@ public class CollectionUtils <T> {
         return set.iterator().next();
     }
 
-    public T get(Collection<T> collection, int index) {
-        if (collection == null)
+    public static <T> T get(Collection<T> collection, int index) {
+        if (isEmpty(collection))
             return null;
 
         Iterator<T> iter = collection.iterator();
@@ -26,7 +26,10 @@ public class CollectionUtils <T> {
         return item;
     }
 
-    public T getLast(Collection<T> collection) {
+    public static <T> T getLast(Collection<T> collection) {
+        if (isEmpty(collection))
+            return null;
+
         Iterator<T> iter = collection.iterator();
         T item = null;
         while (iter.hasNext()) {

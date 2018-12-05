@@ -113,6 +113,10 @@ public class TripDataController {
         Map<String, String> errors = new HashMap<>();
         passengerService.validateList(ticketsData.getPassengers(), errors);
         boolean passengersHaveCompleteAndValidInfo = passengerService.passengersHaveCompleteAndValidInfo(ticketsData.getPassengers());
+        Map<String, String> metaData = new HashMap<>();
+        tripDataService.makeMetaDataForBuyingTickets(Integer.toString(ticketsData.getFromJourneyId()),
+                Integer.toString(ticketsData.getToJourneyId()),
+                metaData);
 
         if (result.hasErrors() &&
                 !passengersHaveCompleteAndValidInfo ||
@@ -120,10 +124,6 @@ public class TripDataController {
                 (psngrsQty < 1) || (psngrsQty > MAX_TICKETS_QTY)) {
             model.addAttribute("ticketForm", ticketsData);
 
-            Map<String, String> metaData = new HashMap<>();
-            tripDataService.makeMetaDataForBuyingTickets(Integer.toString(ticketsData.getFromJourneyId()),
-                    Integer.toString(ticketsData.getToJourneyId()),
-                    metaData);
             model.addAttribute("trainNumber", metaData.get("trainNumber"));
             model.addAttribute("trainId", trainService.getTrainByNumber(Integer.valueOf(metaData.get("trainNumber"))).getId());
             model.addAttribute("fromMetaInfo", metaData.get("fromMetaInfo"));
@@ -145,6 +145,16 @@ public class TripDataController {
 
         if (!tripDataService.buyTickets(ticketsData, getPrincipal())) {
             model.addAttribute("noTickets", "No enough tickets available for this trip");
+            model.addAttribute("trainNumber", metaData.get("trainNumber"));
+            model.addAttribute("trainId", trainService.getTrainByNumber(Integer.valueOf(metaData.get("trainNumber"))).getId());
+            model.addAttribute("fromMetaInfo", metaData.get("fromMetaInfo"));
+            model.addAttribute("toMetaInfo", metaData.get("toMetaInfo"));
+            model.addAttribute("ticketPrice", metaData.get("ticketPrice"));
+
+            model.addAttribute("ticketsQty", 0);
+            model.addAttribute("fromJourneyId", ticketsData.getFromJourneyId());
+            model.addAttribute("toJourneyId", ticketsData.getToJourneyId());
+            model.addAttribute("loggedinuser", getPrincipal());
             return "buyTicket";
         }
 

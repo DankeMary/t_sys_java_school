@@ -402,14 +402,6 @@ public class TripDataService {
             errors.put("ticketsSold", "Can't cancel - tickets have already been sold");
     }
 
-    public void validateCancellation(int trainId, List<JourneyBean> journeys, Map<String, String> errors) {
-        for (JourneyBean jBean : journeys) {
-            validateCancellation(trainId, jBean.getJourneyId(), errors);
-            if (errors.get("ticketsSold") != null)
-                break;
-        }
-    }
-
     //Help Functions
     private void makeJourneysFromTripDatas(List<JourneyBean> journeys, List<TripDataBean> tripDataBeans) {
         for (TripDataBean tdb : tripDataBeans) {

@@ -1,9 +1,7 @@
 package net.tsystems.entitymapper;
 
-import net.tsystems.CycleAvoidingMappingContext;
 import net.tsystems.entities.TripDO;
 import net.tsystems.serviceobject.TripSO;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 
 import java.util.List;

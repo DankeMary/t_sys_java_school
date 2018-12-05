@@ -91,7 +91,7 @@ public class TrainController {
         if (!trainService.canUpdate(id)) {
             TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
             model.addAttribute("trainData", trainBean);
-            model.addAttribute("ticketsSold", "Couldn't update: tickets have already been sold!");
+            model.addAttribute("tripPlanned", "Couldn't update: trips are planned already!");
             model.addAttribute("loggedinuser", getPrincipal());
             return "trainDetails";
         }
@@ -112,10 +112,10 @@ public class TrainController {
         trainService.validate(train, false, errors);
         if (result.hasErrors() || !errors.isEmpty()) {
             model.addAttribute("loggedinuser", getPrincipal());
-            if (errors.get("ticketsSold") != null) {
+            if (errors.get("tripPlanned") != null) {
                 TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
                 model.addAttribute("trainData", trainBean);
-                model.addAttribute("ticketsSold", "Couldn't update: tickets have already been sold!");
+                model.addAttribute("tripPlanned", errors.get("tripPlanned"));
                 return "trainDetails";
             }
             model.addAttribute("numberNonUnique", errors.get("numberNonUnique"));
@@ -136,7 +136,7 @@ public class TrainController {
         trainService.validateDeletion(id, errors);
         if (!errors.isEmpty()) {
             TrainBeanExpanded trainBean = trainService.getTrainWithPath(id);
-            model.addAttribute("ticketsSold", "Couldn't delete: tickets have already been sold!");
+            model.addAttribute("tripPlanned", errors.get("tripPlanned"));
             model.addAttribute("trainData", trainBean);
             model.addAttribute("loggedinuser", getPrincipal());
             return "trainDetails";

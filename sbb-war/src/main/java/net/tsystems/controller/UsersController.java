@@ -64,7 +64,7 @@ public class UsersController {
         userService.validate(user, errors);
         if (result.hasErrors() || !errors.isEmpty()) {
             model.addAttribute("uniqueUsername", errors.get("uniqueUsername"));
-            user.setPassword(null);
+            user.setPassword("");
             return "signup";
         }
 

@@ -22,7 +22,7 @@
                         <h6>No train with such id found</h6>
                     </c:when>
                     <c:otherwise>
-                        <span style="color:red; display: block;"><c:out value="${ticketsSold}"/></span>
+                        <span style="color:red; display: block;"><c:out value="${tripPlanned}"/></span>
                         <div style="display:inline-block; margin-right: 15px;"><b>Train
                             : </b>${trainData.trainBean.number}
                         </div>

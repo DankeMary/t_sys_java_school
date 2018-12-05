@@ -154,13 +154,12 @@ public class TrainService {
 
     //Validation Utils
     public boolean canUpdate(int trainId) {
-        return !ticketService.hasTicketsOnTrainSold(trainId);
+        return  tripDataService.getFirstJourneysByTrainNotCancelled(trainId).isEmpty();
     }
 
     public void validate(TrainBean train, boolean isNew, Map<String, String> errors) {
-        TrainBean oldTrain = isNew ? null : trainDOToBean(trainDao.find(train.getId()));
-        if (!isNew && ticketService.hasTicketsOnTrainSold(train.getId())) {
-            errors.put("ticketsSold", "Can't update - tickets have already been sold");
+        if (!isNew && !tripDataService.getFirstJourneysByTrainNotCancelled(train.getId()).isEmpty()) {
+            errors.put("tripPlanned", "Couldn't update: trips are planned already!");
         } else {
             if (train.getNumber() != null &&
                     train.getNumber() < Integer.MAX_VALUE &&
@@ -173,9 +172,8 @@ public class TrainService {
     }
 
     public void validateDeletion(int trainId, Map<String, String> errors) {
-        tripDataService.validateCancellation(trainId,
-                tripDataService.getFirstJourneysByTrainNotCancelled(trainId),
-                errors);
+        if (!tripDataService.getFirstJourneysByTrainNotCancelled(trainId).isEmpty())
+            errors.put("tripPlanned", "Couldn't delete: trips are planned already!");
     }
 
     public boolean isUniqueByNumber(int id, int number) {

@@ -152,7 +152,6 @@ public class TrainService {
         return trainBeanExpanded;
     }
 
-    //Validation Utils
     public boolean canUpdate(int trainId) {
         return  tripDataService.getFirstJourneysByTrainNotCancelled(trainId).isEmpty();
     }
@@ -180,12 +179,10 @@ public class TrainService {
         return trainDao.isUniqueByNumber(id, number);
     }
 
-    //Help Functions
     public int countPages(int maxResult) {
         return trainDao.countPages(maxResult);
     }
 
-    //Mappers
     private TrainBean trainDOToBean(TrainDO train) {
         return beanMapper.trainToBean(entityMapper.trainToSO(train));
     }
@@ -198,7 +195,6 @@ public class TrainService {
         return beanMapper.trainListToBeanList(entityMapper.trainListToSOList(trains));
     }
 
-    //Autowired
     @Autowired
     public void setTrainDao(TrainDAO trainDao) {
         this.trainDao = trainDao;

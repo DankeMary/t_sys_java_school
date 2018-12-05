@@ -1,7 +1,6 @@
 package net.tsystems.entities;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 

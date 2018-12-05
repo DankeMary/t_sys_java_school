@@ -4,13 +4,10 @@ import org.mapstruct.Mapper;
 
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Mapper
 public class LocalTimeMapper {

@@ -87,7 +87,6 @@ public class TicketService {
         }
     }
 
-    //Help Functions
     public int countTicketsForTrainSold(int trainId, int journeyId, int maxResult) {
         int cnt = 0;
         try {
@@ -109,11 +108,6 @@ public class TicketService {
         return ticketDao.ticketsOnTrainSold(trainId, date);
     }
 
-    public boolean hasTicketsOnTrainSold(int trainId) {
-        return ticketDao.ticketsOnTrainSold(trainId);
-    }
-
-    //Mappers
     public TicketBean ticketDOtoBean(TicketDO ticketDO) {
         return beanMapper.ticketToBean(entityMapper.ticketToSO(ticketDO));
     }
@@ -126,7 +120,6 @@ public class TicketService {
         return beanMapper.ticketListToBeanList(entityMapper.ticketListToSOList(ticketDOList));
     }
 
-    //Autowired
     @Autowired
     public void setTicketDao(TicketDAO ticketDao) {
         this.ticketDao = ticketDao;

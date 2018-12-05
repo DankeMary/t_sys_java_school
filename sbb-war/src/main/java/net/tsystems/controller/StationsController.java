@@ -145,7 +145,6 @@ public class StationsController {
         return userName;
     }
 
-    //Autowired
     @Autowired
     public void setStationService(StationService stationService) {
         this.stationService = stationService;

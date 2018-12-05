@@ -379,7 +379,6 @@ public class TripDataService {
         }
     }
 
-    //Validation Utils
     public void validateJourney(JourneyBean journey, Map<String, String> errors) {
         //check that such trip exists
         if (journey.getTrip() == null || tripService.getTripById(journey.getTrip().getId()) == null)
@@ -400,7 +399,6 @@ public class TripDataService {
             errors.put("ticketsSold", "Can't cancel - tickets have already been sold");
     }
 
-    //Help Functions
     private void makeJourneysFromTripDatas(List<JourneyBean> journeys, List<TripDataBean> tripDataBeans) {
         for (TripDataBean tdb : tripDataBeans) {
             JourneyBean jb = new JourneyBean();
@@ -464,7 +462,6 @@ public class TripDataService {
         return tripDataDAO.countFirstAfterNowByTrainPages(id, maxResult);
     }
 
-    //Mappers
     private TripDataDO tripDataBeanToDO(TripDataBean tdBean) {
         return tripDataEntityMapper.tripDataToDO(tripDataBeanMapper.tripDataToSO(tdBean));
     }
@@ -477,7 +474,6 @@ public class TripDataService {
         return tripDataBeanMapper.tripDataListToBeanList(tripDataEntityMapper.tripDataListToSOList(tripData));
     }
 
-    //Autowired
     @Autowired
     public void setTripDataDAO(TripDataDAO tripDataDAO) {
         this.tripDataDAO = tripDataDAO;

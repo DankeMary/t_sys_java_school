@@ -283,12 +283,11 @@ public class TrainController {
         return "showPassengers";
     }
 
-    //Ajax related
     @RequestMapping(value = "/getStationsForTrain", method = RequestMethod.GET)
     public @ResponseBody
     List<StationBean> getStations(@RequestParam String stationName) {
         List<StationBean> stationBeans = stationService.getAll();
-        List<StationBean> result = new ArrayList<StationBean>();
+        List<StationBean> result = new ArrayList<>();
 
         for (StationBean station : stationBeans) {
             if (station.getName().toLowerCase().contains(stationName.toLowerCase())) {
@@ -308,7 +307,7 @@ public class TrainController {
         return userName;
     }
 
-    //Autowired
+
     @Autowired
     public void setTrainService(TrainService trainService) {
         this.trainService = trainService;

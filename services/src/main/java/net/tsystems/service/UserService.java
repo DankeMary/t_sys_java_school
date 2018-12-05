@@ -141,7 +141,6 @@ public class UserService {
         return userExp;
     }
 
-    //Validation Utils
     public void validate(UserBean user, Map<String, String> errors) {
         if (userDao.findByUsername(user.getUsername()) != null)
             errors.put("uniqueUsername", "User with such username already exists");
@@ -151,8 +150,6 @@ public class UserService {
         return userDao.checkUniqueUsername(username, id);
     }
 
-
-    //Mappers
     public UserBean userDOToBean(UserDO userDO) {
         return beanMapper.userToBean(entityMapper.userToSO(userDO));
     }
@@ -165,7 +162,6 @@ public class UserService {
         return beanMapper.userListToBeanList(entityMapper.userListToSOList(userDOList));
     }
 
-    //Autowired
     @Autowired
     public void setUserDao(UserDAO userDao) {
         this.userDao = userDao;

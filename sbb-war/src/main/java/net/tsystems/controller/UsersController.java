@@ -29,7 +29,6 @@ public class UsersController {
     private UserService userService;
     private TicketService ticketService;
 
-    @Autowired
     private AuthenticationTrustResolver authenticationTrustResolver;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -119,13 +118,17 @@ public class UsersController {
         return userName;
     }
 
-    //This method returns true if users is already authenticated, else false.
+    //This method returns true if user is already authenticated, else false.
     private boolean isCurrentAuthenticationAnonymous() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authenticationTrustResolver.isAnonymous(authentication);
     }
 
-    //Autowired
+    @Autowired
+    public void setAuthenticationTrustResolver(AuthenticationTrustResolver authenticationTrustResolver) {
+        this.authenticationTrustResolver = authenticationTrustResolver;
+    }
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;

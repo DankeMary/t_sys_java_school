@@ -105,7 +105,6 @@ public class PassengerService {
         return passengerBean;
     }
 
-    //Validation utils
     public void validate(PassengerBean passenger, Map<String, String> errors) {
         if (passenger.getBirthday() != null && passenger.getBirthday().isAfter(LocalDate.now()))
             errors.put("birthdayError", "Birthday has to be in the past");
@@ -113,7 +112,6 @@ public class PassengerService {
             errors.put("birthdayError", "Minimal birthday date is 01-01-1900");
     }
 
-    //Check that only empty lines are invalid (no incomplete information is provided)
     public boolean passengersHaveCompleteAndValidInfo(List<PassengerBean> passengers) {
         for (PassengerBean p : passengers) {
             if (p.getFirstName().trim().isEmpty() &&
@@ -153,7 +151,6 @@ public class PassengerService {
         return count;
     }
 
-    //Help Functions
     private boolean validBean(PassengerBean pBean) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
@@ -183,7 +180,6 @@ public class PassengerService {
         return psngrDao.countPages(maxResult);
     }
 
-    //Mappers
     public PassengerBean passengerDOToBean(PassengerDO psngr) {
         return beanMapper.passengerToBean(entityMapper.passengerToSO(psngr));
     }
@@ -196,7 +192,6 @@ public class PassengerService {
         return beanMapper.passengerListToBeanList(entityMapper.passengerListToSOList(psngrs));
     }
 
-    //Autowired
     @Autowired
     public void setPsngrDao(PassengerDAO psngrDao) {
         this.psngrDao = psngrDao;

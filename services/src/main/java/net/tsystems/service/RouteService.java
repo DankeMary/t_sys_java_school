@@ -98,11 +98,11 @@ public class RouteService {
     }
 
     public List<RouteBean> getTrainPathByTrainId(int trainId) {
-        List<RouteBean> orderedTrainRoutes = new LinkedList<RouteBean>();
+        List<RouteBean> orderedTrainRoutes = new LinkedList<>();
         try {
             List<RouteBean> trainRoutes = getRoutesByTrainId(trainId);
 
-            Map<Integer, RouteBean> stationsData = new HashMap<Integer, RouteBean>();
+            Map<Integer, RouteBean> stationsData = new HashMap<>();
             RouteBean lastRoute = null;
             //Key - next station's ID
             for (RouteBean rb : trainRoutes) {
@@ -129,7 +129,6 @@ public class RouteService {
         return orderedTrainRoutes;
     }
 
-    //Validation Utils
     public void validatePrimitive(List<StationBeanExpanded> trainPathData, Map<String, String> errorsList) {
         List<StationBeanExpanded> notEmptyPathData = extractNotEmptyPathData(trainPathData);
 
@@ -154,7 +153,6 @@ public class RouteService {
     }
 
 
-    //Help Functions
     public Map<Integer, StationBeanExpanded> generatePathMap(List<StationBeanExpanded> trainPathData) {
         Map<Integer, StationBeanExpanded> result = new HashMap<>();
 
@@ -236,7 +234,6 @@ public class RouteService {
         return isComplete;
     }
 
-    //Mappers
     public RouteDO routeBeanToDO(RouteBean route) {
         return routeEntityMapper.routeToDO(routeBeanMapper.routeToSO(route));
     }
@@ -249,7 +246,6 @@ public class RouteService {
         return routeBeanMapper.routeListToBeanList(routeEntityMapper.routeListToSOList(routes));
     }
 
-    //Autowired
     @Autowired
     public void setTripService(TripService tripService) {
         this.tripService = tripService;

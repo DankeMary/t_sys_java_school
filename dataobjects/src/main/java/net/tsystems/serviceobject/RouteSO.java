@@ -1,7 +1,6 @@
 package net.tsystems.serviceobject;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class RouteSO {
     private int id;

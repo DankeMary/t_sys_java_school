@@ -100,7 +100,7 @@ public class TripService {
     public boolean existByStationId(int stationId) {
         return tripDao.existByStationId(stationId);
     }
-    //Mappers
+
     public TripBean tripDOToBean(TripDO trip) {
         return beanMapper.tripToBean(entityMapper.tripToSO(trip));
     }
@@ -113,7 +113,6 @@ public class TripService {
         return beanMapper.tripListToBeanList(entityMapper.tripListToSOList(trips));
     }
 
-    //Autowired
     @Autowired
     public void setTripDao(TripDAO tripDao) {
         this.tripDao = tripDao;

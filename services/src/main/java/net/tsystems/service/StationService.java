@@ -105,7 +105,6 @@ public class StationService {
         return stationDao.isUniqueByName(id, name);
     }
 
-    //Validation Utils
     public void validate(StationBean station, boolean isNew, Errors errors) {
         if ((isNew && getStationByName(station.getName()) != null) ||
                 (!isNew && !isUniqueByName(station.getId(), station.getName())))
@@ -125,12 +124,10 @@ public class StationService {
         return stationDao.allStationsExist(stationNames);
     }
 
-    //Help Functions
     public int countPages(int maxResult) {
         return stationDao.countPages(maxResult);
     }
 
-    //Mappers
     public StationBean stationDOToBean(StationDO station) {
         return beanMapper.stationToBean(entityMapper.stationToSO(station));
     }
@@ -143,7 +140,6 @@ public class StationService {
         return beanMapper.stationListToBeanList(entityMapper.stationListToSOList(stations));
     }
 
-    //Autowired
     @Autowired
     public void setStationDao(StationDAO stationDao) {
         this.stationDao = stationDao;

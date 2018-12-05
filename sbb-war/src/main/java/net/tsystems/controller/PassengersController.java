@@ -115,7 +115,6 @@ public class PassengersController {
         return userName;
     }
 
-    //Autowired
     @Autowired
     public void setPassengerService(PassengerService passengerService) {
         this.passengerService = passengerService;

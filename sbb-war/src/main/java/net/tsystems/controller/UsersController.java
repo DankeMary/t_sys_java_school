@@ -4,7 +4,7 @@ import net.tsystems.bean.UserBean;
 import net.tsystems.bean.UserBeanExpanded;
 import net.tsystems.service.TicketService;
 import net.tsystems.service.UserService;
-import net.tsystems.util.UtilsClass;
+import net.tsystems.util.GeneralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.core.Authentication;
@@ -96,10 +96,10 @@ public class UsersController {
     public String userProfile(@PathVariable String username,
                               @RequestParam(required = false, defaultValue = "") String page,
                               Model model) {
-        int navPagesQty = ticketService.countUserTicketsAfterNow(username, UtilsClass.MAX_PAGE_RESULT);
-        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+        int navPagesQty = ticketService.countUserTicketsAfterNow(username, GeneralUtils.MAX_PAGE_RESULT);
+        int pageInt = GeneralUtils.parseIntForPage(page, 1, navPagesQty);
 
-        UserBeanExpanded userProfile = userService.getUserProfile(username, pageInt, UtilsClass.MAX_PAGE_RESULT);
+        UserBeanExpanded userProfile = userService.getUserProfile(username, pageInt, GeneralUtils.MAX_PAGE_RESULT);
 
         model.addAttribute("userData", userProfile);
         model.addAttribute("navPagesQty", navPagesQty);

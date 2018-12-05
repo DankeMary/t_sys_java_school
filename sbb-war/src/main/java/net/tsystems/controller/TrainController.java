@@ -1,6 +1,6 @@
 package net.tsystems.controller;
 
-import net.tsystems.util.UtilsClass;
+import net.tsystems.util.GeneralUtils;
 import net.tsystems.bean.*;
 import net.tsystems.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +39,10 @@ public class TrainController {
     public String trains(@RequestParam(required = false, defaultValue = "") String page,
                          Model model) {
 
-        int navPagesQty = trainService.countPages(UtilsClass.MAX_PAGE_RESULT);
-        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+        int navPagesQty = trainService.countPages(GeneralUtils.MAX_PAGE_RESULT);
+        int pageInt = GeneralUtils.parseIntForPage(page, 1, navPagesQty);
 
-        List<TrainBean> trains = trainService.getAll(pageInt, UtilsClass.MAX_PAGE_RESULT);
+        List<TrainBean> trains = trainService.getAll(pageInt, GeneralUtils.MAX_PAGE_RESULT);
 
         model.addAttribute("trains", trains);
         model.addAttribute("navPagesQty", navPagesQty);
@@ -158,10 +158,10 @@ public class TrainController {
                            @RequestParam(required = false, defaultValue = "") String page,
                            Model model) {
 
-        int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(id, UtilsClass.MAX_PAGE_RESULT);
-        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+        int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(id, GeneralUtils.MAX_PAGE_RESULT);
+        int pageInt = GeneralUtils.parseIntForPage(page, 1, navPagesQty);
 
-        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, pageInt, UtilsClass.MAX_PAGE_RESULT);
+        List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, pageInt, GeneralUtils.MAX_PAGE_RESULT);
 
         model.addAttribute("journeys", journeys);
         model.addAttribute("trainId", id);
@@ -186,10 +186,10 @@ public class TrainController {
             model.addAttribute("depDayError", errors.get("depDayError"));
             model.addAttribute("journeyExists", errors.get("journeyExists"));
 
-            int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(id, UtilsClass.MAX_PAGE_RESULT);
+            int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(id, GeneralUtils.MAX_PAGE_RESULT);
             int pageInt = 1;
 
-            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, pageInt, UtilsClass.MAX_PAGE_RESULT);
+            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(id, pageInt, GeneralUtils.MAX_PAGE_RESULT);
 
             model.addAttribute("journeys", journeys);
             model.addAttribute("trainId", id);
@@ -216,10 +216,10 @@ public class TrainController {
         if (!errors.isEmpty()) {
             model.addAttribute("invalidTrip", errors.get("invalidTrip"));
             model.addAttribute("ticketsSold", errors.get("ticketsSold"));
-            int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(trainId, UtilsClass.MAX_PAGE_RESULT);
+            int navPagesQty = tripDataService.countFirstAfterNowByTrainPages(trainId, GeneralUtils.MAX_PAGE_RESULT);
             int pageInt = 1;
 
-            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(trainId, pageInt, UtilsClass.MAX_PAGE_RESULT);
+            List<JourneyBean> journeys = tripDataService.getFirstJourneysByTrainNotCancelled(trainId, pageInt, GeneralUtils.MAX_PAGE_RESULT);
 
             model.addAttribute("journeys", journeys);
             model.addAttribute("trainId", trainId);
@@ -261,10 +261,10 @@ public class TrainController {
                                           @RequestParam(required = false, defaultValue = "") String page,
                                           Model model) {
 
-        int navPagesQty = ticketService.countTicketsForTrainSold(trainId, journeyId, UtilsClass.MAX_PAGE_RESULT);
-        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+        int navPagesQty = ticketService.countTicketsForTrainSold(trainId, journeyId, GeneralUtils.MAX_PAGE_RESULT);
+        int pageInt = GeneralUtils.parseIntForPage(page, 1, navPagesQty);
 
-        List<TicketBean> tickets = ticketService.getTicketsForTrainSold(trainId, journeyId, pageInt, UtilsClass.MAX_PAGE_RESULT);
+        List<TicketBean> tickets = ticketService.getTicketsForTrainSold(trainId, journeyId, pageInt, GeneralUtils.MAX_PAGE_RESULT);
 
         model.addAttribute("tickets", tickets);
 

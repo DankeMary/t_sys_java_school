@@ -1,6 +1,6 @@
 package net.tsystems.util;
 
-public class UtilsClass {
+public class GeneralUtils {
     public static final int MAX_PAGE_RESULT = 10;
 
     public static int parseIntForPage(String str, int min, int max) {

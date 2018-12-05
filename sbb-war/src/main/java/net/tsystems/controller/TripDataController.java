@@ -3,7 +3,7 @@ package net.tsystems.controller;
 import net.tsystems.bean.BuyTicketsForm;
 import net.tsystems.bean.UserBeanExpanded;
 import net.tsystems.service.*;
-import net.tsystems.util.UtilsClass;
+import net.tsystems.util.GeneralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,13 +50,13 @@ public class TripDataController {
             int navPagesQty = tripDataService.countDataForSectionPages(fromDay, fromTime,
                     toDay, toTime,
                     fromStation, toStation,
-                    UtilsClass.MAX_PAGE_RESULT);
-            int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+                    GeneralUtils.MAX_PAGE_RESULT);
+            int pageInt = GeneralUtils.parseIntForPage(page, 1, navPagesQty);
 
             model.addAttribute("ticketsAvailable", tripDataService.getDataForSection(fromDay, fromTime,
                     toDay, toTime,
                     fromStation, toStation,
-                    pageInt, UtilsClass.MAX_PAGE_RESULT));
+                    pageInt, GeneralUtils.MAX_PAGE_RESULT));
 
             model.addAttribute("navPagesQty", navPagesQty);
             model.addAttribute("currentPage", pageInt);
@@ -166,10 +166,10 @@ public class TripDataController {
                                @PathVariable("ticket_id") int ticketId, Model model) {
         ticketService.deleteTicket(username, ticketId);
 
-        int navPagesQty = ticketService.countUserTicketsAfterNow(username, UtilsClass.MAX_PAGE_RESULT);
+        int navPagesQty = ticketService.countUserTicketsAfterNow(username, GeneralUtils.MAX_PAGE_RESULT);
         int pageInt = 1;
 
-        UserBeanExpanded userProfile = userService.getUserProfile(username, pageInt, UtilsClass.MAX_PAGE_RESULT);
+        UserBeanExpanded userProfile = userService.getUserProfile(username, pageInt, GeneralUtils.MAX_PAGE_RESULT);
 
         model.addAttribute("userData", userProfile);
         model.addAttribute("navPagesQty", navPagesQty);

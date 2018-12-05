@@ -2,7 +2,7 @@ package net.tsystems.controller;
 
 import net.tsystems.bean.PassengerBean;
 import net.tsystems.service.PassengerService;
-import net.tsystems.util.UtilsClass;
+import net.tsystems.util.GeneralUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,10 +34,10 @@ public class PassengersController {
     @RequestMapping(value = "/passengers", method = RequestMethod.GET)
     public String passengers(@RequestParam(required = false, defaultValue = "") String page,
                              Model model) {
-        int navPagesQty = passengerService.countPages(UtilsClass.MAX_PAGE_RESULT);
-        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+        int navPagesQty = passengerService.countPages(GeneralUtils.MAX_PAGE_RESULT);
+        int pageInt = GeneralUtils.parseIntForPage(page, 1, navPagesQty);
 
-        List<PassengerBean> psngrs = passengerService.getAll(pageInt, UtilsClass.MAX_PAGE_RESULT);
+        List<PassengerBean> psngrs = passengerService.getAll(pageInt, GeneralUtils.MAX_PAGE_RESULT);
 
         model.addAttribute("passengers", psngrs);
         model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));

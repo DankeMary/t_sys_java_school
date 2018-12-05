@@ -1,7 +1,7 @@
 package net.tsystems.controller;
 
 
-import net.tsystems.util.UtilsClass;
+import net.tsystems.util.GeneralUtils;
 import net.tsystems.bean.StationBean;
 import net.tsystems.service.StationService;
 import net.tsystems.service.TripDataService;
@@ -37,10 +37,10 @@ public class StationsController {
     @RequestMapping(value = "/worker/stations", method = RequestMethod.GET)
     public String stations(@RequestParam(required = false, defaultValue = "") String page,
                            Model model) {
-        int navPagesQty = stationService.countPages(UtilsClass.MAX_PAGE_RESULT);
-        int pageInt = UtilsClass.parseIntForPage(page, 1, navPagesQty);
+        int navPagesQty = stationService.countPages(GeneralUtils.MAX_PAGE_RESULT);
+        int pageInt = GeneralUtils.parseIntForPage(page, 1, navPagesQty);
 
-        List<StationBean> stations = stationService.getAll(pageInt, UtilsClass.MAX_PAGE_RESULT);
+        List<StationBean> stations = stationService.getAll(pageInt, GeneralUtils.MAX_PAGE_RESULT);
         model.addAttribute("stations", stations);
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
@@ -103,10 +103,10 @@ public class StationsController {
             stationService.delete(id);
             return "redirect:/worker/stations";
         }
-        int navPagesQty = stationService.countPages(UtilsClass.MAX_PAGE_RESULT);
+        int navPagesQty = stationService.countPages(GeneralUtils.MAX_PAGE_RESULT);
         int pageInt = 1;
 
-        List<StationBean> stations = stationService.getAll(pageInt, UtilsClass.MAX_PAGE_RESULT);
+        List<StationBean> stations = stationService.getAll(pageInt, GeneralUtils.MAX_PAGE_RESULT);
         model.addAttribute("stations", stations);
         model.addAttribute("navPagesQty", navPagesQty);
         model.addAttribute("currentPage", pageInt);
@@ -121,7 +121,7 @@ public class StationsController {
 
         if (!trimmedStationName.equals(""))
             if (stationService.getStationByName(trimmedStationName) != null) {
-                model.addAttribute("schedule", tripDataService.getScheduleForStation(trimmedStationName, UtilsClass.MAX_PAGE_RESULT));
+                model.addAttribute("schedule", tripDataService.getScheduleForStation(trimmedStationName, GeneralUtils.MAX_PAGE_RESULT));
                 model.addAttribute("localDateTimeFormat", DateTimeFormatter.ofPattern("dd-MM-yyy"));
             } else {
                 model.addAttribute("noStationMessage", "No station with such name found");

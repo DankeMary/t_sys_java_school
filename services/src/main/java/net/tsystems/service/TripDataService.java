@@ -38,8 +38,6 @@ public class TripDataService {
     private TripService tripService;
     private UserService userService;
 
-    private CollectionUtils<RouteBean> collUtil = new CollectionUtils<>();
-
     public void create(TripDataBean tripDataBean) {
         try {
             tripDataDAO.create(tripDataBeanToDO(tripDataBean));
@@ -56,7 +54,7 @@ public class TripDataService {
             List<RouteBean> trainPath = routeService.getTrainPathByTrainId(trip.getTrain().getId());
             LocalDate tripDepDay = journey.getDepartureDay();
             LocalDate currDate = journey.getDepartureDay();
-            RouteBean prevStData = collUtil.getFirst(trainPath);
+            RouteBean prevStData = CollectionUtils.getFirst(trainPath);
             TrainBean train = trip.getTrain();
 
             for (RouteBean stData : trainPath) {

@@ -5,8 +5,42 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.tsystems</groupId>
-    <artifactId>SBB</artifactId>
+    <artifactId>sbb</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <mysql.version>8.0.12</mysql.version>
+        <spring.version>5.1.0.RELEASE</spring.version>
+        <buildNumber>1</buildNumber>
+        <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
+        <webflow-version>2.5.1.RELEASE</webflow-version>
+        <mojarra-version>2.0.0-b04</mojarra-version>
+        <project-version>1.0-SNAPSHOT</project-version>
+        <jcl.slf4j.version>1.7.25</jcl.slf4j.version>
+        <logback.version>1.2.3</logback.version>
+        <springsecurity.version>5.1.0.RELEASE</springsecurity.version>
+    </properties>
 
+    <modules>
+        <module>database</module>
+        <module>sbb-war</module>
+        <module>services</module>
+        <module>dataobjects</module>
+        <module>utils</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

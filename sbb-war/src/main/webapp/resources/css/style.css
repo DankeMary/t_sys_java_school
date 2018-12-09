@@ -1,0 +1,184 @@
+html {
+    overflow-y: scroll;
+}
+
+body{
+    height: 100vh;
+    max-height: 100vh;
+    overflow-wrap: break-word;
+}
+
+.container, .col-8 {
+    padding: 25px 15px;
+}
+
+table {
+    text-align: center;
+}
+
+tbody {
+    display: block;
+    max-height: 50vh;
+    overflow: auto;
+}
+
+thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+th, td {
+    vertical-align: middle !important;
+}
+
+.col-sm-12 > div{
+    padding:20px;
+}
+
+.formFragment {
+    display: block;
+    margin: 10px;
+}
+
+.formFragment label {
+    display: inline-block;
+    width: 80px;
+    max-width: 150px;
+    text-align: right;
+}
+.inp-btn, .submit-btn {
+    background-color: #dde2e3;
+    width: 76px;
+    border-radius: 5px;
+    height: 38px;
+}
+.submit-btn{
+    margin: auto;
+    display: inherit;
+}
+
+.fm-with-valid {
+    vertical-align: top;
+}
+
+.autocomplete-suggestions {
+    border: 1px solid #999;
+    background: #FFF;
+    overflow: auto;
+}
+
+.autocomplete-suggestion {
+    padding: 5px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 22px
+}
+
+.autocomplete-selected {
+    background: #F0F0F0;
+}
+
+.autocomplete-suggestions strong {
+    font-weight: bold;
+    color: #3399FF;
+}
+
+.ui-autocomplete {
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /*padding-right: 10px;*/
+}
+/*Pagination*/
+.pagination {
+    display: table !important;
+    margin: 10px auto;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+.pagination a.active {
+    background-color: skyblue;
+    color: black;
+    text-decoration:none;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+    color:black;
+    text-decoration:none;
+}
+
+.pagination a.invisible-link, .pagination a.invisible-link:hover {
+    visibility:hidden;
+}
+
+/*Sign Up form*/
+
+.form {
+    background: #FFFFFF;
+    max-width: 360px;
+    margin: 0 auto 0;
+    padding: 25px 45px 25px;
+    text-align: center;
+}
+.form input {
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.form .message {
+    margin: 15px 0 0;
+    color: #b3b3b3;
+    font-size: 12px;
+}
+.form .message a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.container .info {
+    margin: 50px auto;
+    text-align: center;
+}
+.container .info h1 {
+    margin: 0 0 15px;
+    padding: 0;
+    font-size: 36px;
+    font-weight: 300;
+    color: #1a1a1a;
+}
+.container .info span {
+    color: #4d4d4d;
+    font-size: 12px;
+}
+.container .info span a {
+    color: #000000;
+    text-decoration: none;
+}
+.container .info span .fa {
+    color: #EF3B3A;
+}
+
+/*Menu*/
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+}
+
+/* Right-aligned section inside the top navigation */
+.topnav-right {
+    float: right;
+}
